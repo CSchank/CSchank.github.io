@@ -1,0 +1,68 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+    <link rel="icon" href="favicon.ico?v=1" />
+    <script src="app.js"></script>
+</head>
+
+<body>
+<div id="elm"></div>
+
+<div id="canvas"></div>
+<script>
+  var app = Elm.Earth.init({
+    node: document.getElementById('elm')
+  });
+
+function triggerDownload (widgetID, imgURI) {
+  var evt = new MouseEvent('click', {
+    view: window,
+    bubbles: false,
+    cancelable: true
+  });
+
+  var a = document.createElement('a');
+  a.setAttribute('download', widgetID + '.png');
+  a.setAttribute('href', imgURI);
+  a.setAttribute('target', '_blank');
+
+  a.dispatchEvent(evt);
+}
+
+app.ports.createPNG.subscribe(function([widgetID, width, height]) {
+  console.log("Creating " + widgetID + "...")
+  var canvas = document.createElement("CANVAS");
+  canvas.width=width;
+  canvas.height=height;
+  var ctx = canvas.getContext('2d');
+
+  var svg = document.getElementById(widgetID);
+  var data = (new XMLSerializer()).serializeToString(svg);
+  var DOMURL = window.URL || window.webkitURL || window;
+
+  var img = new Image();
+  var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+  var url = DOMURL.createObjectURL(svgBlob);
+
+  img.onload = function () {
+    console.log(widgetID + " loaded!");
+    ctx.drawImage(img, 0, 0);
+    DOMURL.revokeObjectURL(url);
+
+    var imgURI = canvas
+        .toDataURL('image/svg')
+        .replace('image/svg', 'image/octet-stream');
+
+    //triggerDownload(widgetID,imgURI);
+    app.ports.receivePNG.send([widgetID, imgURI]);
+  };
+
+  img.src = url;
+});
+
+  </script>
+</body>
+</html>
