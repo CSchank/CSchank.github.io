@@ -16075,7 +16075,7 @@ var $author$project$ColourCube$pointLight = function (properties) {
 	return _Utils_Tuple2(
 		A2(
 			$ianmackenzie$elm_3d_scene$Scene3d$Light$point,
-			$ianmackenzie$elm_3d_scene$Scene3d$Light$castsShadows(true),
+			$ianmackenzie$elm_3d_scene$Scene3d$Light$castsShadows(false),
 			properties),
 		A2($ianmackenzie$elm_3d_scene$Scene3d$sphere, sphereMaterial, lightsphere));
 };
@@ -18335,7 +18335,7 @@ var $author$project$Wrapper3D$withOverlay = F3(
 var $author$project$ColourCube$view = function (model) {
 	var thirdLight = A2(
 		$ianmackenzie$elm_3d_scene$Scene3d$Light$directional,
-		$ianmackenzie$elm_3d_scene$Scene3d$Light$castsShadows(true),
+		$ianmackenzie$elm_3d_scene$Scene3d$Light$castsShadows(false),
 		{
 			chromaticity: $ianmackenzie$elm_3d_scene$Scene3d$Light$sunlight,
 			direction: A2(
