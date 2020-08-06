@@ -62,6 +62,15 @@ app.ports.createPNG.subscribe(function([widgetID, width, height]) {
   img.src = url;
 });
 
+app.ports.copyToClip.subscribe(function (txt) {
+  const el = document.createElement('textarea');
+  el.value = txt;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+});
+
   </script>
 </body>
 </html>
