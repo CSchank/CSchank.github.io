@@ -12919,7 +12919,7 @@ var $author$project$SpaceshipPart$initSpaceshipWorld = F2(
 			$w0rm$elm_physics$Physics$World$add,
 			A2(
 				$w0rm$elm_physics$Physics$Body$withDamping,
-				{angular: 0, linear: 0.01},
+				{angular: 0, linear: 0},
 				A2(
 					$author$project$PhysicsWrapper3D$withMassU,
 					mass,
@@ -22350,357 +22350,6 @@ var $author$project$SpaceshipScene$angleDisplay = function (model) {
 								($author$project$Wrapper3D$unwrapQ(model.elevation) * 180) / $elm$core$Basics$pi)) + 'º'))))
 			]));
 };
-var $author$project$SpaceshipScene$MoveCamera = F2(
-	function (a, b) {
-		return {$: 'MoveCamera', a: a, b: b};
-	});
-var $author$project$SpaceshipScene$Reset = {$: 'Reset'};
-var $MacCASOutreach$graphicsvg$GraphicSVG$AlignCentred = {$: 'AlignCentred'};
-var $MacCASOutreach$graphicsvg$GraphicSVG$centered = function (stencil) {
-	if (stencil.$ === 'Text') {
-		var _v1 = stencil.a;
-		var si = _v1.a;
-		var bo = _v1.b;
-		var i = _v1.c;
-		var u = _v1.d;
-		var s = _v1.e;
-		var sel = _v1.f;
-		var f = _v1.g;
-		var c = _v1.h;
-		var str = stencil.b;
-		return A2(
-			$MacCASOutreach$graphicsvg$GraphicSVG$Text,
-			A8($MacCASOutreach$graphicsvg$GraphicSVG$Face, si, bo, i, u, s, sel, f, $MacCASOutreach$graphicsvg$GraphicSVG$AlignCentred),
-			str);
-	} else {
-		var a = stencil;
-		return a;
-	}
-};
-var $MacCASOutreach$graphicsvg$GraphicSVG$green = A4($MacCASOutreach$graphicsvg$GraphicSVG$RGBA, 115, 210, 22, 1);
-var $MacCASOutreach$graphicsvg$GraphicSVG$notifyTap = F2(
-	function (msg, shape) {
-		return A2($MacCASOutreach$graphicsvg$GraphicSVG$Tap, msg, shape);
-	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$rotate = F2(
-	function (theta, shape) {
-		return A2($MacCASOutreach$graphicsvg$GraphicSVG$Rotate, theta, shape);
-	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$RoundRect = F3(
-	function (a, b, c) {
-		return {$: 'RoundRect', a: a, b: b, c: c};
-	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$roundedRect = F3(
-	function (w, h, r) {
-		return A3($MacCASOutreach$graphicsvg$GraphicSVG$RoundRect, w, h, r);
-	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$Sansserif = {$: 'Sansserif'};
-var $MacCASOutreach$graphicsvg$GraphicSVG$sansserif = function (stencil) {
-	if (stencil.$ === 'Text') {
-		var _v1 = stencil.a;
-		var si = _v1.a;
-		var bo = _v1.b;
-		var i = _v1.c;
-		var u = _v1.d;
-		var s = _v1.e;
-		var sel = _v1.f;
-		var f = _v1.g;
-		var c = _v1.h;
-		var str = stencil.b;
-		return A2(
-			$MacCASOutreach$graphicsvg$GraphicSVG$Text,
-			A8($MacCASOutreach$graphicsvg$GraphicSVG$Face, si, bo, i, u, s, sel, $MacCASOutreach$graphicsvg$GraphicSVG$Sansserif, c),
-			str);
-	} else {
-		var a = stencil;
-		return a;
-	}
-};
-var $author$project$SpaceshipScene$cameraControls = function (model) {
-	return $MacCASOutreach$graphicsvg$GraphicSVG$group(
-		_List_fromArray(
-			[
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				$author$project$SpaceshipScene$Reset,
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 90),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$green,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 60, 40, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$move,
-								_Utils_Tuple2(0, -5),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$black,
-									$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$size,
-											16,
-											$MacCASOutreach$graphicsvg$GraphicSVG$text('Reset')))))
-							])))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				A2(
-					$author$project$SpaceshipScene$MoveCamera,
-					$ianmackenzie$elm_geometry$Direction3d$x,
-					$ianmackenzie$elm_units$Length$centimeters(10)),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 150),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$green,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
-								$elm$core$Basics$degrees(180),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(0, -2.5),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										$MacCASOutreach$graphicsvg$GraphicSVG$black,
-										$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-												A2(
-													$MacCASOutreach$graphicsvg$GraphicSVG$size,
-													16,
-													$MacCASOutreach$graphicsvg$GraphicSVG$text('|'))))))),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
-								$elm$core$Basics$degrees(180),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(0, -7.5),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										$MacCASOutreach$graphicsvg$GraphicSVG$black,
-										$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-												A2(
-													$MacCASOutreach$graphicsvg$GraphicSVG$size,
-													16,
-													$MacCASOutreach$graphicsvg$GraphicSVG$text('v')))))))
-							])))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				A2(
-					$author$project$SpaceshipScene$MoveCamera,
-					$ianmackenzie$elm_geometry$Direction3d$x,
-					$ianmackenzie$elm_units$Length$centimeters(-10)),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 200),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$green,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$move,
-								_Utils_Tuple2(0, -2.5),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$black,
-									$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-										$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-											A2(
-												$MacCASOutreach$graphicsvg$GraphicSVG$size,
-												16,
-												$MacCASOutreach$graphicsvg$GraphicSVG$text('|')))))),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$move,
-								_Utils_Tuple2(0, -7.5),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$black,
-									$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-										$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-											A2(
-												$MacCASOutreach$graphicsvg$GraphicSVG$size,
-												16,
-												$MacCASOutreach$graphicsvg$GraphicSVG$text('v'))))))
-							])))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				A2(
-					$author$project$SpaceshipScene$MoveCamera,
-					$ianmackenzie$elm_geometry$Direction3d$y,
-					$ianmackenzie$elm_units$Length$centimeters(10)),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 175,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 200),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$green,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
-								$elm$core$Basics$degrees(-90),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(0, -2.5),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										$MacCASOutreach$graphicsvg$GraphicSVG$black,
-										$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-												A2(
-													$MacCASOutreach$graphicsvg$GraphicSVG$size,
-													16,
-													$MacCASOutreach$graphicsvg$GraphicSVG$text('|'))))))),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
-								$elm$core$Basics$degrees(-90),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(0, -7.5),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										$MacCASOutreach$graphicsvg$GraphicSVG$black,
-										$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-												A2(
-													$MacCASOutreach$graphicsvg$GraphicSVG$size,
-													16,
-													$MacCASOutreach$graphicsvg$GraphicSVG$text('v')))))))
-							])))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				A2(
-					$author$project$SpaceshipScene$MoveCamera,
-					$ianmackenzie$elm_geometry$Direction3d$y,
-					$ianmackenzie$elm_units$Length$centimeters(-10)),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 75,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 200),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$green,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
-								$elm$core$Basics$degrees(90),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(0, -2.5),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										$MacCASOutreach$graphicsvg$GraphicSVG$black,
-										$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-												A2(
-													$MacCASOutreach$graphicsvg$GraphicSVG$size,
-													16,
-													$MacCASOutreach$graphicsvg$GraphicSVG$text('|'))))))),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
-								$elm$core$Basics$degrees(90),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(0, -7.5),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										$MacCASOutreach$graphicsvg$GraphicSVG$black,
-										$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-												A2(
-													$MacCASOutreach$graphicsvg$GraphicSVG$size,
-													16,
-													$MacCASOutreach$graphicsvg$GraphicSVG$text('v')))))))
-							])))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				A2(
-					$author$project$SpaceshipScene$MoveCamera,
-					$ianmackenzie$elm_geometry$Direction3d$z,
-					$ianmackenzie$elm_units$Length$centimeters(10)),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 175,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 150),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$green,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$move,
-								_Utils_Tuple2(0, -4),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$black,
-									$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-										$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-											A2(
-												$MacCASOutreach$graphicsvg$GraphicSVG$size,
-												14,
-												$MacCASOutreach$graphicsvg$GraphicSVG$text('Up'))))))
-							])))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				A2(
-					$author$project$SpaceshipScene$MoveCamera,
-					$ianmackenzie$elm_geometry$Direction3d$z,
-					$ianmackenzie$elm_units$Length$centimeters(-10)),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 75,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 150),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$green,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$move,
-								_Utils_Tuple2(0, -4),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$black,
-									$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-										$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-											A2(
-												$MacCASOutreach$graphicsvg$GraphicSVG$size,
-												14,
-												$MacCASOutreach$graphicsvg$GraphicSVG$text('Down'))))))
-							]))))
-			]));
-};
 var $ianmackenzie$elm_geometry$Vector3d$unsafe = function (givenComponents) {
 	return $ianmackenzie$elm_geometry$Geometry$Types$Vector3d(givenComponents);
 };
@@ -22857,7 +22506,6 @@ var $author$project$SpaceshipScene$overlay = function (model) {
 	return _List_fromArray(
 		[
 			$author$project$SpaceshipScene$angleDisplay(model),
-			$author$project$SpaceshipScene$cameraControls(model),
 			A2($author$project$SpaceshipScene$physicsDebug, 'spaceship', model),
 			A2(
 			$MacCASOutreach$graphicsvg$GraphicSVG$move,
@@ -22868,17 +22516,19 @@ var $author$project$SpaceshipScene$overlay = function (model) {
 				$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 				$MacCASOutreach$graphicsvg$GraphicSVG$white,
 				$MacCASOutreach$graphicsvg$GraphicSVG$text(
-					'Mass : ' + ($elm$core$String$fromFloat(mass) + ' kg')))),
+					'Mass : ' + ($elm$core$String$fromInt(
+						$elm$core$Basics$round(mass)) + ' kg')))),
 			A2(
 			$MacCASOutreach$graphicsvg$GraphicSVG$move,
 			_Utils_Tuple2(
-				($ianmackenzie$elm_units$Pixels$toInt(model.width) / 2) - 500,
+				($ianmackenzie$elm_units$Pixels$toInt(model.width) / 2) - 200,
 				-20),
 			A2(
 				$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 				$MacCASOutreach$graphicsvg$GraphicSVG$white,
 				$MacCASOutreach$graphicsvg$GraphicSVG$text(
-					'Velocity : ' + ($elm$core$Debug$toString(velocity) + ' m/s'))))
+					'Velocity : ' + ($elm$core$String$fromInt(
+						$elm$core$Basics$round(velocity)) + ' m/s'))))
 		]);
 };
 var $ianmackenzie$elm_3d_camera$Camera3d$Types$Camera3d = function (a) {
@@ -23783,6 +23433,14 @@ var $author$project$SpaceshipScene$view = function (model) {
 			intensity: $ianmackenzie$elm_units$Illuminance$lux(100)
 		});
 	var textures = model.textureLoader.textures;
+	var spaceshipPos = A2(
+		$elm$core$Maybe$withDefault,
+		model.cameraPos,
+		A2(
+			$elm$core$Maybe$map,
+			A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$originPoint, $w0rm$elm_physics$Physics$Body$frame),
+			$elm$core$List$head(
+				$w0rm$elm_physics$Physics$World$bodies(model.spaceshipState.world))));
 	var softLighting = $ianmackenzie$elm_3d_scene$Scene3d$Light$soft(
 		{
 			chromaticity: $ianmackenzie$elm_3d_scene$Scene3d$Light$fluorescent,
@@ -23798,7 +23456,7 @@ var $author$project$SpaceshipScene$view = function (model) {
 					azimuth: model.azimuth,
 					distance: $ianmackenzie$elm_units$Length$meters(300),
 					elevation: model.elevation,
-					focalPoint: model.cameraPos
+					focalPoint: spaceshipPos
 				})
 		});
 	var _v0 = $author$project$SpaceshipScene$light;
