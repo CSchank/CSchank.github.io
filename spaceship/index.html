@@ -11070,7 +11070,7 @@ var $author$project$Wrapper3D$truncatedCone = F5(
 				maxZ: $ianmackenzie$elm_units$Length$centimeters(0 + height),
 				minX: $ianmackenzie$elm_units$Length$centimeters(0 - largestRadius),
 				minY: $ianmackenzie$elm_units$Length$centimeters(0 - largestRadius),
-				minZ: $ianmackenzie$elm_units$Length$centimeters(0 - height)
+				minZ: $ianmackenzie$elm_units$Length$centimeters(0)
 			});
 		var avgRadius = (topR + botR) / 2;
 		return $author$project$Wrapper3D$Object(
@@ -11098,6 +11098,7 @@ var $ianmackenzie$elm_units$Quantity$at = F2(
 		var independentValue = _v1.a;
 		return $ianmackenzie$elm_units$Quantity$Quantity(rate * independentValue);
 	});
+var $elm$core$Debug$log = _Debug_log;
 var $ianmackenzie$elm_units$Density$kilogramsPerCubicMeter = function (numKilogramsPerCubicMeter) {
 	return $ianmackenzie$elm_units$Quantity$Quantity(numKilogramsPerCubicMeter);
 };
@@ -11129,7 +11130,10 @@ var $author$project$SpaceshipPart$fuelTankMass = function (fts) {
 		A2($ianmackenzie$elm_units$Quantity$multiplyBy, 2, endArea));
 	var metalVolume = A2($ianmackenzie$elm_units$Quantity$times, $ianmackenzie$elm_units$Length$millimeter, surfaceArea);
 	var metalMass = A2($ianmackenzie$elm_units$Quantity$at, $author$project$SpaceshipPart$metalDensity, metalVolume);
-	return A2($ianmackenzie$elm_units$Quantity$plus, fts.fuelLeft, metalMass);
+	return A2(
+		$ianmackenzie$elm_units$Quantity$plus,
+		A2($elm$core$Debug$log, 'fuelLet', fts.fuelLeft),
+		metalMass);
 };
 var $ianmackenzie$elm_geometry$Geometry$Types$Cone3d = function (a) {
 	return {$: 'Cone3d', a: a};
@@ -11323,140 +11327,6 @@ var $author$project$PhysicsWrapper3D$getMass = F2(
 			$author$project$Wrapper3D$getVolume(object));
 	});
 var $avh4$elm_color$Color$gray = A4($avh4$elm_color$Color$RgbaSpace, 211 / 255, 215 / 255, 207 / 255, 1.0);
-var $author$project$Wrapper3D$EmptyShape = {$: 'EmptyShape'};
-var $ianmackenzie$elm_geometry$BoundingBox3d$aggregateHelp = F7(
-	function (currentMinX, currentMaxX, currentMinY, currentMaxY, currentMinZ, currentMaxZ, boxes) {
-		aggregateHelp:
-		while (true) {
-			if (boxes.b) {
-				var next = boxes.a;
-				var rest = boxes.b;
-				var b = $ianmackenzie$elm_geometry$BoundingBox3d$extrema(next);
-				var $temp$currentMinX = A2($ianmackenzie$elm_units$Quantity$min, b.minX, currentMinX),
-					$temp$currentMaxX = A2($ianmackenzie$elm_units$Quantity$max, b.maxX, currentMaxX),
-					$temp$currentMinY = A2($ianmackenzie$elm_units$Quantity$min, b.minY, currentMinY),
-					$temp$currentMaxY = A2($ianmackenzie$elm_units$Quantity$max, b.maxY, currentMaxY),
-					$temp$currentMinZ = A2($ianmackenzie$elm_units$Quantity$min, b.minZ, currentMinZ),
-					$temp$currentMaxZ = A2($ianmackenzie$elm_units$Quantity$max, b.maxZ, currentMaxZ),
-					$temp$boxes = rest;
-				currentMinX = $temp$currentMinX;
-				currentMaxX = $temp$currentMaxX;
-				currentMinY = $temp$currentMinY;
-				currentMaxY = $temp$currentMaxY;
-				currentMinZ = $temp$currentMinZ;
-				currentMaxZ = $temp$currentMaxZ;
-				boxes = $temp$boxes;
-				continue aggregateHelp;
-			} else {
-				return $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
-					{maxX: currentMaxX, maxY: currentMaxY, maxZ: currentMaxZ, minX: currentMinX, minY: currentMinY, minZ: currentMinZ});
-			}
-		}
-	});
-var $ianmackenzie$elm_geometry$BoundingBox3d$aggregate = F2(
-	function (first, rest) {
-		var b1 = $ianmackenzie$elm_geometry$BoundingBox3d$extrema(first);
-		return A7($ianmackenzie$elm_geometry$BoundingBox3d$aggregateHelp, b1.minX, b1.maxX, b1.minY, b1.maxY, b1.minZ, b1.maxZ, rest);
-	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$nothing = $ianmackenzie$elm_3d_scene$Scene3d$Entity$empty;
-var $elm$core$List$tail = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(xs);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $author$project$Wrapper3D$group3D = function (entitybBoxList) {
-	var objListHelper = function (entityList) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (entity, otherEntity) {
-					if (entity.$ === 'ObjectGroup') {
-						var attributes = entity.a;
-						return _Utils_ap(
-							objListHelper(attributes.subObjects),
-							otherEntity);
-					} else {
-						var object = entity.a;
-						return A2($elm$core$List$cons, object, otherEntity);
-					}
-				}),
-			_List_Nil,
-			entityList);
-	};
-	var objList = objListHelper(entitybBoxList);
-	var boxList = A3(
-		$elm$core$List$foldl,
-		F2(
-			function (entity, otherEntity) {
-				if (entity.$ === 'ObjectGroup') {
-					var attributes = entity.a;
-					var _v6 = attributes.boundingBox;
-					if (_v6.$ === 'Box') {
-						var boundingbox = _v6.a;
-						return A2($elm$core$List$cons, boundingbox, otherEntity);
-					} else {
-						return otherEntity;
-					}
-				} else {
-					var object = entity.a;
-					var _v7 = object.boundingBox;
-					if (_v7.$ === 'Box') {
-						var boundingbox = _v7.a;
-						return A2($elm$core$List$cons, boundingbox, otherEntity);
-					} else {
-						return otherEntity;
-					}
-				}
-			}),
-		_List_Nil,
-		entitybBoxList);
-	var _v1 = $elm$core$List$head(boxList);
-	if (_v1.$ === 'Just') {
-		var boxList_head = _v1.a;
-		var _v2 = $elm$core$List$tail(boxList);
-		if (_v2.$ === 'Just') {
-			var boxList_tail = _v2.a;
-			return $author$project$Wrapper3D$ObjectGroup(
-				{
-					boundingBox: $author$project$Wrapper3D$Box(
-						A2($ianmackenzie$elm_geometry$BoundingBox3d$aggregate, boxList_head, boxList_tail)),
-					name: 'group',
-					subObjects: entitybBoxList
-				});
-		} else {
-			var _v3 = $elm$core$List$head(objList);
-			if (_v3.$ === 'Just') {
-				var objList_head = _v3.a;
-				return $author$project$Wrapper3D$Object(objList_head);
-			} else {
-				return $author$project$Wrapper3D$Object(
-					{approxShape: $author$project$Wrapper3D$EmptyShape, boundingBox: $author$project$Wrapper3D$NoBox, customMesh: $author$project$Wrapper3D$Primitive, name: 'empty', shape: $ianmackenzie$elm_3d_scene$Scene3d$nothing});
-			}
-		}
-	} else {
-		var _v4 = $elm$core$List$head(objList);
-		if (_v4.$ === 'Just') {
-			var objList_head = _v4.a;
-			return $author$project$Wrapper3D$Object(objList_head);
-		} else {
-			return $author$project$Wrapper3D$Object(
-				{approxShape: $author$project$Wrapper3D$EmptyShape, boundingBox: $author$project$Wrapper3D$NoBox, customMesh: $author$project$Wrapper3D$Primitive, name: 'empty', shape: $ianmackenzie$elm_3d_scene$Scene3d$nothing});
-		}
-	}
-};
 var $ianmackenzie$elm_units$Length$inMeters = function (_v0) {
 	var numMeters = _v0.a;
 	return numMeters;
@@ -11468,20 +11338,10 @@ var $author$project$SpaceshipPart$initFuelTankState = F2(
 	function (name, fParams) {
 		return {fuelLeft: fParams.fuel, name: name, parameters: fParams};
 	});
-var $author$project$SpaceshipPart$initSpaceshipState = function (spaceship) {
-	return {fuelTankStates: $elm$core$Dict$empty, spaceship: spaceship, stabilizerStates: $elm$core$Dict$empty, thrusterStates: $elm$core$Dict$empty};
-};
-var $author$project$SpaceshipPart$initStabilizerState = F2(
-	function (name, sParams) {
-		return {enabled: false, name: name, parameters: sParams};
-	});
-var $author$project$SpaceshipPart$initThrusterState = F4(
-	function (name, position, direction, tParams) {
-		return {angle: direction, name: name, parameters: tParams, position: position, thrustPercent: 0};
-	});
 var $ianmackenzie$elm_units$Mass$kilograms = function (numKilograms) {
 	return $ianmackenzie$elm_units$Quantity$Quantity(numKilograms);
 };
+var $avh4$elm_color$Color$orange = A4($avh4$elm_color$Color$RgbaSpace, 245 / 255, 121 / 255, 0 / 255, 1.0);
 var $ianmackenzie$elm_units$Angle$inRadians = function (_v0) {
 	var numRadians = _v0.a;
 	return numRadians;
@@ -11893,6 +11753,223 @@ var $ianmackenzie$elm_geometry$Point3d$toTuple = F2(
 				$ianmackenzie$elm_geometry$Point3d$yCoordinate(point)),
 			fromQuantity(
 				$ianmackenzie$elm_geometry$Point3d$zCoordinate(point)));
+	});
+var $author$project$SpaceshipPart$createObject = F2(
+	function (meshStore, part) {
+		var _v0 = part.shipPart;
+		switch (_v0.$) {
+			case 'Thruster':
+				var tParams = _v0.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$Wrapper3D$move3D,
+						A2($ianmackenzie$elm_geometry$Point3d$toTuple, $ianmackenzie$elm_units$Length$inCentimeters, part.position),
+						A4(
+							$author$project$Wrapper3D$rotate3DU,
+							part.pitch,
+							part.yaw,
+							part.roll,
+							A3(
+								$author$project$RocketParts$engine,
+								{meshStore: meshStore},
+								$ianmackenzie$elm_units$Length$inCentimeters(
+									A2($ianmackenzie$elm_units$Quantity$divideBy, 2, tParams.diameter)),
+								$ianmackenzie$elm_units$Length$inCentimeters(tParams.length)))),
+					tParams.mass);
+			case 'FuelTank':
+				var tParams = _v0.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$Wrapper3D$move3D,
+						A2($ianmackenzie$elm_geometry$Point3d$toTuple, $ianmackenzie$elm_units$Length$inCentimeters, part.position),
+						A4(
+							$author$project$Wrapper3D$rotate3DU,
+							part.pitch,
+							part.yaw,
+							part.roll,
+							A2(
+								$author$project$Wrapper3D$matte,
+								$avh4$elm_color$Color$orange,
+								A2(
+									$author$project$Wrapper3D$cylinder,
+									$ianmackenzie$elm_units$Length$inCentimeters(tParams.radius),
+									$ianmackenzie$elm_units$Length$inCentimeters(tParams.height))))),
+					$author$project$SpaceshipPart$fuelTankMass(
+						A2($author$project$SpaceshipPart$initFuelTankState, part.name, tParams)));
+			case 'Stabilizer':
+				var sParams = _v0.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$Wrapper3D$move3D,
+						A2($ianmackenzie$elm_geometry$Point3d$toTuple, $ianmackenzie$elm_units$Length$inCentimeters, part.position),
+						A4(
+							$author$project$Wrapper3D$rotate3DU,
+							part.pitch,
+							part.yaw,
+							part.roll,
+							A2(
+								$author$project$Wrapper3D$matte,
+								$avh4$elm_color$Color$gray,
+								A2(
+									$author$project$Wrapper3D$cylinder,
+									$ianmackenzie$elm_units$Length$inCentimeters(
+										A2($ianmackenzie$elm_units$Quantity$divideBy, 2, sParams.diameter)),
+									$ianmackenzie$elm_units$Length$inCentimeters(sParams.height))))),
+					$ianmackenzie$elm_units$Mass$kilograms(10000));
+			default:
+				var object = _v0.a;
+				return _Utils_Tuple2(
+					A2(
+						$author$project$Wrapper3D$move3D,
+						A2($ianmackenzie$elm_geometry$Point3d$toTuple, $ianmackenzie$elm_units$Length$inCentimeters, part.position),
+						A4($author$project$Wrapper3D$rotate3DU, part.pitch, part.yaw, part.roll, object)),
+					A2($author$project$PhysicsWrapper3D$getMass, $author$project$SpaceshipPart$metalDensity, object));
+		}
+	});
+var $author$project$Wrapper3D$EmptyShape = {$: 'EmptyShape'};
+var $ianmackenzie$elm_geometry$BoundingBox3d$aggregateHelp = F7(
+	function (currentMinX, currentMaxX, currentMinY, currentMaxY, currentMinZ, currentMaxZ, boxes) {
+		aggregateHelp:
+		while (true) {
+			if (boxes.b) {
+				var next = boxes.a;
+				var rest = boxes.b;
+				var b = $ianmackenzie$elm_geometry$BoundingBox3d$extrema(next);
+				var $temp$currentMinX = A2($ianmackenzie$elm_units$Quantity$min, b.minX, currentMinX),
+					$temp$currentMaxX = A2($ianmackenzie$elm_units$Quantity$max, b.maxX, currentMaxX),
+					$temp$currentMinY = A2($ianmackenzie$elm_units$Quantity$min, b.minY, currentMinY),
+					$temp$currentMaxY = A2($ianmackenzie$elm_units$Quantity$max, b.maxY, currentMaxY),
+					$temp$currentMinZ = A2($ianmackenzie$elm_units$Quantity$min, b.minZ, currentMinZ),
+					$temp$currentMaxZ = A2($ianmackenzie$elm_units$Quantity$max, b.maxZ, currentMaxZ),
+					$temp$boxes = rest;
+				currentMinX = $temp$currentMinX;
+				currentMaxX = $temp$currentMaxX;
+				currentMinY = $temp$currentMinY;
+				currentMaxY = $temp$currentMaxY;
+				currentMinZ = $temp$currentMinZ;
+				currentMaxZ = $temp$currentMaxZ;
+				boxes = $temp$boxes;
+				continue aggregateHelp;
+			} else {
+				return $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
+					{maxX: currentMaxX, maxY: currentMaxY, maxZ: currentMaxZ, minX: currentMinX, minY: currentMinY, minZ: currentMinZ});
+			}
+		}
+	});
+var $ianmackenzie$elm_geometry$BoundingBox3d$aggregate = F2(
+	function (first, rest) {
+		var b1 = $ianmackenzie$elm_geometry$BoundingBox3d$extrema(first);
+		return A7($ianmackenzie$elm_geometry$BoundingBox3d$aggregateHelp, b1.minX, b1.maxX, b1.minY, b1.maxY, b1.minZ, b1.maxZ, rest);
+	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$nothing = $ianmackenzie$elm_3d_scene$Scene3d$Entity$empty;
+var $elm$core$List$tail = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(xs);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Wrapper3D$group3D = function (entitybBoxList) {
+	var objListHelper = function (entityList) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (entity, otherEntity) {
+					if (entity.$ === 'ObjectGroup') {
+						var attributes = entity.a;
+						return _Utils_ap(
+							objListHelper(attributes.subObjects),
+							otherEntity);
+					} else {
+						var object = entity.a;
+						return A2($elm$core$List$cons, object, otherEntity);
+					}
+				}),
+			_List_Nil,
+			entityList);
+	};
+	var objList = objListHelper(entitybBoxList);
+	var boxList = A3(
+		$elm$core$List$foldl,
+		F2(
+			function (entity, otherEntity) {
+				if (entity.$ === 'ObjectGroup') {
+					var attributes = entity.a;
+					var _v6 = attributes.boundingBox;
+					if (_v6.$ === 'Box') {
+						var boundingbox = _v6.a;
+						return A2($elm$core$List$cons, boundingbox, otherEntity);
+					} else {
+						return otherEntity;
+					}
+				} else {
+					var object = entity.a;
+					var _v7 = object.boundingBox;
+					if (_v7.$ === 'Box') {
+						var boundingbox = _v7.a;
+						return A2($elm$core$List$cons, boundingbox, otherEntity);
+					} else {
+						return otherEntity;
+					}
+				}
+			}),
+		_List_Nil,
+		entitybBoxList);
+	var _v1 = $elm$core$List$head(boxList);
+	if (_v1.$ === 'Just') {
+		var boxList_head = _v1.a;
+		var _v2 = $elm$core$List$tail(boxList);
+		if (_v2.$ === 'Just') {
+			var boxList_tail = _v2.a;
+			return $author$project$Wrapper3D$ObjectGroup(
+				{
+					boundingBox: $author$project$Wrapper3D$Box(
+						A2($ianmackenzie$elm_geometry$BoundingBox3d$aggregate, boxList_head, boxList_tail)),
+					name: 'group',
+					subObjects: entitybBoxList
+				});
+		} else {
+			var _v3 = $elm$core$List$head(objList);
+			if (_v3.$ === 'Just') {
+				var objList_head = _v3.a;
+				return $author$project$Wrapper3D$Object(objList_head);
+			} else {
+				return $author$project$Wrapper3D$Object(
+					{approxShape: $author$project$Wrapper3D$EmptyShape, boundingBox: $author$project$Wrapper3D$NoBox, customMesh: $author$project$Wrapper3D$Primitive, name: 'empty', shape: $ianmackenzie$elm_3d_scene$Scene3d$nothing});
+			}
+		}
+	} else {
+		var _v4 = $elm$core$List$head(objList);
+		if (_v4.$ === 'Just') {
+			var objList_head = _v4.a;
+			return $author$project$Wrapper3D$Object(objList_head);
+		} else {
+			return $author$project$Wrapper3D$Object(
+				{approxShape: $author$project$Wrapper3D$EmptyShape, boundingBox: $author$project$Wrapper3D$NoBox, customMesh: $author$project$Wrapper3D$Primitive, name: 'empty', shape: $ianmackenzie$elm_3d_scene$Scene3d$nothing});
+		}
+	}
+};
+var $author$project$SpaceshipPart$initSpaceshipState = function (spaceship) {
+	return {fuelTankStates: $elm$core$Dict$empty, spaceship: spaceship, stabilizerStates: $elm$core$Dict$empty, thrusterStates: $elm$core$Dict$empty};
+};
+var $author$project$SpaceshipPart$initStabilizerState = F2(
+	function (name, sParams) {
+		return {enabled: false, name: name, parameters: sParams};
+	});
+var $author$project$SpaceshipPart$initThrusterState = F4(
+	function (name, position, direction, tParams) {
+		return {angle: direction, name: name, parameters: tParams, position: position, thrustPercent: 0};
 	});
 var $elm$core$List$unzip = function (pairs) {
 	var step = F2(
@@ -12788,10 +12865,10 @@ var $author$project$SpaceshipPart$initSpaceshipWorld = F2(
 	function (meshStore, spaceship) {
 		var createSpaceshipState = F2(
 			function (part, spaceshipState) {
-				var _v2 = part.shipPart;
-				switch (_v2.$) {
+				var _v1 = part.shipPart;
+				switch (_v1.$) {
 					case 'Thruster':
-						var tParams = _v2.a;
+						var tParams = _v1.a;
 						return _Utils_update(
 							spaceshipState,
 							{
@@ -12802,7 +12879,7 @@ var $author$project$SpaceshipPart$initSpaceshipWorld = F2(
 									spaceshipState.thrusterStates)
 							});
 					case 'FuelTank':
-						var tParams = _v2.a;
+						var tParams = _v1.a;
 						return _Utils_update(
 							spaceshipState,
 							{
@@ -12813,7 +12890,7 @@ var $author$project$SpaceshipPart$initSpaceshipWorld = F2(
 									spaceshipState.fuelTankStates)
 							});
 					case 'Stabilizer':
-						var sParams = _v2.a;
+						var sParams = _v1.a;
 						return _Utils_update(
 							spaceshipState,
 							{
@@ -12824,7 +12901,7 @@ var $author$project$SpaceshipPart$initSpaceshipWorld = F2(
 									spaceshipState.stabilizerStates)
 							});
 					default:
-						var object = _v2.a;
+						var object = _v1.a;
 						return spaceshipState;
 				}
 			});
@@ -12833,84 +12910,16 @@ var $author$project$SpaceshipPart$initSpaceshipWorld = F2(
 			createSpaceshipState,
 			$author$project$SpaceshipPart$initSpaceshipState(spaceship),
 			spaceship.parts);
-		var createObject = function (part) {
-			var _v1 = part.shipPart;
-			switch (_v1.$) {
-				case 'Thruster':
-					var tParams = _v1.a;
-					return _Utils_Tuple2(
-						A2(
-							$author$project$Wrapper3D$move3D,
-							A2($ianmackenzie$elm_geometry$Point3d$toTuple, $ianmackenzie$elm_units$Length$inCentimeters, part.position),
-							A4(
-								$author$project$Wrapper3D$rotate3DU,
-								part.pitch,
-								part.yaw,
-								part.roll,
-								A3(
-									$author$project$RocketParts$engine,
-									{meshStore: meshStore},
-									$ianmackenzie$elm_units$Length$inCentimeters(
-										A2($ianmackenzie$elm_units$Quantity$divideBy, 2, tParams.diameter)),
-									$ianmackenzie$elm_units$Length$inCentimeters(tParams.length)))),
-						tParams.mass);
-				case 'FuelTank':
-					var tParams = _v1.a;
-					return _Utils_Tuple2(
-						A2(
-							$author$project$Wrapper3D$move3D,
-							A2($ianmackenzie$elm_geometry$Point3d$toTuple, $ianmackenzie$elm_units$Length$inCentimeters, part.position),
-							A4(
-								$author$project$Wrapper3D$rotate3DU,
-								part.pitch,
-								part.yaw,
-								part.roll,
-								A2(
-									$author$project$Wrapper3D$matte,
-									$avh4$elm_color$Color$gray,
-									A2(
-										$author$project$Wrapper3D$cylinder,
-										$ianmackenzie$elm_units$Length$inCentimeters(tParams.radius),
-										$ianmackenzie$elm_units$Length$inCentimeters(tParams.height))))),
-						$author$project$SpaceshipPart$fuelTankMass(
-							A2($author$project$SpaceshipPart$initFuelTankState, part.name, tParams)));
-				case 'Stabilizer':
-					var sParams = _v1.a;
-					return _Utils_Tuple2(
-						A2(
-							$author$project$Wrapper3D$move3D,
-							A2($ianmackenzie$elm_geometry$Point3d$toTuple, $ianmackenzie$elm_units$Length$inCentimeters, part.position),
-							A4(
-								$author$project$Wrapper3D$rotate3DU,
-								part.pitch,
-								part.yaw,
-								part.roll,
-								A2(
-									$author$project$Wrapper3D$matte,
-									$avh4$elm_color$Color$gray,
-									A2(
-										$author$project$Wrapper3D$cylinder,
-										$ianmackenzie$elm_units$Length$inCentimeters(
-											A2($ianmackenzie$elm_units$Quantity$divideBy, 2, sParams.diameter)),
-										$ianmackenzie$elm_units$Length$inCentimeters(sParams.height))))),
-						$ianmackenzie$elm_units$Mass$kilograms(10000));
-				default:
-					var object = _v1.a;
-					return _Utils_Tuple2(
-						A2(
-							$author$project$Wrapper3D$move3D,
-							A2($ianmackenzie$elm_geometry$Point3d$toTuple, $ianmackenzie$elm_units$Length$inCentimeters, part.position),
-							A4($author$project$Wrapper3D$rotate3DU, part.pitch, part.yaw, part.roll, object)),
-						A2($author$project$PhysicsWrapper3D$getMass, $author$project$SpaceshipPart$metalDensity, object));
-			}
-		};
 		var _v0 = $elm$core$List$unzip(
 			A2(
 				$elm$core$List$cons,
 				_Utils_Tuple2(
 					spaceship.commandModule,
 					A2($author$project$PhysicsWrapper3D$getMass, $author$project$SpaceshipPart$metalDensity, spaceship.commandModule)),
-				A2($elm$core$List$map, createObject, spaceship.parts)));
+				A2(
+					$elm$core$List$map,
+					$author$project$SpaceshipPart$createObject(meshStore),
+					spaceship.parts)));
 		var objects = _v0.a;
 		var masses = _v0.b;
 		var mass = A3($elm$core$List$foldl, $ianmackenzie$elm_units$Quantity$plus, $ianmackenzie$elm_units$Quantity$zero, masses);
@@ -13109,6 +13118,41 @@ var $author$project$SpaceshipPart$DoNothing = {$: 'DoNothing'};
 var $author$project$SpaceshipPart$EnableThruster = F2(
 	function (a, b) {
 		return {$: 'EnableThruster', a: a, b: b};
+	});
+var $author$project$SpaceshipPart$ManyActions = function (a) {
+	return {$: 'ManyActions', a: a};
+};
+var $author$project$SpaceshipPart$FuelTank = function (a) {
+	return {$: 'FuelTank', a: a};
+};
+var $author$project$SpaceshipPart$jetFuelDensity = $ianmackenzie$elm_units$Density$kilogramsPerCubicMeter(900);
+var $author$project$SpaceshipPart$addFuelTank = F4(
+	function (name, radius, height, percentFull) {
+		return {
+			angle: $ianmackenzie$elm_geometry$Direction3d$z,
+			name: name,
+			pitch: $ianmackenzie$elm_units$Quantity$zero,
+			position: $ianmackenzie$elm_geometry$Point3d$origin,
+			roll: $ianmackenzie$elm_units$Quantity$zero,
+			shipPart: function () {
+				var fuelMassOnBoard = A2(
+					$ianmackenzie$elm_units$Quantity$at,
+					$author$project$SpaceshipPart$jetFuelDensity,
+					A2(
+						$ianmackenzie$elm_units$Quantity$times,
+						height,
+						A2(
+							$ianmackenzie$elm_units$Quantity$multiplyBy,
+							A3($elm$core$Basics$clamp, 0, 100, percentFull) / 100,
+							A2(
+								$ianmackenzie$elm_units$Quantity$multiplyBy,
+								$elm$core$Basics$pi,
+								$ianmackenzie$elm_units$Quantity$squared(radius)))));
+				return $author$project$SpaceshipPart$FuelTank(
+					{fuel: fuelMassOnBoard, height: height, radius: radius});
+			}(),
+			yaw: $ianmackenzie$elm_units$Quantity$zero
+		};
 	});
 var $author$project$Wrapper3D$Cone = F2(
 	function (a, b) {
@@ -13367,7 +13411,7 @@ var $author$project$SpaceshipPart$movePart = F2(
 			});
 	});
 var $author$project$SpaceshipPart$rotatePart = F4(
-	function (yaw, pitch, roll, part) {
+	function (pitch, yaw, roll, part) {
 		return _Utils_update(
 			part,
 			{
@@ -13385,14 +13429,21 @@ var $author$project$SpaceshipPart$rotatePart = F4(
 				yaw: A2($ianmackenzie$elm_units$Quantity$plus, yaw, part.yaw)
 			});
 	});
+var $author$project$SpaceshipPart$saturnV = function (name) {
+	var mass = $ianmackenzie$elm_units$Mass$kilograms(8700);
+	var length = $ianmackenzie$elm_units$Length$meters(5.6);
+	var fuelVelocity = $ianmackenzie$elm_units$Speed$metersPerSecond(2580);
+	var fuelRate = A2(
+		$ianmackenzie$elm_units$Quantity$per,
+		$ianmackenzie$elm_units$Duration$second,
+		$ianmackenzie$elm_units$Mass$kilograms(2607.38));
+	var diameter = $ianmackenzie$elm_units$Length$meters(3.7);
+	return A6($author$project$SpaceshipPart$addThruster, name, fuelVelocity, fuelRate, diameter, length, mass);
+};
 var $author$project$SpaceshipScene$mySpaceship = {
 	commandModule: $author$project$Wrapper3D$group3D(
 		_List_fromArray(
 			[
-				A2(
-				$author$project$Wrapper3D$matte,
-				$avh4$elm_color$Color$gray,
-				A2($author$project$Wrapper3D$cylinder, 400, 2000)),
 				A2(
 				$author$project$Wrapper3D$move3D,
 				_Utils_Tuple3(0, 0, 2000),
@@ -13411,7 +13462,14 @@ var $author$project$SpaceshipScene$mySpaceship = {
 						case 'Spacebar':
 							var _v1 = _v0.a;
 							var _v2 = _v0.b;
-							return A2($author$project$SpaceshipPart$EnableThruster, 'thruster1', 100);
+							return $author$project$SpaceshipPart$ManyActions(
+								_List_fromArray(
+									[
+										A2($author$project$SpaceshipPart$EnableThruster, 'thruster1a', 100),
+										A2($author$project$SpaceshipPart$EnableThruster, 'thruster1b', 100),
+										A2($author$project$SpaceshipPart$EnableThruster, 'thruster1c', 100),
+										A2($author$project$SpaceshipPart$EnableThruster, 'thruster1d', 100)
+									]));
 						case 'Key':
 							switch (_v0.a.a) {
 								case 'a':
@@ -13431,7 +13489,14 @@ var $author$project$SpaceshipScene$mySpaceship = {
 						case 'Spacebar':
 							var _v3 = _v0.a;
 							var _v4 = _v0.b;
-							return $author$project$SpaceshipPart$DisableThruster('thruster1');
+							return $author$project$SpaceshipPart$ManyActions(
+								_List_fromArray(
+									[
+										$author$project$SpaceshipPart$DisableThruster('thruster1a'),
+										$author$project$SpaceshipPart$DisableThruster('thruster1b'),
+										$author$project$SpaceshipPart$DisableThruster('thruster1c'),
+										$author$project$SpaceshipPart$DisableThruster('thruster1d')
+									]));
 						case 'Key':
 							switch (_v0.a.a) {
 								case 'a':
@@ -13455,15 +13520,51 @@ var $author$project$SpaceshipScene$mySpaceship = {
 			A2(
 			$author$project$SpaceshipPart$movePart,
 			_Utils_Tuple3(
-				$ianmackenzie$elm_units$Quantity$zero,
-				$ianmackenzie$elm_units$Quantity$zero,
-				$ianmackenzie$elm_units$Length$meters(-2.9)),
+				$ianmackenzie$elm_units$Length$meters(-1.5),
+				$ianmackenzie$elm_units$Length$meters(-1.5),
+				$ianmackenzie$elm_units$Length$meters(-7.9)),
 			A4(
 				$author$project$SpaceshipPart$rotatePart,
 				$ianmackenzie$elm_units$Angle$degrees(0),
 				$ianmackenzie$elm_units$Angle$degrees(0),
 				$ianmackenzie$elm_units$Angle$degrees(0),
-				$author$project$SpaceshipPart$merlin('thruster1'))),
+				$author$project$SpaceshipPart$saturnV('thruster1a'))),
+			A2(
+			$author$project$SpaceshipPart$movePart,
+			_Utils_Tuple3(
+				$ianmackenzie$elm_units$Length$meters(1.5),
+				$ianmackenzie$elm_units$Length$meters(-1.5),
+				$ianmackenzie$elm_units$Length$meters(-7.9)),
+			A4(
+				$author$project$SpaceshipPart$rotatePart,
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$author$project$SpaceshipPart$saturnV('thruster1b'))),
+			A2(
+			$author$project$SpaceshipPart$movePart,
+			_Utils_Tuple3(
+				$ianmackenzie$elm_units$Length$meters(-1.5),
+				$ianmackenzie$elm_units$Length$meters(1.5),
+				$ianmackenzie$elm_units$Length$meters(-7.9)),
+			A4(
+				$author$project$SpaceshipPart$rotatePart,
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$author$project$SpaceshipPart$saturnV('thruster1c'))),
+			A2(
+			$author$project$SpaceshipPart$movePart,
+			_Utils_Tuple3(
+				$ianmackenzie$elm_units$Length$meters(1.5),
+				$ianmackenzie$elm_units$Length$meters(1.5),
+				$ianmackenzie$elm_units$Length$meters(-7.9)),
+			A4(
+				$author$project$SpaceshipPart$rotatePart,
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$author$project$SpaceshipPart$saturnV('thruster1d'))),
 			A2(
 			$author$project$SpaceshipPart$movePart,
 			_Utils_Tuple3(
@@ -13472,8 +13573,8 @@ var $author$project$SpaceshipScene$mySpaceship = {
 				$ianmackenzie$elm_units$Length$meters(15)),
 			A4(
 				$author$project$SpaceshipPart$rotatePart,
-				$ianmackenzie$elm_units$Angle$degrees(0),
 				$ianmackenzie$elm_units$Angle$degrees(90),
+				$ianmackenzie$elm_units$Angle$degrees(0),
 				$ianmackenzie$elm_units$Angle$degrees(0),
 				$author$project$SpaceshipPart$merlin('thruster2'))),
 			A2(
@@ -13484,10 +13585,22 @@ var $author$project$SpaceshipScene$mySpaceship = {
 				$ianmackenzie$elm_units$Length$meters(15)),
 			A4(
 				$author$project$SpaceshipPart$rotatePart,
-				$ianmackenzie$elm_units$Angle$degrees(0),
 				$ianmackenzie$elm_units$Angle$degrees(-90),
 				$ianmackenzie$elm_units$Angle$degrees(0),
-				$author$project$SpaceshipPart$merlin('thruster3')))
+				$ianmackenzie$elm_units$Angle$degrees(0),
+				$author$project$SpaceshipPart$merlin('thruster3'))),
+			A2(
+			$author$project$SpaceshipPart$movePart,
+			_Utils_Tuple3(
+				$ianmackenzie$elm_units$Length$meters(0),
+				$ianmackenzie$elm_units$Length$meters(0),
+				$ianmackenzie$elm_units$Length$meters(-5)),
+			A4(
+				$author$project$SpaceshipPart$addFuelTank,
+				'fueltank1',
+				$ianmackenzie$elm_units$Length$meters(4),
+				$ianmackenzie$elm_units$Length$meters(25),
+				100))
 		])
 };
 var $author$project$Wrapper3D$loadTexture = F2(
@@ -14916,9 +15029,9 @@ var $author$project$Wrapper3D$texturedCylinderMesh = F2(
 		var positiveZVector = $ianmackenzie$elm_geometry$Direction3d$toVector($ianmackenzie$elm_geometry$Direction3d$positiveZ);
 		var negativeZVector = $ianmackenzie$elm_geometry$Direction3d$toVector($ianmackenzie$elm_geometry$Direction3d$negativeZ);
 		var height = $ianmackenzie$elm_units$Length$centimeters(h);
-		var topZ = A2($ianmackenzie$elm_units$Quantity$multiplyBy, 0.5, height);
+		var topZ = height;
 		var topCenter = A3($ianmackenzie$elm_geometry$Point3d$xyz, $ianmackenzie$elm_units$Quantity$zero, $ianmackenzie$elm_units$Quantity$zero, topZ);
-		var bottomZ = A2($ianmackenzie$elm_units$Quantity$multiplyBy, -0.5, height);
+		var bottomZ = $ianmackenzie$elm_units$Quantity$zero;
 		var bottomCenter = A3($ianmackenzie$elm_geometry$Point3d$xyz, $ianmackenzie$elm_units$Quantity$zero, $ianmackenzie$elm_units$Quantity$zero, bottomZ);
 		var wedge = function (startIndex) {
 			var startAngle = A2($ianmackenzie$elm_units$Quantity$multiplyBy, startIndex, wedgeAngle);
@@ -17282,7 +17395,6 @@ var $author$project$GSVGSkybox$update = F2(
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
-var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Maybe$map = F2(
 	function (f, maybe) {
 		if (maybe.$ === 'Just') {
@@ -17754,9 +17866,9 @@ var $author$project$SpaceshipPart$applyForces = F2(
 					var f = _v0.a;
 					var p = _v0.b;
 					var d = _v0.c;
-					var spaceshipFrame = $w0rm$elm_physics$Physics$Body$frame(body);
-					var globalPos = A2($ianmackenzie$elm_geometry$Point3d$placeIn, spaceshipFrame, p);
-					var globalDir = A2($ianmackenzie$elm_geometry$Direction3d$placeIn, spaceshipFrame, d);
+					var frame = $w0rm$elm_physics$Physics$Body$frame(body);
+					var globalDir = A2($ianmackenzie$elm_geometry$Direction3d$placeIn, frame, d);
+					var globalPos = A2($ianmackenzie$elm_geometry$Point3d$placeIn, frame, p);
 					return A4($w0rm$elm_physics$Physics$Body$applyForce, f, globalDir, globalPos, intermBody);
 				}),
 			body,
@@ -17923,6 +18035,36 @@ var $author$project$PhysicsWrapper3D$constrainBodies = F2(
 				A2($w0rm$elm_physics$Physics$Constraint$hinge, $ianmackenzie$elm_geometry$Axis3d$z, $ianmackenzie$elm_geometry$Axis3d$z)
 			]) : _List_Nil;
 	});
+var $elm$core$Dict$values = function (dict) {
+	return A3(
+		$elm$core$Dict$foldr,
+		F3(
+			function (key, value, valueList) {
+				return A2($elm$core$List$cons, value, valueList);
+			}),
+		_List_Nil,
+		dict);
+};
+var $author$project$SpaceshipPart$fuelCapacity = function (spaceshipState) {
+	var fuelMasses = A2(
+		$elm$core$List$map,
+		function (f) {
+			return f.parameters.fuel;
+		},
+		$elm$core$Dict$values(spaceshipState.fuelTankStates));
+	var totalFuelMass = A3($elm$core$List$foldl, $ianmackenzie$elm_units$Quantity$plus, $ianmackenzie$elm_units$Quantity$zero, fuelMasses);
+	return totalFuelMass;
+};
+var $author$project$SpaceshipPart$fuelLeft = function (spaceshipState) {
+	var fuelMasses = A2(
+		$elm$core$List$map,
+		function ($) {
+			return $.fuelLeft;
+		},
+		$elm$core$Dict$values(spaceshipState.fuelTankStates));
+	var totalFuelMass = A3($elm$core$List$foldl, $ianmackenzie$elm_units$Quantity$plus, $ianmackenzie$elm_units$Quantity$zero, fuelMasses);
+	return totalFuelMass;
+};
 var $ianmackenzie$elm_units$Speed$inMetersPerSecond = function (_v0) {
 	var numMetersPerSecond = _v0.a;
 	return numMetersPerSecond;
@@ -17934,31 +18076,185 @@ var $author$project$SpaceshipPart$computeThrust = F2(
 			A2($ianmackenzie$elm_units$Quantity$for, $ianmackenzie$elm_units$Duration$second, flowRate));
 		return $ianmackenzie$elm_units$Force$newtons(speedMpS * rateKGpS);
 	});
-var $author$project$SpaceshipPart$calculateThrusterThrust = F2(
-	function (dur, th) {
-		var adjustedFlowRate = A2(
-			$ianmackenzie$elm_units$Quantity$multiplyBy,
-			th.thrustPercent / 100,
-			A2($ianmackenzie$elm_units$Quantity$multiplyBy, th.thrustPercent, th.parameters.fuelFlowRate));
-		var force = A2($author$project$SpaceshipPart$computeThrust, th.parameters.fuelVelocity, adjustedFlowRate);
+var $ianmackenzie$elm_units$Quantity$greaterThan = F2(
+	function (_v0, _v1) {
+		var y = _v0.a;
+		var x = _v1.a;
+		return _Utils_cmp(x, y) > 0;
+	});
+var $author$project$SpaceshipPart$calculateThrusterThrust = F3(
+	function (fuelRemaining, dur, th) {
+		var adjustedFlowRate = A2($ianmackenzie$elm_units$Quantity$multiplyBy, th.thrustPercent / 100, th.parameters.fuelFlowRate);
+		var force = A2($ianmackenzie$elm_units$Quantity$greaterThan, $ianmackenzie$elm_units$Quantity$zero, fuelRemaining) ? A2($author$project$SpaceshipPart$computeThrust, th.parameters.fuelVelocity, adjustedFlowRate) : $ianmackenzie$elm_units$Quantity$zero;
 		var fuelExpelled = A2($ianmackenzie$elm_units$Quantity$for, dur, adjustedFlowRate);
 		return _Utils_Tuple3(th, force, fuelExpelled);
 	});
-var $elm$core$Dict$values = function (dict) {
-	return A3(
-		$elm$core$Dict$foldr,
-		F3(
-			function (key, value, valueList) {
-				return A2($elm$core$List$cons, value, valueList);
-			}),
-		_List_Nil,
-		dict);
+var $elm$core$Dict$diff = F2(
+	function (t1, t2) {
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (k, v, t) {
+					return A2($elm$core$Dict$remove, k, t);
+				}),
+			t1,
+			t2);
+	});
+var $elm$core$Set$diff = F2(
+	function (_v0, _v1) {
+		var dict1 = _v0.a;
+		var dict2 = _v1.a;
+		return $elm$core$Set$Set_elm_builtin(
+			A2($elm$core$Dict$diff, dict1, dict2));
+	});
+var $elm$core$Set$insert = F2(
+	function (key, _v0) {
+		var dict = _v0.a;
+		return $elm$core$Set$Set_elm_builtin(
+			A3($elm$core$Dict$insert, key, _Utils_Tuple0, dict));
+	});
+var $elm$core$Set$fromList = function (list) {
+	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
 };
+var $ianmackenzie$elm_units$Quantity$lessThan = F2(
+	function (_v0, _v1) {
+		var y = _v0.a;
+		var x = _v1.a;
+		return _Utils_cmp(x, y) < 0;
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm$core$Set$size = function (_v0) {
+	var dict = _v0.a;
+	return $elm$core$Dict$size(dict);
+};
+var $elm$core$Dict$update = F3(
+	function (targetKey, alter, dictionary) {
+		var _v0 = alter(
+			A2($elm$core$Dict$get, targetKey, dictionary));
+		if (_v0.$ === 'Just') {
+			var value = _v0.a;
+			return A3($elm$core$Dict$insert, targetKey, value, dictionary);
+		} else {
+			return A2($elm$core$Dict$remove, targetKey, dictionary);
+		}
+	});
+var $author$project$SpaceshipPart$useUpFuel = F2(
+	function (mass, spaceshipState) {
+		var useFuelInTank = F3(
+			function (name, massToUse, ssState) {
+				var tankState = A2($elm$core$Dict$get, name, ssState.fuelTankStates);
+				var fLeft = A2(
+					$elm$core$Maybe$withDefault,
+					$ianmackenzie$elm_units$Quantity$zero,
+					A2(
+						$elm$core$Maybe$map,
+						function ($) {
+							return $.fuelLeft;
+						},
+						tankState));
+				var clampedMass = A3($ianmackenzie$elm_units$Quantity$clamp, $ianmackenzie$elm_units$Quantity$zero, fLeft, massToUse);
+				return _Utils_Tuple2(
+					_Utils_update(
+						ssState,
+						{
+							fuelTankStates: A3(
+								$elm$core$Dict$update,
+								name,
+								$elm$core$Maybe$map(
+									function (fts) {
+										return _Utils_update(
+											fts,
+											{
+												fuelLeft: A2($ianmackenzie$elm_units$Quantity$minus, clampedMass, fts.fuelLeft)
+											});
+									}),
+								ssState.fuelTankStates)
+						}),
+					clampedMass);
+			});
+		var nonZeroFuelTanks = $elm$core$Set$fromList(
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2(
+					$elm$core$List$filter,
+					A2(
+						$elm$core$Basics$composeR,
+						$elm$core$Tuple$second,
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.fuelLeft;
+							},
+							$ianmackenzie$elm_units$Quantity$greaterThan($ianmackenzie$elm_units$Quantity$zero))),
+					$elm$core$Dict$toList(spaceshipState.fuelTankStates))));
+		var massPerTank = A2(
+			$ianmackenzie$elm_units$Quantity$divideBy,
+			$elm$core$Set$size(nonZeroFuelTanks),
+			mass);
+		var fractionalFuelTanks = $elm$core$Set$fromList(
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2(
+					$elm$core$List$filter,
+					function (_v5) {
+						var ft = _v5.b;
+						return A2($ianmackenzie$elm_units$Quantity$lessThan, massPerTank, ft.fuelLeft) && A2($ianmackenzie$elm_units$Quantity$greaterThan, $ianmackenzie$elm_units$Quantity$zero, ft.fuelLeft);
+					},
+					$elm$core$Dict$toList(spaceshipState.fuelTankStates))));
+		var useFractional = A3(
+			$elm$core$List$foldl,
+			F2(
+				function (ftName, _v3) {
+					var m = _v3.a;
+					var sss = _v3.b;
+					var _v4 = A3(useFuelInTank, ftName, massPerTank, sss);
+					var ssState = _v4.a;
+					var fUsedUp = _v4.b;
+					return _Utils_Tuple2(
+						A2($ianmackenzie$elm_units$Quantity$minus, fUsedUp, m),
+						ssState);
+				}),
+			_Utils_Tuple2(mass, spaceshipState),
+			$elm$core$Set$toList(fractionalFuelTanks));
+		var useRest = function () {
+			var remainingTanks = A2($elm$core$Set$diff, nonZeroFuelTanks, fractionalFuelTanks);
+			return A3(
+				$elm$core$List$foldl,
+				F2(
+					function (ftName, _v0) {
+						var m = _v0.a;
+						var sss = _v0.b;
+						var _v1 = useFractional;
+						var remainingMass = _v1.a;
+						var newMassPerTank = A2(
+							$ianmackenzie$elm_units$Quantity$divideBy,
+							$elm$core$Set$size(remainingTanks),
+							remainingMass);
+						var _v2 = A3(useFuelInTank, ftName, newMassPerTank, sss);
+						var ssState = _v2.a;
+						var fUsedUp = _v2.b;
+						return _Utils_Tuple2(
+							A2($ianmackenzie$elm_units$Quantity$minus, fUsedUp, m),
+							ssState);
+					}),
+				useFractional,
+				$elm$core$Set$toList(remainingTanks));
+		}();
+		return useRest.b;
+	});
 var $author$project$SpaceshipPart$simulateSpaceship = F2(
 	function (duration, spaceshipState) {
 		var thrusterCalculations = A2(
 			$elm$core$List$map,
-			$author$project$SpaceshipPart$calculateThrusterThrust(duration),
+			A2(
+				$author$project$SpaceshipPart$calculateThrusterThrust,
+				$author$project$SpaceshipPart$fuelLeft(spaceshipState),
+				duration),
 			$elm$core$Dict$values(spaceshipState.thrusterStates));
 		var thrusterStates = A2(
 			$elm$core$List$map,
@@ -17974,6 +18270,7 @@ var $author$project$SpaceshipPart$simulateSpaceship = F2(
 				return c;
 			},
 			thrusterCalculations);
+		var totalFuelMass = A3($elm$core$List$foldl, $ianmackenzie$elm_units$Quantity$plus, $ianmackenzie$elm_units$Quantity$zero, fuelMasses);
 		var forces = A2(
 			$elm$core$List$map,
 			function (_v0) {
@@ -17982,10 +18279,12 @@ var $author$project$SpaceshipPart$simulateSpaceship = F2(
 				return _Utils_Tuple3(force, tS.position, tS.angle);
 			},
 			thrusterCalculations);
-		return _Utils_Tuple2(spaceshipState, forces);
+		return _Utils_Tuple2(
+			A2($author$project$SpaceshipPart$useUpFuel, totalFuelMass, spaceshipState),
+			forces);
 	});
-var $author$project$SpaceshipPart$simulateStep = F3(
-	function (duration, spaceshipState, world) {
+var $author$project$SpaceshipPart$simulateStep = F4(
+	function (meshStore, duration, spaceshipState, world) {
 		var _v0 = A2($author$project$SpaceshipPart$simulateSpaceship, duration, spaceshipState);
 		var newSSState = _v0.a;
 		var forces = _v0.b;
@@ -17996,17 +18295,30 @@ var $author$project$SpaceshipPart$simulateStep = F3(
 			};
 			var data = $w0rm$elm_physics$Physics$Body$data(body);
 			var name = data.name;
-			var newMass = A2(
-				$elm$core$Maybe$withDefault,
-				$elm$core$Basics$identity,
+			var _v1 = $elm$core$List$unzip(
 				A2(
-					$elm$core$Maybe$map,
-					A2($elm$core$Basics$composeL, $author$project$PhysicsWrapper3D$withMassU, $author$project$SpaceshipPart$fuelTankMass),
-					A2($elm$core$Dict$get, name, spaceshipState.fuelTankStates)));
+					$elm$core$List$cons,
+					_Utils_Tuple2(
+						spaceshipState.spaceship.commandModule,
+						A2($author$project$PhysicsWrapper3D$getMass, $author$project$SpaceshipPart$metalDensity, spaceshipState.spaceship.commandModule)),
+					A2(
+						$elm$core$List$map,
+						$author$project$SpaceshipPart$createObject(meshStore),
+						spaceshipState.spaceship.parts)));
+			var objects = _v1.a;
+			var masses = _v1.b;
+			var mass = A2(
+				$ianmackenzie$elm_units$Quantity$minus,
+				A2(
+					$ianmackenzie$elm_units$Quantity$minus,
+					$author$project$SpaceshipPart$fuelLeft(spaceshipState),
+					$author$project$SpaceshipPart$fuelCapacity(spaceshipState)),
+				A3($elm$core$List$foldl, $ianmackenzie$elm_units$Quantity$plus, $ianmackenzie$elm_units$Quantity$zero, masses));
+			var spaceshipBody = $author$project$Wrapper3D$group3D(objects);
 			return A2(
 				$author$project$SpaceshipPart$applyForces,
 				forces,
-				newMass(body));
+				A2($author$project$PhysicsWrapper3D$withMassU, mass, body));
 		};
 		var newWorld = A2(
 			$w0rm$elm_physics$Physics$World$simulate,
@@ -18016,17 +18328,6 @@ var $author$project$SpaceshipPart$simulateStep = F3(
 				modifyBodies,
 				A2($w0rm$elm_physics$Physics$World$constrain, $author$project$PhysicsWrapper3D$constrainBodies, world)));
 		return _Utils_Tuple2(newSSState, newWorld);
-	});
-var $elm$core$Dict$update = F3(
-	function (targetKey, alter, dictionary) {
-		var _v0 = alter(
-			A2($elm$core$Dict$get, targetKey, dictionary));
-		if (_v0.$ === 'Just') {
-			var value = _v0.a;
-			return A3($elm$core$Dict$insert, targetKey, value, dictionary);
-		} else {
-			return A2($elm$core$Dict$remove, targetKey, dictionary);
-		}
 	});
 var $author$project$SpaceshipPart$disableStabilizer = function (name) {
 	return A2(
@@ -18136,8 +18437,11 @@ var $author$project$SpaceshipPart$updateSpaceship = F2(
 					{
 						fuelTankStates: A3($author$project$SpaceshipPart$dumpFuel, name, mass, spaceshipState.fuelTankStates)
 					});
-			default:
+			case 'DoNothing':
 				return spaceshipState;
+			default:
+				var actions = action.a;
+				return A3($elm$core$List$foldl, $author$project$SpaceshipPart$updateSpaceship, spaceshipState, actions);
 		}
 	});
 var $author$project$SpaceshipPart$updateSpaceshipKey = F3(
@@ -18147,12 +18451,12 @@ var $author$project$SpaceshipPart$updateSpaceshipKey = F3(
 			A2(spaceshipState.spaceship.keyActions, key, keyAction),
 			spaceshipState);
 	});
-var $author$project$SpaceshipPart$update = F2(
-	function (msg, model) {
+var $author$project$SpaceshipPart$update = F3(
+	function (meshStore, msg, model) {
 		switch (msg.$) {
 			case 'Tick':
 				var t = msg.a;
-				var _v1 = A3($author$project$SpaceshipPart$simulateStep, t, model.spaceshipState, model.world);
+				var _v1 = A4($author$project$SpaceshipPart$simulateStep, meshStore, t, model.spaceshipState, model.world);
 				var newSpaceshipState = _v1.a;
 				var newWorld = _v1.b;
 				return _Utils_Tuple2(
@@ -18166,11 +18470,7 @@ var $author$project$SpaceshipPart$update = F2(
 					_Utils_update(
 						model,
 						{
-							spaceshipState: A3(
-								$author$project$SpaceshipPart$updateSpaceshipKey,
-								A2($elm$core$Debug$log, 'pressed', k),
-								$author$project$SpaceshipPart$Pressed,
-								model.spaceshipState)
+							spaceshipState: A3($author$project$SpaceshipPart$updateSpaceshipKey, k, $author$project$SpaceshipPart$Pressed, model.spaceshipState)
 						}),
 					$elm$core$Platform$Cmd$none);
 			default:
@@ -18620,7 +18920,7 @@ var $author$project$SpaceshipScene$update = F2(
 				}
 			default:
 				var sMsg = message.a;
-				var _v24 = A2($author$project$SpaceshipPart$update, sMsg, model.spaceshipState);
+				var _v24 = A3($author$project$SpaceshipPart$update, model.meshStore, sMsg, model.spaceshipState);
 				var newSSState = _v24.a;
 				var sCmd = _v24.b;
 				return _Utils_Tuple2(
@@ -18641,6 +18941,36 @@ var $ianmackenzie$elm_3d_scene$Scene3d$Light$CastsShadows = function (a) {
 };
 var $ianmackenzie$elm_3d_scene$Scene3d$Light$castsShadows = function (flag) {
 	return $ianmackenzie$elm_3d_scene$Scene3d$Light$CastsShadows(flag);
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Types$Chromaticity = function (a) {
+	return {$: 'Chromaticity', a: a};
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Light$chromaticity = function (xy) {
+	return $ianmackenzie$elm_3d_scene$Scene3d$Types$Chromaticity(xy);
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Types$CieXyz = F3(
+	function (a, b, c) {
+		return {$: 'CieXyz', a: a, b: b, c: c};
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$linearRgbToCieXyz = function (_v0) {
+	var linearRgb = _v0.a;
+	var linearR = $elm_explorations$linear_algebra$Math$Vector3$getX(linearRgb);
+	var linearG = $elm_explorations$linear_algebra$Math$Vector3$getY(linearRgb);
+	var linearB = $elm_explorations$linear_algebra$Math$Vector3$getZ(linearRgb);
+	return A3($ianmackenzie$elm_3d_scene$Scene3d$Types$CieXyz, ((0.4124 * linearR) + (0.3576 * linearG)) + (0.1805 * linearB), ((0.2126 * linearR) + (0.7152 * linearG)) + (0.0722 * linearB), ((0.0193 * linearR) + (0.1192 * linearG)) + (0.9505 * linearB));
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$colorToCieXyz = function (color) {
+	return $ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$linearRgbToCieXyz(
+		$ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$colorToLinearRgb(color));
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Light$color = function (givenColor) {
+	var _v0 = $ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$colorToCieXyz(givenColor);
+	var bigX = _v0.a;
+	var bigY = _v0.b;
+	var bigZ = _v0.c;
+	var sum = (bigX + bigY) + bigZ;
+	return $ianmackenzie$elm_3d_scene$Scene3d$Light$chromaticity(
+		{x: bigX / sum, y: bigY / sum});
 };
 var $elm_explorations$webgl$WebGL$Internal$Alpha = function (a) {
 	return {$: 'Alpha', a: a};
@@ -18723,10 +19053,6 @@ var $ianmackenzie$elm_3d_scene$Scene3d$call = F3(
 				return A2(renderPass, lights, settings);
 			},
 			renderPasses);
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$Types$CieXyz = F3(
-	function (a, b, c) {
-		return {$: 'CieXyz', a: a, b: b, c: c};
 	});
 var $ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$chromaticityToCieXyz = F2(
 	function (_v0, _v1) {
@@ -21828,6 +22154,91 @@ var $author$project$GSVGTexture$drawTextures = F2(
 					},
 					$elm$core$Dict$toList(model.shapes))));
 	});
+var $ianmackenzie$elm_3d_scene$Scene3d$MultiplePasses = F2(
+	function (a, b) {
+		return {$: 'MultiplePasses', a: a, b: b};
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$SingleUnshadowedPass = function (a) {
+	return {$: 'SingleUnshadowedPass', a: a};
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$eraseLight = function (_v0) {
+	var light = _v0.a;
+	return $ianmackenzie$elm_3d_scene$Scene3d$Types$Light(light);
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$lightCastsShadows = function (_v0) {
+	var properties = _v0.a;
+	return properties.castsShadows;
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$noLights = $ianmackenzie$elm_3d_scene$Scene3d$SingleUnshadowedPass($ianmackenzie$elm_3d_scene$Scene3d$lightingDisabled.a);
+var $elm$core$List$partition = F2(
+	function (pred, list) {
+		var step = F2(
+			function (x, _v0) {
+				var trues = _v0.a;
+				var falses = _v0.b;
+				return pred(x) ? _Utils_Tuple2(
+					A2($elm$core$List$cons, x, trues),
+					falses) : _Utils_Tuple2(
+					trues,
+					A2($elm$core$List$cons, x, falses));
+			});
+		return A3(
+			$elm$core$List$foldr,
+			step,
+			_Utils_Tuple2(_List_Nil, _List_Nil),
+			list);
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$singleLight = function (_v0) {
+	var light = _v0.a;
+	return $elm_explorations$linear_algebra$Math$Matrix4$fromRecord(
+		{m11: light.x, m12: light.r, m13: 0, m14: 0, m21: light.y, m22: light.g, m23: 0, m24: 0, m31: light.z, m32: light.b, m33: 0, m34: 0, m41: light.type_, m42: light.parameter, m43: 0, m44: 0});
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$eightLights = F8(
+	function (first, second, third, fourth, fifth, sixth, seventh, eigth) {
+		var _v0 = A2(
+			$elm$core$List$partition,
+			$ianmackenzie$elm_3d_scene$Scene3d$lightCastsShadows,
+			_List_fromArray(
+				[
+					$ianmackenzie$elm_3d_scene$Scene3d$eraseLight(first),
+					$ianmackenzie$elm_3d_scene$Scene3d$eraseLight(second),
+					$ianmackenzie$elm_3d_scene$Scene3d$eraseLight(third),
+					$ianmackenzie$elm_3d_scene$Scene3d$eraseLight(fourth)
+				]));
+		var enabledShadowCasters = _v0.a;
+		var disabledShadowCasters = _v0.b;
+		if (!enabledShadowCasters.b) {
+			return $ianmackenzie$elm_3d_scene$Scene3d$SingleUnshadowedPass(
+				{
+					lights12: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, first, second),
+					lights34: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, third, fourth),
+					lights56: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, fifth, sixth),
+					lights78: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, seventh, eigth)
+				});
+		} else {
+			var sortedLights = _Utils_ap(enabledShadowCasters, disabledShadowCasters);
+			if ((((sortedLights.b && sortedLights.b.b) && sortedLights.b.b.b) && sortedLights.b.b.b.b) && (!sortedLights.b.b.b.b.b)) {
+				var light0 = sortedLights.a;
+				var _v3 = sortedLights.b;
+				var light1 = _v3.a;
+				var _v4 = _v3.b;
+				var light2 = _v4.a;
+				var _v5 = _v4.b;
+				var light3 = _v5.a;
+				return A2(
+					$ianmackenzie$elm_3d_scene$Scene3d$MultiplePasses,
+					A2($elm$core$List$map, $ianmackenzie$elm_3d_scene$Scene3d$singleLight, enabledShadowCasters),
+					{
+						lights12: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, light0, light1),
+						lights34: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, light2, light3),
+						lights56: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, fifth, sixth),
+						lights78: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, seventh, eigth)
+					});
+			} else {
+				return $ianmackenzie$elm_3d_scene$Scene3d$noLights;
+			}
+		}
+	});
 var $ianmackenzie$elm_3d_scene$Scene3d$Exposure = function (a) {
 	return {$: 'Exposure', a: a};
 };
@@ -21839,14 +22250,16 @@ var $ianmackenzie$elm_3d_scene$Scene3d$exposureValue = function (ev100) {
 		$ianmackenzie$elm_units$Luminance$nits(
 			1.2 * A2($elm$core$Basics$pow, 2, ev100)));
 };
-var $ianmackenzie$elm_3d_scene$Scene3d$Types$Chromaticity = function (a) {
-	return {$: 'Chromaticity', a: a};
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$Light$chromaticity = function (xy) {
-	return $ianmackenzie$elm_3d_scene$Scene3d$Types$Chromaticity(xy);
-};
+var $ianmackenzie$elm_3d_scene$Scene3d$fiveLights = F5(
+	function (first, second, third, fourth, fifth) {
+		return A8($ianmackenzie$elm_3d_scene$Scene3d$eightLights, first, second, third, fourth, fifth, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled);
+	});
 var $ianmackenzie$elm_3d_scene$Scene3d$Light$fluorescent = $ianmackenzie$elm_3d_scene$Scene3d$Light$chromaticity(
 	{x: 0.37208, y: 0.37529});
+var $ianmackenzie$elm_3d_scene$Scene3d$fourLights = F4(
+	function (first, second, third, fourth) {
+		return A8($ianmackenzie$elm_3d_scene$Scene3d$eightLights, first, second, third, fourth, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled);
+	});
 var $ianmackenzie$elm_3d_scene$Scene3d$HableFilmicToneMapping = {$: 'HableFilmicToneMapping'};
 var $ianmackenzie$elm_3d_scene$Scene3d$hableFilmicToneMapping = $ianmackenzie$elm_3d_scene$Scene3d$HableFilmicToneMapping;
 var $ianmackenzie$elm_units$Length$kilometers = function (numKilometers) {
@@ -21889,6 +22302,7 @@ var $ianmackenzie$elm_3d_scene$Scene3d$Material$emissive = F2(
 			$ianmackenzie$elm_3d_scene$Scene3d$Types$Constant(baseColor),
 			brightness);
 	});
+var $ianmackenzie$elm_3d_scene$Scene3d$Light$neverCastsShadows = $ianmackenzie$elm_3d_scene$Scene3d$Light$CastsShadows(false);
 var $ianmackenzie$elm_3d_scene$Scene3d$Light$point = F2(
 	function (_v0, light) {
 		var shadowFlag = _v0.a;
@@ -22179,10 +22593,7 @@ var $author$project$SpaceshipScene$pointLight = function (properties) {
 			properties.intensity));
 	var sphereMaterial = A2($ianmackenzie$elm_3d_scene$Scene3d$Material$emissive, properties.chromaticity, sphereLuminance);
 	return _Utils_Tuple2(
-		A2(
-			$ianmackenzie$elm_3d_scene$Scene3d$Light$point,
-			$ianmackenzie$elm_3d_scene$Scene3d$Light$castsShadows(false),
-			properties),
+		A2($ianmackenzie$elm_3d_scene$Scene3d$Light$point, $ianmackenzie$elm_3d_scene$Scene3d$Light$neverCastsShadows, properties),
 		A2($ianmackenzie$elm_3d_scene$Scene3d$sphere, sphereMaterial, lightsphere));
 };
 var $ianmackenzie$elm_units$Temperature$inKelvins = function (_v0) {
@@ -22220,6 +22631,18 @@ var $ianmackenzie$elm_units$Illuminance$lux = function (numLux) {
 };
 var $ianmackenzie$elm_3d_scene$Scene3d$Multisampling = {$: 'Multisampling'};
 var $ianmackenzie$elm_3d_scene$Scene3d$multisampling = $ianmackenzie$elm_3d_scene$Scene3d$Multisampling;
+var $ianmackenzie$elm_3d_scene$Scene3d$SingleShadowedPass = function (a) {
+	return {$: 'SingleShadowedPass', a: a};
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$oneLight = function (light) {
+	var lightMatrices = {
+		lights12: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, light, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled),
+		lights34: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled),
+		lights56: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled),
+		lights78: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled)
+	};
+	return $ianmackenzie$elm_3d_scene$Scene3d$lightCastsShadows(light) ? $ianmackenzie$elm_3d_scene$Scene3d$SingleShadowedPass(lightMatrices) : $ianmackenzie$elm_3d_scene$Scene3d$SingleUnshadowedPass(lightMatrices);
+};
 var $ianmackenzie$elm_3d_camera$Camera3d$Types$Viewpoint3d = function (a) {
 	return {$: 'Viewpoint3d', a: a};
 };
@@ -22353,130 +22776,241 @@ var $author$project$SpaceshipScene$angleDisplay = function (model) {
 var $ianmackenzie$elm_units$Length$inKilometers = function (length) {
 	return 0.001 * $ianmackenzie$elm_units$Length$inMeters(length);
 };
-var $ianmackenzie$elm_geometry$Vector3d$unsafe = function (givenComponents) {
-	return $ianmackenzie$elm_geometry$Geometry$Types$Vector3d(givenComponents);
-};
-var $w0rm$elm_physics$Physics$Body$angularVelocity = function (_v0) {
-	var body = _v0.a;
-	return $ianmackenzie$elm_geometry$Vector3d$unsafe(body.angularVelocity);
-};
-var $MacCASOutreach$graphicsvg$GraphicSVG$scale = F2(
-	function (s, shape) {
-		return A3($MacCASOutreach$graphicsvg$GraphicSVG$Scale, s, s, shape);
+var $MacCASOutreach$graphicsvg$GraphicSVG$map = F2(
+	function (f, sh) {
+		switch (sh.$) {
+			case 'Inked':
+				var fillClr = sh.a;
+				var lt = sh.b;
+				var stencil = sh.c;
+				return A3($MacCASOutreach$graphicsvg$GraphicSVG$Inked, fillClr, lt, stencil);
+			case 'ForeignObject':
+				var w = sh.a;
+				var h = sh.b;
+				var htm = sh.c;
+				return A3(
+					$MacCASOutreach$graphicsvg$GraphicSVG$ForeignObject,
+					w,
+					h,
+					A2($elm$html$Html$map, f, htm));
+			case 'Move':
+				var v = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Move,
+					v,
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'Rotate':
+				var deg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Rotate,
+					deg,
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'Scale':
+				var sx = sh.a;
+				var sy = sh.b;
+				var shape = sh.c;
+				return A3(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Scale,
+					sx,
+					sy,
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'Skew':
+				var skx = sh.a;
+				var sky = sh.b;
+				var shape = sh.c;
+				return A3(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Skew,
+					skx,
+					sky,
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'Transformed':
+				var tm = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Transformed,
+					tm,
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'Link':
+				var href = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Link,
+					href,
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'AlphaMask':
+				var sh1 = sh.a;
+				var sh2 = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$AlphaMask,
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, sh1),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, sh2));
+			case 'Clip':
+				var sh1 = sh.a;
+				var sh2 = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Clip,
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, sh1),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, sh2));
+			case 'Everything':
+				return $MacCASOutreach$graphicsvg$GraphicSVG$Everything;
+			case 'Notathing':
+				return $MacCASOutreach$graphicsvg$GraphicSVG$Notathing;
+			case 'Tap':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Tap,
+					f(msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'TapAt':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$TapAt,
+					A2($elm$core$Basics$composeL, f, msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'EnterShape':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$EnterShape,
+					f(msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'EnterAt':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$EnterAt,
+					A2($elm$core$Basics$composeL, f, msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'Exit':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Exit,
+					f(msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'ExitAt':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$ExitAt,
+					A2($elm$core$Basics$composeL, f, msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'MouseDown':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$MouseDown,
+					f(msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'MouseDownAt':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$MouseDownAt,
+					A2($elm$core$Basics$composeL, f, msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'MouseUp':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$MouseUp,
+					f(msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'MouseUpAt':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$MouseUpAt,
+					A2($elm$core$Basics$composeL, f, msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'MoveOverAt':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$MoveOverAt,
+					A2($elm$core$Basics$composeL, f, msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'TouchStart':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$TouchStart,
+					f(msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'TouchEnd':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$TouchEnd,
+					f(msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'TouchStartAt':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$TouchStartAt,
+					A2($elm$core$Basics$composeL, f, msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'TouchEndAt':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$TouchEndAt,
+					A2($elm$core$Basics$composeL, f, msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'TouchMoveAt':
+				var msg = sh.a;
+				var shape = sh.b;
+				return A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$TouchMoveAt,
+					A2($elm$core$Basics$composeL, f, msg),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, shape));
+			case 'Group':
+				var shapes = sh.a;
+				return $MacCASOutreach$graphicsvg$GraphicSVG$Group(
+					A2(
+						$elm$core$List$map,
+						$MacCASOutreach$graphicsvg$GraphicSVG$map(f),
+						shapes));
+			case 'GroupOutline':
+				var cmbndshp = sh.a;
+				return $MacCASOutreach$graphicsvg$GraphicSVG$GroupOutline(
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$map, f, cmbndshp));
+			default:
+				var s = sh.a;
+				var th = sh.b;
+				var c = sh.c;
+				return A3($MacCASOutreach$graphicsvg$GraphicSVG$GraphPaper, s, th, c);
+		}
 	});
-var $elm$core$Debug$toString = _Debug_toString;
-var $w0rm$elm_physics$Physics$Body$velocity = function (_v0) {
-	var body = _v0.a;
-	return $ianmackenzie$elm_geometry$Vector3d$unsafe(body.velocity);
-};
-var $author$project$SpaceshipScene$physicsDebug = F2(
-	function (objToTrack, model) {
-		var toTrack = A2(
-			$elm$core$List$filter,
-			function (body) {
-				return _Utils_eq(
-					$w0rm$elm_physics$Physics$Body$data(body).name,
-					objToTrack);
-			},
-			$w0rm$elm_physics$Physics$World$bodies(model.spaceshipState.world));
-		var trackingName = function () {
-			var _v0 = $elm$core$List$head(toTrack);
-			if (_v0.$ === 'Just') {
-				var body = _v0.a;
-				return $w0rm$elm_physics$Physics$Body$data(body).name;
-			} else {
-				return 'Nothing';
-			}
-		}();
-		return A2(
-			$MacCASOutreach$graphicsvg$GraphicSVG$move,
-			_Utils_Tuple2(0, 250),
-			A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$scale,
-				2,
-				$MacCASOutreach$graphicsvg$GraphicSVG$group(
-					_List_fromArray(
-						[
-							A2(
-							$MacCASOutreach$graphicsvg$GraphicSVG$move,
-							_Utils_Tuple2(-300, 50),
-							A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$white,
-								$MacCASOutreach$graphicsvg$GraphicSVG$text('Name: ' + trackingName))),
-							A2(
-							$MacCASOutreach$graphicsvg$GraphicSVG$move,
-							_Utils_Tuple2(-300, 35),
-							A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$white,
-								$MacCASOutreach$graphicsvg$GraphicSVG$text(
-									'Velocity: ' + $elm$core$Debug$toString(
-										A2(
-											$elm$core$Maybe$map,
-											$w0rm$elm_physics$Physics$Body$velocity,
-											$elm$core$List$head(toTrack)))))),
-							A2(
-							$MacCASOutreach$graphicsvg$GraphicSVG$move,
-							_Utils_Tuple2(-300, 20),
-							A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$white,
-								$MacCASOutreach$graphicsvg$GraphicSVG$text(
-									'Origin Point: ' + $elm$core$Debug$toString(
-										A2(
-											$elm$core$Maybe$map,
-											A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$originPoint, $w0rm$elm_physics$Physics$Body$frame),
-											$elm$core$List$head(toTrack)))))),
-							A2(
-							$MacCASOutreach$graphicsvg$GraphicSVG$move,
-							_Utils_Tuple2(-300, 5),
-							A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$white,
-								$MacCASOutreach$graphicsvg$GraphicSVG$text(
-									'Rotational velocity: ' + $elm$core$Debug$toString(
-										A2(
-											$elm$core$Maybe$map,
-											$w0rm$elm_physics$Physics$Body$angularVelocity,
-											$elm$core$List$head(toTrack)))))),
-							A2(
-							$MacCASOutreach$graphicsvg$GraphicSVG$move,
-							_Utils_Tuple2(-300, -10),
-							A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$white,
-								$MacCASOutreach$graphicsvg$GraphicSVG$text(
-									'x direction: ' + $elm$core$Debug$toString(
-										A2(
-											$elm$core$Maybe$map,
-											A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$xDirection, $w0rm$elm_physics$Physics$Body$frame),
-											$elm$core$List$head(toTrack)))))),
-							A2(
-							$MacCASOutreach$graphicsvg$GraphicSVG$move,
-							_Utils_Tuple2(-300, -25),
-							A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$white,
-								$MacCASOutreach$graphicsvg$GraphicSVG$text(
-									'y direction: ' + $elm$core$Debug$toString(
-										A2(
-											$elm$core$Maybe$map,
-											A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$yDirection, $w0rm$elm_physics$Physics$Body$frame),
-											$elm$core$List$head(toTrack)))))),
-							A2(
-							$MacCASOutreach$graphicsvg$GraphicSVG$move,
-							_Utils_Tuple2(-300, -40),
-							A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$white,
-								$MacCASOutreach$graphicsvg$GraphicSVG$text(
-									'z direction: ' + $elm$core$Debug$toString(
-										A2(
-											$elm$core$Maybe$map,
-											A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$zDirection, $w0rm$elm_physics$Physics$Body$frame),
-											$elm$core$List$head(toTrack))))))
-						]))));
+var $author$project$SpaceshipPart$progressBar = F4(
+	function (color, _v0, total, left) {
+		var width = _v0.a;
+		var height = _v0.b;
+		var percent = left / total;
+		return $MacCASOutreach$graphicsvg$GraphicSVG$group(
+			_List_fromArray(
+				[
+					A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2(0, 0),
+					A3(
+						$MacCASOutreach$graphicsvg$GraphicSVG$outlined,
+						$MacCASOutreach$graphicsvg$GraphicSVG$solid(1),
+						color,
+						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, width, height))),
+					A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2((-width) * (1 - percent), 0),
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+						color,
+						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, width * percent, 15)))
+				]));
 	});
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $elm$core$String$foldr = _String_foldr;
@@ -22703,6 +23237,235 @@ var $myrho$elm_round$Round$round = $myrho$elm_round$Round$roundFun(
 var $elm$core$List$sum = function (numbers) {
 	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
 };
+var $ianmackenzie$elm_geometry$Vector3d$unsafe = function (givenComponents) {
+	return $ianmackenzie$elm_geometry$Geometry$Types$Vector3d(givenComponents);
+};
+var $w0rm$elm_physics$Physics$Body$velocity = function (_v0) {
+	var body = _v0.a;
+	return $ianmackenzie$elm_geometry$Vector3d$unsafe(body.velocity);
+};
+var $author$project$SpaceshipPart$overlay = F3(
+	function (width, height, model) {
+		var velocity = A2(
+			$elm$core$Maybe$withDefault,
+			0,
+			A2(
+				$elm$core$Maybe$map,
+				A2(
+					$elm$core$Basics$composeL,
+					A2($elm$core$Basics$composeL, $ianmackenzie$elm_units$Speed$inMetersPerSecond, $ianmackenzie$elm_geometry$Vector3d$length),
+					$w0rm$elm_physics$Physics$Body$velocity),
+				$elm$core$List$head(
+					$w0rm$elm_physics$Physics$World$bodies(model.world))));
+		var mass = $elm$core$List$sum(
+			A2(
+				$elm$core$List$map,
+				A2(
+					$elm$core$Basics$composeL,
+					A2(
+						$elm$core$Basics$composeL,
+						$ianmackenzie$elm_units$Mass$inKilograms,
+						function ($) {
+							return $.mass;
+						}),
+					$w0rm$elm_physics$Physics$Body$data),
+				$w0rm$elm_physics$Physics$World$bodies(model.world)));
+		var fuelRemaining = $ianmackenzie$elm_units$Mass$inKilograms(
+			$author$project$SpaceshipPart$fuelLeft(model.spaceshipState));
+		var fuelOriginalCap = $ianmackenzie$elm_units$Mass$inKilograms(
+			$author$project$SpaceshipPart$fuelCapacity(model.spaceshipState));
+		var fuelPercent = (fuelRemaining / fuelOriginalCap) * 100;
+		var distance = A2(
+			$elm$core$Maybe$withDefault,
+			0,
+			A2(
+				$elm$core$Maybe$map,
+				A2(
+					$elm$core$Basics$composeL,
+					A2(
+						$elm$core$Basics$composeL,
+						A2(
+							$elm$core$Basics$composeL,
+							A2($elm$core$Basics$composeL, $ianmackenzie$elm_units$Length$inKilometers, $ianmackenzie$elm_geometry$Vector3d$length),
+							$ianmackenzie$elm_geometry$Vector3d$from($ianmackenzie$elm_geometry$Point3d$origin)),
+						$ianmackenzie$elm_geometry$Frame3d$originPoint),
+					$w0rm$elm_physics$Physics$Body$frame),
+				$elm$core$List$head(
+					$w0rm$elm_physics$Physics$World$bodies(model.world))));
+		return $MacCASOutreach$graphicsvg$GraphicSVG$group(
+			_List_fromArray(
+				[
+					A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2(
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
+						20),
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						$MacCASOutreach$graphicsvg$GraphicSVG$text(
+							'Mass : ' + (A2($myrho$elm_round$Round$round, 3, mass) + ' kg')))),
+					A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2(
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
+						0),
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						$MacCASOutreach$graphicsvg$GraphicSVG$text(
+							'Velocity : ' + (A2($myrho$elm_round$Round$round, 3, velocity) + ' m/s')))),
+					A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2(
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
+						-20),
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						$MacCASOutreach$graphicsvg$GraphicSVG$text(
+							'Distance from space station : ' + (A2($myrho$elm_round$Round$round, 3, distance) + ' km')))),
+					A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2(
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
+						-40),
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						$MacCASOutreach$graphicsvg$GraphicSVG$text(
+							'Fuel : ' + (A2($myrho$elm_round$Round$round, 3, fuelRemaining) + (' / ' + (A2($myrho$elm_round$Round$round, 3, fuelOriginalCap) + (' kg (' + (A2($myrho$elm_round$Round$round, 3, fuelPercent) + '%)')))))))),
+					A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2(
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 135,
+						-60),
+					A4(
+						$author$project$SpaceshipPart$progressBar,
+						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						_Utils_Tuple2(200, 15),
+						fuelOriginalCap,
+						fuelRemaining))
+				]));
+	});
+var $w0rm$elm_physics$Physics$Body$angularVelocity = function (_v0) {
+	var body = _v0.a;
+	return $ianmackenzie$elm_geometry$Vector3d$unsafe(body.angularVelocity);
+};
+var $MacCASOutreach$graphicsvg$GraphicSVG$scale = F2(
+	function (s, shape) {
+		return A3($MacCASOutreach$graphicsvg$GraphicSVG$Scale, s, s, shape);
+	});
+var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$SpaceshipScene$physicsDebug = F2(
+	function (objToTrack, model) {
+		var toTrack = A2(
+			$elm$core$List$filter,
+			function (body) {
+				return _Utils_eq(
+					$w0rm$elm_physics$Physics$Body$data(body).name,
+					objToTrack);
+			},
+			$w0rm$elm_physics$Physics$World$bodies(model.spaceshipState.world));
+		var trackingName = function () {
+			var _v0 = $elm$core$List$head(toTrack);
+			if (_v0.$ === 'Just') {
+				var body = _v0.a;
+				return $w0rm$elm_physics$Physics$Body$data(body).name;
+			} else {
+				return 'Nothing';
+			}
+		}();
+		return A2(
+			$MacCASOutreach$graphicsvg$GraphicSVG$move,
+			_Utils_Tuple2(0, 250),
+			A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$scale,
+				2,
+				$MacCASOutreach$graphicsvg$GraphicSVG$group(
+					_List_fromArray(
+						[
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$move,
+							_Utils_Tuple2(-300, 50),
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$MacCASOutreach$graphicsvg$GraphicSVG$white,
+								$MacCASOutreach$graphicsvg$GraphicSVG$text('Name: ' + trackingName))),
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$move,
+							_Utils_Tuple2(-300, 35),
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$MacCASOutreach$graphicsvg$GraphicSVG$white,
+								$MacCASOutreach$graphicsvg$GraphicSVG$text(
+									'Velocity: ' + $elm$core$Debug$toString(
+										A2(
+											$elm$core$Maybe$map,
+											$w0rm$elm_physics$Physics$Body$velocity,
+											$elm$core$List$head(toTrack)))))),
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$move,
+							_Utils_Tuple2(-300, 20),
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$MacCASOutreach$graphicsvg$GraphicSVG$white,
+								$MacCASOutreach$graphicsvg$GraphicSVG$text(
+									'Origin Point: ' + $elm$core$Debug$toString(
+										A2(
+											$elm$core$Maybe$map,
+											A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$originPoint, $w0rm$elm_physics$Physics$Body$frame),
+											$elm$core$List$head(toTrack)))))),
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$move,
+							_Utils_Tuple2(-300, 5),
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$MacCASOutreach$graphicsvg$GraphicSVG$white,
+								$MacCASOutreach$graphicsvg$GraphicSVG$text(
+									'Rotational velocity: ' + $elm$core$Debug$toString(
+										A2(
+											$elm$core$Maybe$map,
+											$w0rm$elm_physics$Physics$Body$angularVelocity,
+											$elm$core$List$head(toTrack)))))),
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$move,
+							_Utils_Tuple2(-300, -10),
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$MacCASOutreach$graphicsvg$GraphicSVG$white,
+								$MacCASOutreach$graphicsvg$GraphicSVG$text(
+									'x direction: ' + $elm$core$Debug$toString(
+										A2(
+											$elm$core$Maybe$map,
+											A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$xDirection, $w0rm$elm_physics$Physics$Body$frame),
+											$elm$core$List$head(toTrack)))))),
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$move,
+							_Utils_Tuple2(-300, -25),
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$MacCASOutreach$graphicsvg$GraphicSVG$white,
+								$MacCASOutreach$graphicsvg$GraphicSVG$text(
+									'y direction: ' + $elm$core$Debug$toString(
+										A2(
+											$elm$core$Maybe$map,
+											A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$yDirection, $w0rm$elm_physics$Physics$Body$frame),
+											$elm$core$List$head(toTrack)))))),
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$move,
+							_Utils_Tuple2(-300, -40),
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$MacCASOutreach$graphicsvg$GraphicSVG$white,
+								$MacCASOutreach$graphicsvg$GraphicSVG$text(
+									'z direction: ' + $elm$core$Debug$toString(
+										A2(
+											$elm$core$Maybe$map,
+											A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$zDirection, $w0rm$elm_physics$Physics$Body$frame),
+											$elm$core$List$head(toTrack))))))
+						]))));
+	});
 var $author$project$SpaceshipScene$overlay = function (model) {
 	var velocity = A2(
 		$elm$core$Maybe$withDefault,
@@ -22750,35 +23513,9 @@ var $author$project$SpaceshipScene$overlay = function (model) {
 			$author$project$SpaceshipScene$angleDisplay(model),
 			A2($author$project$SpaceshipScene$physicsDebug, 'spaceship', model),
 			A2(
-			$MacCASOutreach$graphicsvg$GraphicSVG$move,
-			_Utils_Tuple2(
-				($ianmackenzie$elm_units$Pixels$toInt(model.width) / 2) - 200,
-				20),
-			A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-				$MacCASOutreach$graphicsvg$GraphicSVG$white,
-				$MacCASOutreach$graphicsvg$GraphicSVG$text(
-					'Mass : ' + (A2($myrho$elm_round$Round$round, 3, mass) + ' kg')))),
-			A2(
-			$MacCASOutreach$graphicsvg$GraphicSVG$move,
-			_Utils_Tuple2(
-				($ianmackenzie$elm_units$Pixels$toInt(model.width) / 2) - 200,
-				0),
-			A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-				$MacCASOutreach$graphicsvg$GraphicSVG$white,
-				$MacCASOutreach$graphicsvg$GraphicSVG$text(
-					'Velocity : ' + (A2($myrho$elm_round$Round$round, 3, velocity) + ' m/s')))),
-			A2(
-			$MacCASOutreach$graphicsvg$GraphicSVG$move,
-			_Utils_Tuple2(
-				($ianmackenzie$elm_units$Pixels$toInt(model.width) / 2) - 200,
-				-20),
-			A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-				$MacCASOutreach$graphicsvg$GraphicSVG$white,
-				$MacCASOutreach$graphicsvg$GraphicSVG$text(
-					'Distance from space station : ' + (A2($myrho$elm_round$Round$round, 3, distance) + ' km'))))
+			$MacCASOutreach$graphicsvg$GraphicSVG$map,
+			$author$project$SpaceshipScene$SpaceshipMsg,
+			A3($author$project$SpaceshipPart$overlay, model.width, model.height, model.spaceshipState))
 		]);
 };
 var $ianmackenzie$elm_3d_camera$Camera3d$Types$Camera3d = function (a) {
@@ -22952,7 +23689,15 @@ var $author$project$Skybox$roundSkybox = F2(
 			material,
 			$author$project$Skybox$sphereMeshNoCulling(size));
 	});
+var $ianmackenzie$elm_3d_scene$Scene3d$sevenLights = F7(
+	function (first, second, third, fourth, fifth, sixth, seventh) {
+		return A8($ianmackenzie$elm_3d_scene$Scene3d$eightLights, first, second, third, fourth, fifth, sixth, seventh, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled);
+	});
 var $author$project$SpaceshipScene$showLight = true;
+var $ianmackenzie$elm_3d_scene$Scene3d$sixLights = F6(
+	function (first, second, third, fourth, fifth, sixth) {
+		return A8($ianmackenzie$elm_3d_scene$Scene3d$eightLights, first, second, third, fourth, fifth, sixth, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled);
+	});
 var $ianmackenzie$elm_geometry$BoundingBox3d$hullHelp = F7(
 	function (currentMinX, currentMaxX, currentMinY, currentMaxY, currentMinZ, currentMaxZ, points) {
 		hullHelp:
@@ -23481,12 +24226,6 @@ var $author$project$Skybox$skybox = F2(
 					]));
 		}
 	});
-var $ianmackenzie$elm_units$Quantity$greaterThan = F2(
-	function (_v0, _v1) {
-		var y = _v0.a;
-		var x = _v1.a;
-		return _Utils_cmp(x, y) > 0;
-	});
 var $ianmackenzie$elm_units$Illuminance$inLux = function (_v0) {
 	var numLux = _v0.a;
 	return numLux;
@@ -23539,95 +24278,25 @@ var $ianmackenzie$elm_3d_scene$Scene3d$Light$soft = function (light) {
 		}
 	}
 };
+var $author$project$SpaceshipPart$spaceshipFrame = function (model) {
+	var frame = A2(
+		$elm$core$Maybe$withDefault,
+		$ianmackenzie$elm_geometry$Frame3d$atOrigin,
+		A2(
+			$elm$core$Maybe$map,
+			$w0rm$elm_physics$Physics$Body$frame,
+			$elm$core$List$head(
+				$w0rm$elm_physics$Physics$World$bodies(model.world))));
+	return frame;
+};
 var $elm$html$Html$span = _VirtualDom_node('span');
-var $ianmackenzie$elm_3d_scene$Scene3d$MultiplePasses = F2(
-	function (a, b) {
-		return {$: 'MultiplePasses', a: a, b: b};
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$SingleUnshadowedPass = function (a) {
-	return {$: 'SingleUnshadowedPass', a: a};
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$eraseLight = function (_v0) {
-	var light = _v0.a;
-	return $ianmackenzie$elm_3d_scene$Scene3d$Types$Light(light);
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$lightCastsShadows = function (_v0) {
-	var properties = _v0.a;
-	return properties.castsShadows;
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$noLights = $ianmackenzie$elm_3d_scene$Scene3d$SingleUnshadowedPass($ianmackenzie$elm_3d_scene$Scene3d$lightingDisabled.a);
-var $elm$core$List$partition = F2(
-	function (pred, list) {
-		var step = F2(
-			function (x, _v0) {
-				var trues = _v0.a;
-				var falses = _v0.b;
-				return pred(x) ? _Utils_Tuple2(
-					A2($elm$core$List$cons, x, trues),
-					falses) : _Utils_Tuple2(
-					trues,
-					A2($elm$core$List$cons, x, falses));
-			});
-		return A3(
-			$elm$core$List$foldr,
-			step,
-			_Utils_Tuple2(_List_Nil, _List_Nil),
-			list);
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$singleLight = function (_v0) {
-	var light = _v0.a;
-	return $elm_explorations$linear_algebra$Math$Matrix4$fromRecord(
-		{m11: light.x, m12: light.r, m13: 0, m14: 0, m21: light.y, m22: light.g, m23: 0, m24: 0, m31: light.z, m32: light.b, m33: 0, m34: 0, m41: light.type_, m42: light.parameter, m43: 0, m44: 0});
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$eightLights = F8(
-	function (first, second, third, fourth, fifth, sixth, seventh, eigth) {
-		var _v0 = A2(
-			$elm$core$List$partition,
-			$ianmackenzie$elm_3d_scene$Scene3d$lightCastsShadows,
-			_List_fromArray(
-				[
-					$ianmackenzie$elm_3d_scene$Scene3d$eraseLight(first),
-					$ianmackenzie$elm_3d_scene$Scene3d$eraseLight(second),
-					$ianmackenzie$elm_3d_scene$Scene3d$eraseLight(third),
-					$ianmackenzie$elm_3d_scene$Scene3d$eraseLight(fourth)
-				]));
-		var enabledShadowCasters = _v0.a;
-		var disabledShadowCasters = _v0.b;
-		if (!enabledShadowCasters.b) {
-			return $ianmackenzie$elm_3d_scene$Scene3d$SingleUnshadowedPass(
-				{
-					lights12: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, first, second),
-					lights34: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, third, fourth),
-					lights56: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, fifth, sixth),
-					lights78: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, seventh, eigth)
-				});
-		} else {
-			var sortedLights = _Utils_ap(enabledShadowCasters, disabledShadowCasters);
-			if ((((sortedLights.b && sortedLights.b.b) && sortedLights.b.b.b) && sortedLights.b.b.b.b) && (!sortedLights.b.b.b.b.b)) {
-				var light0 = sortedLights.a;
-				var _v3 = sortedLights.b;
-				var light1 = _v3.a;
-				var _v4 = _v3.b;
-				var light2 = _v4.a;
-				var _v5 = _v4.b;
-				var light3 = _v5.a;
-				return A2(
-					$ianmackenzie$elm_3d_scene$Scene3d$MultiplePasses,
-					A2($elm$core$List$map, $ianmackenzie$elm_3d_scene$Scene3d$singleLight, enabledShadowCasters),
-					{
-						lights12: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, light0, light1),
-						lights34: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, light2, light3),
-						lights56: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, fifth, sixth),
-						lights78: A2($ianmackenzie$elm_3d_scene$Scene3d$lightPair, seventh, eigth)
-					});
-			} else {
-				return $ianmackenzie$elm_3d_scene$Scene3d$noLights;
-			}
-		}
-	});
 var $ianmackenzie$elm_3d_scene$Scene3d$threeLights = F3(
 	function (first, second, third) {
 		return A8($ianmackenzie$elm_3d_scene$Scene3d$eightLights, first, second, third, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled);
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$twoLights = F2(
+	function (first, second) {
+		return A8($ianmackenzie$elm_3d_scene$Scene3d$eightLights, first, second, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled);
 	});
 var $author$project$Wrapper3D$withOverlay = F3(
 	function (shapes, model, html) {
@@ -23671,6 +24340,17 @@ var $author$project$Wrapper3D$withOverlay = F3(
 				]));
 	});
 var $author$project$SpaceshipScene$view = function (model) {
+	var thrustersOn = A2(
+		$elm$core$List$map,
+		function ($) {
+			return $.position;
+		},
+		A2(
+			$elm$core$List$filter,
+			function (t) {
+				return t.thrustPercent > 0;
+			},
+			$elm$core$Dict$values(model.spaceshipState.spaceshipState.thrusterStates)));
 	var thirdLight = A2(
 		$ianmackenzie$elm_3d_scene$Scene3d$Light$directional,
 		$ianmackenzie$elm_3d_scene$Scene3d$Light$castsShadows(true),
@@ -23691,13 +24371,146 @@ var $author$project$SpaceshipScene$view = function (model) {
 			A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$originPoint, $w0rm$elm_physics$Physics$Body$frame),
 			$elm$core$List$head(
 				$w0rm$elm_physics$Physics$World$bodies(model.spaceshipState.world))));
+	var spaceshipFrame = $author$project$SpaceshipPart$spaceshipFrame(model.spaceshipState);
+	var thrusterLight = function (pt) {
+		var globalPt = A2($ianmackenzie$elm_geometry$Point3d$placeIn, spaceshipFrame, pt);
+		return $author$project$SpaceshipScene$pointLight(
+			{
+				chromaticity: $ianmackenzie$elm_3d_scene$Scene3d$Light$color($avh4$elm_color$Color$orange),
+				intensity: $ianmackenzie$elm_units$LuminousFlux$lumens(20000),
+				position: globalPt
+			}).a;
+	};
 	var softLighting = $ianmackenzie$elm_3d_scene$Scene3d$Light$soft(
 		{
 			chromaticity: $ianmackenzie$elm_3d_scene$Scene3d$Light$fluorescent,
-			intensityAbove: $ianmackenzie$elm_units$Illuminance$lux(30),
-			intensityBelow: $ianmackenzie$elm_units$Illuminance$lux(5),
+			intensityAbove: $ianmackenzie$elm_units$Illuminance$lux(50),
+			intensityBelow: $ianmackenzie$elm_units$Illuminance$lux(15),
 			upDirection: $ianmackenzie$elm_geometry$Direction3d$positiveZ
 		});
+	var lights = function () {
+		if (!thrustersOn.b) {
+			return $ianmackenzie$elm_3d_scene$Scene3d$oneLight(softLighting);
+		} else {
+			if (!thrustersOn.b.b) {
+				var l1 = thrustersOn.a;
+				return A2(
+					$ianmackenzie$elm_3d_scene$Scene3d$twoLights,
+					softLighting,
+					thrusterLight(l1));
+			} else {
+				if (!thrustersOn.b.b.b) {
+					var l1 = thrustersOn.a;
+					var _v5 = thrustersOn.b;
+					var l2 = _v5.a;
+					return A3(
+						$ianmackenzie$elm_3d_scene$Scene3d$threeLights,
+						softLighting,
+						thrusterLight(l1),
+						thrusterLight(l2));
+				} else {
+					if (!thrustersOn.b.b.b.b) {
+						var l1 = thrustersOn.a;
+						var _v6 = thrustersOn.b;
+						var l2 = _v6.a;
+						var _v7 = _v6.b;
+						var l3 = _v7.a;
+						return A4(
+							$ianmackenzie$elm_3d_scene$Scene3d$fourLights,
+							softLighting,
+							thrusterLight(l1),
+							thrusterLight(l2),
+							thrusterLight(l3));
+					} else {
+						if (!thrustersOn.b.b.b.b.b) {
+							var l1 = thrustersOn.a;
+							var _v8 = thrustersOn.b;
+							var l2 = _v8.a;
+							var _v9 = _v8.b;
+							var l3 = _v9.a;
+							var _v10 = _v9.b;
+							var l4 = _v10.a;
+							return A5(
+								$ianmackenzie$elm_3d_scene$Scene3d$fiveLights,
+								softLighting,
+								thrusterLight(l1),
+								thrusterLight(l2),
+								thrusterLight(l3),
+								thrusterLight(l4));
+						} else {
+							if (!thrustersOn.b.b.b.b.b.b) {
+								var l1 = thrustersOn.a;
+								var _v11 = thrustersOn.b;
+								var l2 = _v11.a;
+								var _v12 = _v11.b;
+								var l3 = _v12.a;
+								var _v13 = _v12.b;
+								var l4 = _v13.a;
+								var _v14 = _v13.b;
+								var l5 = _v14.a;
+								return A6(
+									$ianmackenzie$elm_3d_scene$Scene3d$sixLights,
+									softLighting,
+									thrusterLight(l1),
+									thrusterLight(l2),
+									thrusterLight(l3),
+									thrusterLight(l4),
+									thrusterLight(l5));
+							} else {
+								if (!thrustersOn.b.b.b.b.b.b.b) {
+									var l1 = thrustersOn.a;
+									var _v15 = thrustersOn.b;
+									var l2 = _v15.a;
+									var _v16 = _v15.b;
+									var l3 = _v16.a;
+									var _v17 = _v16.b;
+									var l4 = _v17.a;
+									var _v18 = _v17.b;
+									var l5 = _v18.a;
+									var _v19 = _v18.b;
+									var l6 = _v19.a;
+									return A7(
+										$ianmackenzie$elm_3d_scene$Scene3d$sevenLights,
+										softLighting,
+										thrusterLight(l1),
+										thrusterLight(l2),
+										thrusterLight(l3),
+										thrusterLight(l4),
+										thrusterLight(l5),
+										thrusterLight(l6));
+								} else {
+									var l1 = thrustersOn.a;
+									var _v20 = thrustersOn.b;
+									var l2 = _v20.a;
+									var _v21 = _v20.b;
+									var l3 = _v21.a;
+									var _v22 = _v21.b;
+									var l4 = _v22.a;
+									var _v23 = _v22.b;
+									var l5 = _v23.a;
+									var _v24 = _v23.b;
+									var l6 = _v24.a;
+									var _v25 = _v24.b;
+									var l7 = _v25.a;
+									var rest = _v25.b;
+									return A8(
+										$ianmackenzie$elm_3d_scene$Scene3d$eightLights,
+										softLighting,
+										thrusterLight(l1),
+										thrusterLight(l2),
+										thrusterLight(l3),
+										thrusterLight(l4),
+										thrusterLight(l5),
+										thrusterLight(l6),
+										thrusterLight(l7));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}();
 	var camera = $ianmackenzie$elm_3d_camera$Camera3d$perspective(
 		{
 			verticalFieldOfView: $ianmackenzie$elm_units$Angle$degrees(45),
@@ -23842,7 +24655,7 @@ var $author$project$SpaceshipScene$view = function (model) {
 								$author$project$Wrapper3D$renderEntities(
 									$author$project$PhysicsWrapper3D$renderBodies(model.spaceshipState.world))),
 							exposure: $ianmackenzie$elm_3d_scene$Scene3d$exposureValue(6),
-							lights: A3($ianmackenzie$elm_3d_scene$Scene3d$threeLights, firstLight, thirdLight, softLighting),
+							lights: lights,
 							toneMapping: $ianmackenzie$elm_3d_scene$Scene3d$hableFilmicToneMapping,
 							whiteBalance: $ianmackenzie$elm_3d_scene$Scene3d$Light$fluorescent
 						})),
