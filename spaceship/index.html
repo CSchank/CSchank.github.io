@@ -13520,8 +13520,8 @@ var $author$project$SpaceshipScene$mySpaceship = {
 			A2(
 			$author$project$SpaceshipPart$movePart,
 			_Utils_Tuple3(
-				$ianmackenzie$elm_units$Length$meters(-1.5),
-				$ianmackenzie$elm_units$Length$meters(-1.5),
+				$ianmackenzie$elm_units$Length$meters(-2),
+				$ianmackenzie$elm_units$Length$meters(-2),
 				$ianmackenzie$elm_units$Length$meters(-7.9)),
 			A4(
 				$author$project$SpaceshipPart$rotatePart,
@@ -13532,8 +13532,8 @@ var $author$project$SpaceshipScene$mySpaceship = {
 			A2(
 			$author$project$SpaceshipPart$movePart,
 			_Utils_Tuple3(
-				$ianmackenzie$elm_units$Length$meters(1.5),
-				$ianmackenzie$elm_units$Length$meters(-1.5),
+				$ianmackenzie$elm_units$Length$meters(2),
+				$ianmackenzie$elm_units$Length$meters(-2),
 				$ianmackenzie$elm_units$Length$meters(-7.9)),
 			A4(
 				$author$project$SpaceshipPart$rotatePart,
@@ -13544,8 +13544,8 @@ var $author$project$SpaceshipScene$mySpaceship = {
 			A2(
 			$author$project$SpaceshipPart$movePart,
 			_Utils_Tuple3(
-				$ianmackenzie$elm_units$Length$meters(-1.5),
-				$ianmackenzie$elm_units$Length$meters(1.5),
+				$ianmackenzie$elm_units$Length$meters(-2),
+				$ianmackenzie$elm_units$Length$meters(2),
 				$ianmackenzie$elm_units$Length$meters(-7.9)),
 			A4(
 				$author$project$SpaceshipPart$rotatePart,
@@ -13556,8 +13556,8 @@ var $author$project$SpaceshipScene$mySpaceship = {
 			A2(
 			$author$project$SpaceshipPart$movePart,
 			_Utils_Tuple3(
-				$ianmackenzie$elm_units$Length$meters(1.5),
-				$ianmackenzie$elm_units$Length$meters(1.5),
+				$ianmackenzie$elm_units$Length$meters(2),
+				$ianmackenzie$elm_units$Length$meters(2),
 				$ianmackenzie$elm_units$Length$meters(-7.9)),
 			A4(
 				$author$project$SpaceshipPart$rotatePart,
@@ -13600,7 +13600,7 @@ var $author$project$SpaceshipScene$mySpaceship = {
 				'fueltank1',
 				$ianmackenzie$elm_units$Length$meters(4),
 				$ianmackenzie$elm_units$Length$meters(25),
-				100))
+				20))
 		])
 };
 var $author$project$Wrapper3D$loadTexture = F2(
@@ -13733,6 +13733,7 @@ var $author$project$SpaceshipScene$init = function (_v0) {
 		{
 			azimuth: $ianmackenzie$elm_units$Angle$degrees(180),
 			cameraPos: A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 20),
+			cameraZoom: $ianmackenzie$elm_units$Length$meters(100),
 			elevation: $ianmackenzie$elm_units$Angle$degrees(30),
 			gSkyboxModel: gSkyboxModel,
 			gTextureModel: gTextureModel,
@@ -15170,6 +15171,9 @@ var $author$project$Wrapper3D$generateTruncatedCone = F3(
 var $ianmackenzie$elm_units$Duration$inSeconds = function (_v0) {
 	var numSeconds = _v0.a;
 	return numSeconds;
+};
+var $ianmackenzie$elm_units$Length$kilometers = function (numKilometers) {
+	return $ianmackenzie$elm_units$Length$meters(1000 * numKilometers);
 };
 var $elm$core$Dict$member = F2(
 	function (key, dict) {
@@ -18918,7 +18922,7 @@ var $author$project$SpaceshipScene$update = F2(
 									$elm$core$Task$succeed(true))
 								])));
 				}
-			default:
+			case 'SpaceshipMsg':
 				var sMsg = message.a;
 				var _v24 = A3($author$project$SpaceshipPart$update, model.meshStore, sMsg, model.spaceshipState);
 				var newSSState = _v24.a;
@@ -18928,6 +18932,19 @@ var $author$project$SpaceshipScene$update = F2(
 						model,
 						{spaceshipState: newSSState}),
 					A2($elm$core$Platform$Cmd$map, $author$project$SpaceshipScene$SpaceshipMsg, sCmd));
+			default:
+				var length = message.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							cameraZoom: A3(
+								$ianmackenzie$elm_units$Quantity$clamp,
+								$ianmackenzie$elm_units$Quantity$zero,
+								$ianmackenzie$elm_units$Length$kilometers(10),
+								A2($ianmackenzie$elm_units$Quantity$plus, length, model.cameraZoom))
+						}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $ianmackenzie$elm_3d_scene$Scene3d$BackgroundColor = function (a) {
@@ -22262,9 +22279,6 @@ var $ianmackenzie$elm_3d_scene$Scene3d$fourLights = F4(
 	});
 var $ianmackenzie$elm_3d_scene$Scene3d$HableFilmicToneMapping = {$: 'HableFilmicToneMapping'};
 var $ianmackenzie$elm_3d_scene$Scene3d$hableFilmicToneMapping = $ianmackenzie$elm_3d_scene$Scene3d$HableFilmicToneMapping;
-var $ianmackenzie$elm_units$Length$kilometers = function (numKilometers) {
-	return $ianmackenzie$elm_units$Length$meters(1000 * numKilometers);
-};
 var $ianmackenzie$elm_units$LuminousFlux$lumens = function (numLumens) {
 	return $ianmackenzie$elm_units$Quantity$Quantity(numLumens);
 };
@@ -22743,6 +22757,9 @@ var $ianmackenzie$elm_3d_camera$Viewpoint3d$orbitZ = function (_v0) {
 	return $ianmackenzie$elm_3d_camera$Viewpoint3d$orbit(
 		{azimuth: azimuth, distance: distance, elevation: elevation, focalPoint: focalPoint, groundPlane: $ianmackenzie$elm_geometry$SketchPlane3d$xy});
 };
+var $author$project$SpaceshipScene$ChangeZoom = function (a) {
+	return {$: 'ChangeZoom', a: a};
+};
 var $author$project$SpaceshipScene$angleDisplay = function (model) {
 	return $MacCASOutreach$graphicsvg$GraphicSVG$group(
 		_List_fromArray(
@@ -22773,6 +22790,29 @@ var $author$project$SpaceshipScene$angleDisplay = function (model) {
 								($author$project$Wrapper3D$unwrapQ(model.elevation) * 180) / $elm$core$Basics$pi)) + 'º'))))
 			]));
 };
+var $MacCASOutreach$graphicsvg$GraphicSVG$AlignCentred = {$: 'AlignCentred'};
+var $MacCASOutreach$graphicsvg$GraphicSVG$centered = function (stencil) {
+	if (stencil.$ === 'Text') {
+		var _v1 = stencil.a;
+		var si = _v1.a;
+		var bo = _v1.b;
+		var i = _v1.c;
+		var u = _v1.d;
+		var s = _v1.e;
+		var sel = _v1.f;
+		var f = _v1.g;
+		var c = _v1.h;
+		var str = stencil.b;
+		return A2(
+			$MacCASOutreach$graphicsvg$GraphicSVG$Text,
+			A8($MacCASOutreach$graphicsvg$GraphicSVG$Face, si, bo, i, u, s, sel, f, $MacCASOutreach$graphicsvg$GraphicSVG$AlignCentred),
+			str);
+	} else {
+		var a = stencil;
+		return a;
+	}
+};
+var $MacCASOutreach$graphicsvg$GraphicSVG$green = A4($MacCASOutreach$graphicsvg$GraphicSVG$RGBA, 115, 210, 22, 1);
 var $ianmackenzie$elm_units$Length$inKilometers = function (length) {
 	return 0.001 * $ianmackenzie$elm_units$Length$inMeters(length);
 };
@@ -22987,6 +23027,10 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$map = F2(
 				return A3($MacCASOutreach$graphicsvg$GraphicSVG$GraphPaper, s, th, c);
 		}
 	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$notifyTap = F2(
+	function (msg, shape) {
+		return A2($MacCASOutreach$graphicsvg$GraphicSVG$Tap, msg, shape);
+	});
 var $author$project$SpaceshipPart$progressBar = F4(
 	function (color, _v0, total, left) {
 		var width = _v0.a;
@@ -23005,13 +23049,14 @@ var $author$project$SpaceshipPart$progressBar = F4(
 						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, width, height))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2((-width) * (1 - percent), 0),
+					_Utils_Tuple2(((-width) * (1 - percent)) / 2, 0),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						color,
 						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, width * percent, 15)))
 				]));
 	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$red = A4($MacCASOutreach$graphicsvg$GraphicSVG$RGBA, 204, 0, 0, 1);
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $elm$core$String$foldr = _String_foldr;
 var $elm$core$String$toList = function (string) {
@@ -23342,7 +23387,7 @@ var $author$project$SpaceshipPart$overlay = F3(
 						-60),
 					A4(
 						$author$project$SpaceshipPart$progressBar,
-						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						((fuelRemaining / fuelOriginalCap) < 0.10) ? $MacCASOutreach$graphicsvg$GraphicSVG$red : (((fuelRemaining / fuelOriginalCap) < 0.20) ? $MacCASOutreach$graphicsvg$GraphicSVG$orange : $MacCASOutreach$graphicsvg$GraphicSVG$white),
 						_Utils_Tuple2(200, 15),
 						fuelOriginalCap,
 						fuelRemaining))
@@ -23466,6 +23511,40 @@ var $author$project$SpaceshipScene$physicsDebug = F2(
 											$elm$core$List$head(toTrack))))))
 						]))));
 	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$rotate = F2(
+	function (theta, shape) {
+		return A2($MacCASOutreach$graphicsvg$GraphicSVG$Rotate, theta, shape);
+	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$RoundRect = F3(
+	function (a, b, c) {
+		return {$: 'RoundRect', a: a, b: b, c: c};
+	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$roundedRect = F3(
+	function (w, h, r) {
+		return A3($MacCASOutreach$graphicsvg$GraphicSVG$RoundRect, w, h, r);
+	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$Sansserif = {$: 'Sansserif'};
+var $MacCASOutreach$graphicsvg$GraphicSVG$sansserif = function (stencil) {
+	if (stencil.$ === 'Text') {
+		var _v1 = stencil.a;
+		var si = _v1.a;
+		var bo = _v1.b;
+		var i = _v1.c;
+		var u = _v1.d;
+		var s = _v1.e;
+		var sel = _v1.f;
+		var f = _v1.g;
+		var c = _v1.h;
+		var str = stencil.b;
+		return A2(
+			$MacCASOutreach$graphicsvg$GraphicSVG$Text,
+			A8($MacCASOutreach$graphicsvg$GraphicSVG$Face, si, bo, i, u, s, sel, $MacCASOutreach$graphicsvg$GraphicSVG$Sansserif, c),
+			str);
+	} else {
+		var a = stencil;
+		return a;
+	}
+};
 var $author$project$SpaceshipScene$overlay = function (model) {
 	var velocity = A2(
 		$elm$core$Maybe$withDefault,
@@ -23515,7 +23594,71 @@ var $author$project$SpaceshipScene$overlay = function (model) {
 			A2(
 			$MacCASOutreach$graphicsvg$GraphicSVG$map,
 			$author$project$SpaceshipScene$SpaceshipMsg,
-			A3($author$project$SpaceshipPart$overlay, model.width, model.height, model.spaceshipState))
+			A3($author$project$SpaceshipPart$overlay, model.width, model.height, model.spaceshipState)),
+			A2(
+			$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
+			$author$project$SpaceshipScene$ChangeZoom(
+				$ianmackenzie$elm_units$Length$meters(-10)),
+			A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$move,
+				_Utils_Tuple2(
+					($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
+					($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 150),
+				$MacCASOutreach$graphicsvg$GraphicSVG$group(
+					_List_fromArray(
+						[
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+							$MacCASOutreach$graphicsvg$GraphicSVG$green,
+							A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
+							$elm$core$Basics$degrees(180),
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$move,
+								_Utils_Tuple2(0, -2.5),
+								A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+									$MacCASOutreach$graphicsvg$GraphicSVG$black,
+									$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
+										$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+											A2(
+												$MacCASOutreach$graphicsvg$GraphicSVG$size,
+												16,
+												$MacCASOutreach$graphicsvg$GraphicSVG$text('+')))))))
+						])))),
+			A2(
+			$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
+			$author$project$SpaceshipScene$ChangeZoom(
+				$ianmackenzie$elm_units$Length$meters(10)),
+			A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$move,
+				_Utils_Tuple2(
+					($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
+					($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 200),
+				$MacCASOutreach$graphicsvg$GraphicSVG$group(
+					_List_fromArray(
+						[
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+							$MacCASOutreach$graphicsvg$GraphicSVG$green,
+							A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
+							A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
+							$elm$core$Basics$degrees(180),
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$move,
+								_Utils_Tuple2(0, -2.5),
+								A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+									$MacCASOutreach$graphicsvg$GraphicSVG$black,
+									$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
+										$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+											A2(
+												$MacCASOutreach$graphicsvg$GraphicSVG$size,
+												16,
+												$MacCASOutreach$graphicsvg$GraphicSVG$text('-')))))))
+						]))))
 		]);
 };
 var $ianmackenzie$elm_3d_camera$Camera3d$Types$Camera3d = function (a) {
@@ -24515,12 +24658,7 @@ var $author$project$SpaceshipScene$view = function (model) {
 		{
 			verticalFieldOfView: $ianmackenzie$elm_units$Angle$degrees(45),
 			viewpoint: $ianmackenzie$elm_3d_camera$Viewpoint3d$orbitZ(
-				{
-					azimuth: model.azimuth,
-					distance: $ianmackenzie$elm_units$Length$meters(300),
-					elevation: model.elevation,
-					focalPoint: spaceshipPos
-				})
+				{azimuth: model.azimuth, distance: model.cameraZoom, elevation: model.elevation, focalPoint: spaceshipPos})
 		});
 	var _v0 = $author$project$SpaceshipScene$light;
 	var firstLight = _v0.a;
