@@ -11110,8 +11110,10 @@ var $author$project$Wrapper3D$truncatedCone = F5(
 				shape: A3($ianmackenzie$elm_3d_scene$Scene3d$meshWithShadow, material, mesh, shadow)
 			});
 	});
-var $author$project$RocketParts$engine = F3(
-	function (model, radius, length) {
+var $author$project$RocketParts$engine = F4(
+	function (model, radius, length, _v0) {
+		var colour = _v0.a;
+		var roughness = _v0.b;
 		return A2(
 			$author$project$Wrapper3D$move3D,
 			_Utils_Tuple3(0, 0, -20),
@@ -11944,12 +11946,13 @@ var $author$project$SpaceshipPart$createObject = F2(
 								part.pitch,
 								part.yaw,
 								part.roll,
-								A3(
+								A4(
 									$author$project$RocketParts$engine,
 									{meshStore: meshStore},
 									$ianmackenzie$elm_units$Length$inCentimeters(
 										A2($ianmackenzie$elm_units$Quantity$divideBy, 2, tParams.diameter)),
-									$ianmackenzie$elm_units$Length$inCentimeters(tParams.length)))),
+									$ianmackenzie$elm_units$Length$inCentimeters(tParams.length),
+									_Utils_Tuple2(tParams.matColour, tParams.matRoughness)))),
 						tParams.mass);
 				case 'FuelTank':
 					var tParams = _v1.a;
@@ -11965,7 +11968,7 @@ var $author$project$SpaceshipPart$createObject = F2(
 								A3(
 									$author$project$Wrapper3D$metallic,
 									$avh4$elm_color$Color$orange,
-									0.5,
+									0.3,
 									A2(
 										$author$project$Wrapper3D$cylinder,
 										$ianmackenzie$elm_units$Length$inCentimeters(tParams.radius),
@@ -13281,9 +13284,6 @@ var $author$project$GSVGTexture$initialModel = function (shapes) {
 var $ianmackenzie$elm_units$Pixels$int = function (numPixels) {
 	return $ianmackenzie$elm_units$Quantity$Quantity(numPixels);
 };
-var $ianmackenzie$elm_units$Acceleration$metersPerSecondSquared = function (numMetersPerSecondSquared) {
-	return $ianmackenzie$elm_units$Quantity$Quantity(numMetersPerSecondSquared);
-};
 var $author$project$SpaceshipPart$DisableThruster = function (a) {
 	return {$: 'DisableThruster', a: a};
 };
@@ -13849,8 +13849,10 @@ var $author$project$SpaceshipPart$rotatePart = F4(
 var $author$project$SpaceshipPart$Thruster = function (a) {
 	return {$: 'Thruster', a: a};
 };
-var $author$project$SpaceshipPart$addThruster = F6(
-	function (name, fuelVelocity, fuelFlowRate, diameter, length, mass) {
+var $author$project$SpaceshipPart$addThruster = F7(
+	function (name, fuelVelocity, fuelFlowRate, diameter, length, mass, _v0) {
+		var colour = _v0.a;
+		var roughness = _v0.b;
 		return $author$project$SpaceshipPart$Part(
 			{
 				angle: $ianmackenzie$elm_geometry$Direction3d$z,
@@ -13859,7 +13861,7 @@ var $author$project$SpaceshipPart$addThruster = F6(
 				position: $ianmackenzie$elm_geometry$Point3d$origin,
 				roll: $ianmackenzie$elm_units$Quantity$zero,
 				shipPart: $author$project$SpaceshipPart$Thruster(
-					{diameter: diameter, fuelFlowRate: fuelFlowRate, fuelVelocity: fuelVelocity, length: length, mass: mass}),
+					{diameter: diameter, fuelFlowRate: fuelFlowRate, fuelVelocity: fuelVelocity, length: length, mass: mass, matColour: colour, matRoughness: roughness}),
 				yaw: $ianmackenzie$elm_units$Quantity$zero
 			});
 	});
@@ -13885,7 +13887,17 @@ var $author$project$SpaceshipPart$saturnV = function (name) {
 		$ianmackenzie$elm_units$Duration$second,
 		$ianmackenzie$elm_units$Mass$kilograms(2607.38));
 	var diameter = $ianmackenzie$elm_units$Length$meters(3.7);
-	return A6($author$project$SpaceshipPart$addThruster, name, fuelVelocity, fuelRate, diameter, length, mass);
+	return A7(
+		$author$project$SpaceshipPart$addThruster,
+		name,
+		fuelVelocity,
+		fuelRate,
+		diameter,
+		length,
+		mass,
+		_Utils_Tuple2(
+			A3($avh4$elm_color$Color$rgb255, 222, 218, 211),
+			0.5));
 };
 var $author$project$SpaceshipScene$engineBlock = function (n) {
 	return $author$project$SpaceshipPart$partGroup(
@@ -14518,24 +14530,6 @@ var $author$project$SpaceshipScene$svgTextures = _List_fromArray(
 		A2($author$project$Wrapper3D$svgTexture, 'squares', $author$project$SpaceshipScene$squares),
 		A2($author$project$Wrapper3D$svgTexture, 'solarcell', $author$project$SpaceshipScene$solarCellsvg)
 	]);
-var $author$project$SpaceshipScene$useGravity = false;
-var $ianmackenzie$elm_units$Acceleration$inMetersPerSecondSquared = function (_v0) {
-	var numMetersPerSecondSquared = _v0.a;
-	return numMetersPerSecondSquared;
-};
-var $w0rm$elm_physics$Physics$World$withGravity = F3(
-	function (acceleration, direction, _v0) {
-		var world = _v0.a;
-		return $w0rm$elm_physics$Internal$World$Protected(
-			_Utils_update(
-				world,
-				{
-					gravity: A2(
-						$w0rm$elm_physics$Internal$Vector3$scale,
-						$ianmackenzie$elm_units$Acceleration$inMetersPerSecondSquared(acceleration),
-						$ianmackenzie$elm_geometry$Direction3d$unwrap(direction))
-				}));
-	});
 var $author$project$SpaceshipScene$init = function (_v0) {
 	var allSvgTextures = _Utils_ap(
 		$author$project$SpaceshipScene$svgTextures,
@@ -14586,6 +14580,7 @@ var $author$project$SpaceshipScene$init = function (_v0) {
 			elevation: $ianmackenzie$elm_units$Angle$degrees(30),
 			gSkyboxModel: gSkyboxModel,
 			gTextureModel: gTextureModel,
+			gameTime: 0,
 			height: $ianmackenzie$elm_units$Quantity$zero,
 			ifGameOver: false,
 			ifRepair: false,
@@ -14603,11 +14598,7 @@ var $author$project$SpaceshipScene$init = function (_v0) {
 			time: 0,
 			widget: wModel,
 			width: $ianmackenzie$elm_units$Quantity$zero,
-			world: $author$project$SpaceshipScene$useGravity ? A3(
-				$w0rm$elm_physics$Physics$World$withGravity,
-				$ianmackenzie$elm_units$Acceleration$metersPerSecondSquared(0.0980665),
-				$ianmackenzie$elm_geometry$Direction3d$negativeZ,
-				$w0rm$elm_physics$Physics$World$empty) : $w0rm$elm_physics$Physics$World$empty
+			world: $w0rm$elm_physics$Physics$World$empty
 		},
 		$elm$core$Platform$Cmd$batch(
 			_List_fromArray(
@@ -15284,31 +15275,6 @@ var $author$project$SpaceshipScene$Started = function (a) {
 var $author$project$SpaceshipScene$WidgetMsg = function (a) {
 	return {$: 'WidgetMsg', a: a};
 };
-var $elm$core$Dict$sizeHelp = F2(
-	function (n, dict) {
-		sizeHelp:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return n;
-			} else {
-				var left = dict.d;
-				var right = dict.e;
-				var $temp$n = A2($elm$core$Dict$sizeHelp, n + 1, right),
-					$temp$dict = left;
-				n = $temp$n;
-				dict = $temp$dict;
-				continue sizeHelp;
-			}
-		}
-	});
-var $elm$core$Dict$size = function (dict) {
-	return A2($elm$core$Dict$sizeHelp, 0, dict);
-};
-var $author$project$TextureLoader$allTexturesLoaded = function (model) {
-	return _Utils_eq(
-		$elm$core$Dict$size(model.requestedURLs),
-		model.numberFinished);
-};
 var $ianmackenzie$elm_geometry$Point3d$fromMeters = function (givenCoordinates) {
 	return $ianmackenzie$elm_geometry$Geometry$Types$Point3d(givenCoordinates);
 };
@@ -15385,82 +15351,92 @@ var $author$project$PhysicsWrapper3D$adjustedPosition = function (body) {
 				$w0rm$elm_physics$Physics$Body$frame(body),
 				$w0rm$elm_physics$Physics$Body$originPoint(body))));
 };
-var $w0rm$elm_physics$Internal$Vector3$cross = F2(
-	function (a, b) {
-		return {x: (a.y * b.z) - (a.z * b.y), y: (a.z * b.x) - (a.x * b.z), z: (a.x * b.y) - (a.y * b.x)};
+var $elm$core$Dict$sizeHelp = F2(
+	function (n, dict) {
+		sizeHelp:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return n;
+			} else {
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$n = A2($elm$core$Dict$sizeHelp, n + 1, right),
+					$temp$dict = left;
+				n = $temp$n;
+				dict = $temp$dict;
+				continue sizeHelp;
+			}
+		}
 	});
-var $w0rm$elm_physics$Internal$Body$applyForce = F4(
-	function (amount, direction, point, body) {
-		var relativePoint = A2(
-			$w0rm$elm_physics$Internal$Vector3$sub,
-			point,
-			$w0rm$elm_physics$Internal$Transform3d$originPoint(body.transform3d));
-		var force = A2($w0rm$elm_physics$Internal$Vector3$scale, amount, direction);
-		var torque = A2($w0rm$elm_physics$Internal$Vector3$cross, relativePoint, force);
-		return _Utils_update(
-			body,
-			{
-				force: A2($w0rm$elm_physics$Internal$Vector3$add, body.force, force),
-				torque: A2($w0rm$elm_physics$Internal$Vector3$add, body.torque, torque)
-			});
-	});
-var $w0rm$elm_physics$Physics$Body$applyForce = F4(
-	function (_v0, direction, point, _v1) {
-		var force = _v0.a;
-		var body = _v1.a;
-		return (body.mass > 0) ? $w0rm$elm_physics$Internal$Body$Protected(
-			A4(
-				$w0rm$elm_physics$Internal$Body$applyForce,
-				force,
-				$ianmackenzie$elm_geometry$Direction3d$unwrap(direction),
-				$ianmackenzie$elm_geometry$Point3d$toMeters(point),
-				body)) : $w0rm$elm_physics$Internal$Body$Protected(body);
-	});
-var $ianmackenzie$elm_geometry$Direction3d$placeIn = F2(
-	function (_v0, _v1) {
-		var frame = _v0.a;
-		var d = _v1.a;
-		var _v2 = frame.zDirection;
-		var k = _v2.a;
-		var _v3 = frame.yDirection;
-		var j = _v3.a;
-		var _v4 = frame.xDirection;
-		var i = _v4.a;
-		return $ianmackenzie$elm_geometry$Geometry$Types$Direction3d(
-			{x: ((i.x * d.x) + (j.x * d.y)) + (k.x * d.z), y: ((i.y * d.x) + (j.y * d.y)) + (k.y * d.z), z: ((i.z * d.x) + (j.z * d.y)) + (k.z * d.z)});
-	});
-var $author$project$PhysicsWrapper3D$applyForces = function (body) {
-	var frame = $w0rm$elm_physics$Physics$Body$frame(body);
-	var data = $w0rm$elm_physics$Physics$Body$data(body);
-	var forces = data.constantForces;
-	var applyOneForce = F2(
-		function (forceData, b) {
-			var pos = A2(
-				$ianmackenzie$elm_geometry$Point3d$translateBy,
-				A2(
-					$ianmackenzie$elm_geometry$Vector3d$from,
-					$ianmackenzie$elm_geometry$Point3d$origin,
-					$author$project$PhysicsWrapper3D$adjustedPosition(body)),
-				A2($ianmackenzie$elm_geometry$Point3d$placeIn, frame, forceData.relativePosition));
-			var force = forceData.force;
-			var bFrame = $w0rm$elm_physics$Physics$Body$frame(b);
-			var direction = A2($ianmackenzie$elm_geometry$Direction3d$placeIn, bFrame, forceData.direction);
-			var bData = $w0rm$elm_physics$Physics$Body$data(b);
-			return A2(
-				$w0rm$elm_physics$Physics$Body$withData,
-				_Utils_update(
-					bData,
-					{
-						netForce: {direction: forceData.direction, force: force}
-					}),
-				A4($w0rm$elm_physics$Physics$Body$applyForce, force, direction, pos, b));
-		});
-	return A3($elm$core$List$foldl, applyOneForce, body, forces);
+var $elm$core$Dict$size = function (dict) {
+	return A2($elm$core$Dict$sizeHelp, 0, dict);
 };
-var $w0rm$elm_physics$Physics$World$bodies = function (_v0) {
-	var world = _v0.a;
-	return A2($elm$core$List$map, $w0rm$elm_physics$Internal$Body$Protected, world.bodies);
+var $author$project$TextureLoader$allTexturesLoaded = function (model) {
+	return _Utils_eq(
+		$elm$core$Dict$size(model.requestedURLs),
+		model.numberFinished);
 };
+var $author$project$Wrapper3D$animationPieces = F3(
+	function (intervals, finalAnimation, time) {
+		animationPieces:
+		while (true) {
+			if (intervals.b) {
+				var _v1 = intervals.a;
+				var duration = _v1.a;
+				var animation = _v1.b;
+				var rest = intervals.b;
+				if (_Utils_cmp(time, duration) < 1) {
+					return animation(time);
+				} else {
+					var $temp$intervals = rest,
+						$temp$finalAnimation = finalAnimation,
+						$temp$time = time - duration;
+					intervals = $temp$intervals;
+					finalAnimation = $temp$finalAnimation;
+					time = $temp$time;
+					continue animationPieces;
+				}
+			} else {
+				return finalAnimation(time);
+			}
+		}
+	});
+var $author$project$SpaceshipScene$autoPilotRoutine = A2(
+	$author$project$Wrapper3D$animationPieces,
+	_List_fromArray(
+		[
+			_Utils_Tuple2(
+			5.0,
+			function (time) {
+				return $author$project$SpaceshipPart$ManyActions(
+					_List_fromArray(
+						[
+							A2($author$project$SpaceshipPart$EnableThruster, 'thruster1a', 100),
+							A2($author$project$SpaceshipPart$EnableThruster, 'thruster2a', 100),
+							A2($author$project$SpaceshipPart$EnableThruster, 'thruster3a', 100),
+							A2($author$project$SpaceshipPart$EnableThruster, 'thruster4a', 100),
+							A2($author$project$SpaceshipPart$EnableThruster, 'thruster5a', 100),
+							A2($author$project$SpaceshipPart$EnableThruster, 'thruster6a', 100)
+						]));
+			}),
+			_Utils_Tuple2(
+			0.1,
+			function (time) {
+				return $author$project$SpaceshipPart$ManyActions(
+					_List_fromArray(
+						[
+							$author$project$SpaceshipPart$DisableThruster('thruster1a'),
+							$author$project$SpaceshipPart$DisableThruster('thruster2a'),
+							$author$project$SpaceshipPart$DisableThruster('thruster3a'),
+							$author$project$SpaceshipPart$DisableThruster('thruster4a'),
+							$author$project$SpaceshipPart$DisableThruster('thruster5a'),
+							$author$project$SpaceshipPart$DisableThruster('thruster6a')
+						]));
+			})
+		]),
+	function (_v0) {
+		return $author$project$SpaceshipPart$DoNothing;
+	});
 var $ianmackenzie$elm_units$Quantity$clamp = F3(
 	function (_v0, _v1, _v2) {
 		var lower = _v0.a;
@@ -16013,6 +15989,10 @@ var $author$project$SpaceshipScene$earthModel = function (model) {
 					$author$project$Wrapper3D$sphere($author$project$SpaceshipScene$earthSize)))
 			]));
 };
+var $w0rm$elm_physics$Physics$World$bodies = function (_v0) {
+	var world = _v0.a;
+	return A2($elm$core$List$map, $w0rm$elm_physics$Internal$Body$Protected, world.bodies);
+};
 var $elm$core$List$partition = F2(
 	function (pred, list) {
 		var step = F2(
@@ -16090,8 +16070,7 @@ var $author$project$SpaceshipScene$earthToShip = function (model) {
 			A2($author$project$PhysicsWrapper3D$getBodyByName, 'spaceship', model.spaceshipState.world)));
 	var earthPosition = $author$project$Wrapper3D$getPosition(
 		$author$project$SpaceshipScene$earthModel(model));
-	var distance = $ianmackenzie$elm_units$Length$inMeters(
-		A2($ianmackenzie$elm_geometry$Point3d$distanceFrom, spaceshipPosition, earthPosition));
+	var distance = A2($ianmackenzie$elm_geometry$Point3d$distanceFrom, spaceshipPosition, earthPosition);
 	return distance;
 };
 var $author$project$TextureLoader$fetchTexture = F2(
@@ -18645,7 +18624,7 @@ var $author$project$SpaceshipScene$satelliteModel = function (model) {
 			[
 				A2(
 				$author$project$Wrapper3D$move3D,
-				_Utils_Tuple3(0, -$author$project$SpaceshipScene$earthSize, $author$project$SpaceshipScene$earthSize),
+				_Utils_Tuple3(0, -earthToSatellite, $author$project$SpaceshipScene$earthSize / 2),
 				A2(
 					$author$project$Wrapper3D$move3D,
 					_Utils_Tuple3(0, -earthToSatellite, 0),
@@ -18666,70 +18645,978 @@ var $author$project$SpaceshipScene$satelliteModel = function (model) {
 								A2($author$project$SpaceshipScene$satellite, model, model.ifSatelliteBroken))))))
 			]));
 };
-var $author$project$SpaceshipScene$aggregate = function (boxList) {
-	var _v0 = $ianmackenzie$elm_geometry$BoundingBox3d$aggregateN(boxList);
-	if (_v0.$ === 'Just') {
-		var attri = _v0.a;
-		return attri;
-	} else {
-		return $ianmackenzie$elm_geometry$BoundingBox3d$singleton($ianmackenzie$elm_geometry$Point3d$origin);
-	}
-};
-var $author$project$SpaceshipScene$findCenter = function (object) {
-	if (object.$ === 'ObjectGroup') {
-		var attr = object.a;
-		var _v1 = attr.boundingBox;
-		switch (_v1.$) {
-			case 'Box':
-				var box = _v1.a;
-				return $ianmackenzie$elm_geometry$BoundingBox3d$centerPoint(box);
-			case 'Composite':
-				var box = _v1.a;
-				return $ianmackenzie$elm_geometry$BoundingBox3d$centerPoint(
-					$author$project$SpaceshipScene$aggregate(box));
-			default:
-				return $ianmackenzie$elm_geometry$Point3d$origin;
-		}
-	} else {
-		var attr = object.a;
-		var _v2 = attr.boundingBox;
-		switch (_v2.$) {
-			case 'Box':
-				var box = _v2.a;
-				return $ianmackenzie$elm_geometry$BoundingBox3d$centerPoint(box);
-			case 'Composite':
-				var box = _v2.a;
-				return $ianmackenzie$elm_geometry$BoundingBox3d$centerPoint(
-					$author$project$SpaceshipScene$aggregate(box));
-			default:
-				return $ianmackenzie$elm_geometry$Point3d$origin;
-		}
-	}
-};
-var $elm$core$List$sum = function (numbers) {
-	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
-};
 var $author$project$SpaceshipScene$satelliteToShip = function (model) {
-	var earth = A2(
-		$ianmackenzie$elm_units$Quantity$in_,
-		$ianmackenzie$elm_units$Length$meters,
-		$ianmackenzie$elm_units$Length$centimeters($author$project$SpaceshipScene$earthSize * 1.001));
-	var distence = A2(
-		$elm$core$List$map,
-		function (x) {
-			return $ianmackenzie$elm_units$Length$inMeters(
-				A2(
-					$ianmackenzie$elm_geometry$Point3d$distanceFrom,
-					x,
-					$author$project$SpaceshipScene$findCenter(
-						$author$project$SpaceshipScene$satelliteModel(model))));
-		},
+	var spaceshipPosition = A2(
+		$elm$core$Maybe$withDefault,
+		$ianmackenzie$elm_geometry$Point3d$origin,
 		A2(
-			$elm$core$List$map,
-			$author$project$PhysicsWrapper3D$adjustedPosition,
-			$w0rm$elm_physics$Physics$World$bodies(model.spaceshipState.world)));
-	return $elm$core$Basics$round(
-		($elm$core$List$sum(distence) / $elm$core$List$length(distence)) - 90000);
+			$elm$core$Maybe$map,
+			A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$originPoint, $w0rm$elm_physics$Physics$Body$frame),
+			$elm$core$List$head(
+				$w0rm$elm_physics$Physics$World$bodies(model.spaceshipState.world))));
+	var satellitePosition = $author$project$Wrapper3D$getPosition(
+		$author$project$SpaceshipScene$satelliteModel(model));
+	var distanceToSpaceStation = $ianmackenzie$elm_units$Length$inMeters(
+		$ianmackenzie$elm_geometry$Vector3d$length(
+			A2($ianmackenzie$elm_geometry$Vector3d$from, spaceshipPosition, satellitePosition)));
+	return distanceToSpaceStation;
+};
+var $author$project$SpaceshipScene$spaceGameAssist = function (model) {
+	return _List_fromArray(
+		[
+			A2(
+			$author$project$Wrapper3D$move3D,
+			_Utils_Tuple3(
+				0,
+				$ianmackenzie$elm_units$Length$inCentimeters(
+					$ianmackenzie$elm_units$Length$kilometers(100)),
+				0),
+			$author$project$SpaceshipScene$earthModel(model)),
+			$author$project$SpaceshipScene$satelliteModel(model)
+		]);
+};
+var $author$project$SpaceshipScene$spaceStationOrbit = F2(
+	function (model, object) {
+		var spaceStationtoEarth = $ianmackenzie$elm_units$Length$inCentimeters(
+			$ianmackenzie$elm_units$Length$kilometers(150));
+		return A2(
+			$author$project$Wrapper3D$move3D,
+			_Utils_Tuple3(
+				0,
+				$ianmackenzie$elm_units$Length$inCentimeters(
+					$ianmackenzie$elm_units$Length$meters(300)),
+				0),
+			object);
+	});
+var $author$project$SpaceshipScene$spaceStationSize = $ianmackenzie$elm_units$Length$inCentimeters(
+	$ianmackenzie$elm_units$Length$meters(20));
+var $author$project$SpaceshipScene$spaceStation = function (model) {
+	var useTexture = $author$project$Wrapper3D$getTexture(model.textureLoader.textures);
+	return A2(
+		$author$project$SpaceshipScene$spaceStationOrbit,
+		model,
+		A2(
+			$author$project$Wrapper3D$rotateY3D,
+			$elm$core$Basics$degrees(90),
+			A3(
+				$author$project$Wrapper3D$scaleTo3D,
+				$author$project$SpaceshipScene$spaceStationSize,
+				$ianmackenzie$elm_geometry$Direction3d$x,
+				$author$project$Wrapper3D$group3D(
+					_List_fromArray(
+						[
+							A2(
+							$author$project$Wrapper3D$matte,
+							A3($avh4$elm_color$Color$rgb255, 232, 226, 209),
+							A3($author$project$Wrapper3D$box, 20, 200, 15)),
+							A2(
+							$author$project$Wrapper3D$move3D,
+							_Utils_Tuple3(0, 100, 0),
+							A2(
+								$author$project$Wrapper3D$rotateY3D,
+								$elm$core$Basics$degrees(90),
+								A4(
+									$author$project$Wrapper3D$textured,
+									useTexture('solarcell'),
+									0.5,
+									0.5,
+									A2($author$project$Wrapper3D$rectangle3D, 100, 50)))),
+							A2(
+							$author$project$Wrapper3D$move3D,
+							_Utils_Tuple3(0, -100, 0),
+							A2(
+								$author$project$Wrapper3D$rotateY3D,
+								$elm$core$Basics$degrees(90),
+								A4(
+									$author$project$Wrapper3D$textured,
+									useTexture('solarcell'),
+									0.5,
+									0.5,
+									A2($author$project$Wrapper3D$rectangle3D, 100, 50))))
+						])))));
+};
+var $author$project$Wrapper3D$unwrapQ = function (_v0) {
+	var q = _v0.a;
+	return q;
+};
+var $author$project$GSVGSkybox$AllLoaded = function (a) {
+	return {$: 'AllLoaded', a: a};
+};
+var $author$project$GSVGSkybox$BordersGone = function (a) {
+	return {$: 'BordersGone', a: a};
+};
+var $MacCASOutreach$graphicsvg$GraphicSVG$Widget$update = F2(
+	function (msg, model) {
+		var mWH = msg.a;
+		if (mWH.$ === 'Just') {
+			var _v2 = mWH.a;
+			var w = _v2.a;
+			var h = _v2.b;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{wh: h, ww: w}),
+				$elm$core$Platform$Cmd$none);
+		} else {
+			return _Utils_Tuple2(
+				model,
+				$MacCASOutreach$graphicsvg$GraphicSVG$Widget$getContainerSize(model.id));
+		}
+	});
+var $author$project$GSVGSkybox$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'TopWidgetMsg':
+				var wMsg = msg.a;
+				var _v1 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.topWidget);
+				var newWState = _v1.a;
+				var wCmd = _v1.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{topWidget: newWState}),
+					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
+			case 'BotWidgetMsg':
+				var wMsg = msg.a;
+				var _v2 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.botWidget);
+				var newWState = _v2.a;
+				var wCmd = _v2.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{botWidget: newWState}),
+					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
+			case 'Side1Widget':
+				var wMsg = msg.a;
+				var _v3 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.side1Widget);
+				var newWState = _v3.a;
+				var wCmd = _v3.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{side1Widget: newWState}),
+					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
+			case 'Side2Widget':
+				var wMsg = msg.a;
+				var _v4 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.side2Widget);
+				var newWState = _v4.a;
+				var wCmd = _v4.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{side2Widget: newWState}),
+					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
+			case 'Side3Widget':
+				var wMsg = msg.a;
+				var _v5 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.side3Widget);
+				var newWState = _v5.a;
+				var wCmd = _v5.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{side3Widget: newWState}),
+					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
+			case 'Side4Widget':
+				var wMsg = msg.a;
+				var _v6 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.side4Widget);
+				var newWState = _v6.a;
+				var wCmd = _v6.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{side4Widget: newWState}),
+					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
+			case 'GeneratePNG':
+				var id = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{showBorders: false}),
+					$elm$core$Platform$Cmd$batch(
+						_List_fromArray(
+							[
+								A2(
+								$elm$core$Task$perform,
+								$elm$core$Basics$identity,
+								$elm$core$Task$succeed(
+									$author$project$GSVGSkybox$BordersGone('skyT'))),
+								A2(
+								$elm$core$Task$perform,
+								$elm$core$Basics$identity,
+								$elm$core$Task$succeed(
+									$author$project$GSVGSkybox$BordersGone('skyB'))),
+								A2(
+								$elm$core$Task$perform,
+								$elm$core$Basics$identity,
+								$elm$core$Task$succeed(
+									$author$project$GSVGSkybox$BordersGone('skyS1'))),
+								A2(
+								$elm$core$Task$perform,
+								$elm$core$Basics$identity,
+								$elm$core$Task$succeed(
+									$author$project$GSVGSkybox$BordersGone('skyS2'))),
+								A2(
+								$elm$core$Task$perform,
+								$elm$core$Basics$identity,
+								$elm$core$Task$succeed(
+									$author$project$GSVGSkybox$BordersGone('skyS3'))),
+								A2(
+								$elm$core$Task$perform,
+								$elm$core$Basics$identity,
+								$elm$core$Task$succeed(
+									$author$project$GSVGSkybox$BordersGone('skyS4')))
+							])));
+			case 'BordersGone':
+				var id = msg.a;
+				return _Utils_Tuple2(
+					model,
+					$author$project$SVGPorts$createPNG(
+						_Utils_Tuple3(id, 1024, 1024)));
+			case 'ReceivePNG':
+				var _v7 = msg.a;
+				var widgetID = _v7.a;
+				var imageURL = _v7.b;
+				var newModel = function () {
+					switch (widgetID) {
+						case 'skyT':
+							return _Utils_update(
+								model,
+								{topPNG: imageURL});
+						case 'skyB':
+							return _Utils_update(
+								model,
+								{botPNG: imageURL});
+						case 'skyS1':
+							return _Utils_update(
+								model,
+								{side1PNG: imageURL});
+						case 'skyS2':
+							return _Utils_update(
+								model,
+								{side2PNG: imageURL});
+						case 'skyS3':
+							return _Utils_update(
+								model,
+								{side3PNG: imageURL});
+						case 'skyS4':
+							return _Utils_update(
+								model,
+								{side4PNG: imageURL});
+						default:
+							return model;
+					}
+				}();
+				return _Utils_Tuple2(
+					newModel,
+					((newModel.topPNG === '') || ((newModel.botPNG === '') || ((newModel.side1PNG === '') || ((newModel.side2PNG === '') || ((newModel.side3PNG === '') || (newModel.side4PNG === '')))))) ? $elm$core$Platform$Cmd$none : A2(
+						$elm$core$Task$perform,
+						$elm$core$Basics$identity,
+						$elm$core$Task$succeed(
+							$author$project$GSVGSkybox$AllLoaded(
+								_List_fromArray(
+									[
+										_Utils_Tuple2('skyB', newModel.botPNG),
+										_Utils_Tuple2('skyT', newModel.topPNG),
+										_Utils_Tuple2('skyS1', newModel.side1PNG),
+										_Utils_Tuple2('skyS2', newModel.side2PNG),
+										_Utils_Tuple2('skyS3', newModel.side3PNG),
+										_Utils_Tuple2('skyS4', newModel.side4PNG)
+									])))));
+			default:
+				var skyboxList = msg.a;
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		}
+	});
+var $elm$core$Dict$getMin = function (dict) {
+	getMin:
+	while (true) {
+		if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+			var left = dict.d;
+			var $temp$dict = left;
+			dict = $temp$dict;
+			continue getMin;
+		} else {
+			return dict;
+		}
+	}
+};
+var $elm$core$Dict$moveRedLeft = function (dict) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.e.d.$ === 'RBNode_elm_builtin') && (dict.e.d.a.$ === 'Red')) {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v1 = dict.d;
+			var lClr = _v1.a;
+			var lK = _v1.b;
+			var lV = _v1.c;
+			var lLeft = _v1.d;
+			var lRight = _v1.e;
+			var _v2 = dict.e;
+			var rClr = _v2.a;
+			var rK = _v2.b;
+			var rV = _v2.c;
+			var rLeft = _v2.d;
+			var _v3 = rLeft.a;
+			var rlK = rLeft.b;
+			var rlV = rLeft.c;
+			var rlL = rLeft.d;
+			var rlR = rLeft.e;
+			var rRight = _v2.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				$elm$core$Dict$Red,
+				rlK,
+				rlV,
+				A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					rlL),
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rlR, rRight));
+		} else {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v4 = dict.d;
+			var lClr = _v4.a;
+			var lK = _v4.b;
+			var lV = _v4.c;
+			var lLeft = _v4.d;
+			var lRight = _v4.e;
+			var _v5 = dict.e;
+			var rClr = _v5.a;
+			var rK = _v5.b;
+			var rV = _v5.c;
+			var rLeft = _v5.d;
+			var rRight = _v5.e;
+			if (clr.$ === 'Black') {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			}
+		}
+	} else {
+		return dict;
+	}
+};
+var $elm$core$Dict$moveRedRight = function (dict) {
+	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
+		if ((dict.d.d.$ === 'RBNode_elm_builtin') && (dict.d.d.a.$ === 'Red')) {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v1 = dict.d;
+			var lClr = _v1.a;
+			var lK = _v1.b;
+			var lV = _v1.c;
+			var _v2 = _v1.d;
+			var _v3 = _v2.a;
+			var llK = _v2.b;
+			var llV = _v2.c;
+			var llLeft = _v2.d;
+			var llRight = _v2.e;
+			var lRight = _v1.e;
+			var _v4 = dict.e;
+			var rClr = _v4.a;
+			var rK = _v4.b;
+			var rV = _v4.c;
+			var rLeft = _v4.d;
+			var rRight = _v4.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				$elm$core$Dict$Red,
+				lK,
+				lV,
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
+				A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					lRight,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight)));
+		} else {
+			var clr = dict.a;
+			var k = dict.b;
+			var v = dict.c;
+			var _v5 = dict.d;
+			var lClr = _v5.a;
+			var lK = _v5.b;
+			var lV = _v5.c;
+			var lLeft = _v5.d;
+			var lRight = _v5.e;
+			var _v6 = dict.e;
+			var rClr = _v6.a;
+			var rK = _v6.b;
+			var rV = _v6.c;
+			var rLeft = _v6.d;
+			var rRight = _v6.e;
+			if (clr.$ === 'Black') {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Black,
+					k,
+					v,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
+			}
+		}
+	} else {
+		return dict;
+	}
+};
+var $elm$core$Dict$removeHelpPrepEQGT = F7(
+	function (targetKey, dict, color, key, value, left, right) {
+		if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+			var _v1 = left.a;
+			var lK = left.b;
+			var lV = left.c;
+			var lLeft = left.d;
+			var lRight = left.e;
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				lK,
+				lV,
+				lLeft,
+				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, lRight, right));
+		} else {
+			_v2$2:
+			while (true) {
+				if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Black')) {
+					if (right.d.$ === 'RBNode_elm_builtin') {
+						if (right.d.a.$ === 'Black') {
+							var _v3 = right.a;
+							var _v4 = right.d;
+							var _v5 = _v4.a;
+							return $elm$core$Dict$moveRedRight(dict);
+						} else {
+							break _v2$2;
+						}
+					} else {
+						var _v6 = right.a;
+						var _v7 = right.d;
+						return $elm$core$Dict$moveRedRight(dict);
+					}
+				} else {
+					break _v2$2;
+				}
+			}
+			return dict;
+		}
+	});
+var $elm$core$Dict$removeMin = function (dict) {
+	if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
+		var color = dict.a;
+		var key = dict.b;
+		var value = dict.c;
+		var left = dict.d;
+		var lColor = left.a;
+		var lLeft = left.d;
+		var right = dict.e;
+		if (lColor.$ === 'Black') {
+			if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+				var _v3 = lLeft.a;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					color,
+					key,
+					value,
+					$elm$core$Dict$removeMin(left),
+					right);
+			} else {
+				var _v4 = $elm$core$Dict$moveRedLeft(dict);
+				if (_v4.$ === 'RBNode_elm_builtin') {
+					var nColor = _v4.a;
+					var nKey = _v4.b;
+					var nValue = _v4.c;
+					var nLeft = _v4.d;
+					var nRight = _v4.e;
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						$elm$core$Dict$removeMin(nLeft),
+						nRight);
+				} else {
+					return $elm$core$Dict$RBEmpty_elm_builtin;
+				}
+			}
+		} else {
+			return A5(
+				$elm$core$Dict$RBNode_elm_builtin,
+				color,
+				key,
+				value,
+				$elm$core$Dict$removeMin(left),
+				right);
+		}
+	} else {
+		return $elm$core$Dict$RBEmpty_elm_builtin;
+	}
+};
+var $elm$core$Dict$removeHelp = F2(
+	function (targetKey, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		} else {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			if (_Utils_cmp(targetKey, key) < 0) {
+				if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Black')) {
+					var _v4 = left.a;
+					var lLeft = left.d;
+					if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
+						var _v6 = lLeft.a;
+						return A5(
+							$elm$core$Dict$RBNode_elm_builtin,
+							color,
+							key,
+							value,
+							A2($elm$core$Dict$removeHelp, targetKey, left),
+							right);
+					} else {
+						var _v7 = $elm$core$Dict$moveRedLeft(dict);
+						if (_v7.$ === 'RBNode_elm_builtin') {
+							var nColor = _v7.a;
+							var nKey = _v7.b;
+							var nValue = _v7.c;
+							var nLeft = _v7.d;
+							var nRight = _v7.e;
+							return A5(
+								$elm$core$Dict$balance,
+								nColor,
+								nKey,
+								nValue,
+								A2($elm$core$Dict$removeHelp, targetKey, nLeft),
+								nRight);
+						} else {
+							return $elm$core$Dict$RBEmpty_elm_builtin;
+						}
+					}
+				} else {
+					return A5(
+						$elm$core$Dict$RBNode_elm_builtin,
+						color,
+						key,
+						value,
+						A2($elm$core$Dict$removeHelp, targetKey, left),
+						right);
+				}
+			} else {
+				return A2(
+					$elm$core$Dict$removeHelpEQGT,
+					targetKey,
+					A7($elm$core$Dict$removeHelpPrepEQGT, targetKey, dict, color, key, value, left, right));
+			}
+		}
+	});
+var $elm$core$Dict$removeHelpEQGT = F2(
+	function (targetKey, dict) {
+		if (dict.$ === 'RBNode_elm_builtin') {
+			var color = dict.a;
+			var key = dict.b;
+			var value = dict.c;
+			var left = dict.d;
+			var right = dict.e;
+			if (_Utils_eq(targetKey, key)) {
+				var _v1 = $elm$core$Dict$getMin(right);
+				if (_v1.$ === 'RBNode_elm_builtin') {
+					var minKey = _v1.b;
+					var minValue = _v1.c;
+					return A5(
+						$elm$core$Dict$balance,
+						color,
+						minKey,
+						minValue,
+						left,
+						$elm$core$Dict$removeMin(right));
+				} else {
+					return $elm$core$Dict$RBEmpty_elm_builtin;
+				}
+			} else {
+				return A5(
+					$elm$core$Dict$balance,
+					color,
+					key,
+					value,
+					left,
+					A2($elm$core$Dict$removeHelp, targetKey, right));
+			}
+		} else {
+			return $elm$core$Dict$RBEmpty_elm_builtin;
+		}
+	});
+var $elm$core$Dict$remove = F2(
+	function (key, dict) {
+		var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
+		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
+			var _v1 = _v0.a;
+			var k = _v0.b;
+			var v = _v0.c;
+			var l = _v0.d;
+			var r = _v0.e;
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+		} else {
+			var x = _v0;
+			return x;
+		}
+	});
+var $author$project$GSVGTexture$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'WidgetMsg':
+				var wId = msg.a;
+				var wMsg = msg.b;
+				var _v1 = A2(
+					$elm$core$Maybe$map,
+					$MacCASOutreach$graphicsvg$GraphicSVG$Widget$update(wMsg),
+					A2($elm$core$Dict$get, wId, model.widgets));
+				if (_v1.$ === 'Just') {
+					var _v2 = _v1.a;
+					var newWState = _v2.a;
+					var wCmd = _v2.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								widgets: A3($elm$core$Dict$insert, wId, newWState, model.widgets)
+							}),
+						A2(
+							$elm$core$Platform$Cmd$map,
+							$author$project$GSVGTexture$WidgetMsg(wId),
+							wCmd));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			case 'LoadNew':
+				var _v3 = msg.a;
+				var name = _v3.a;
+				var shape = _v3.b;
+				var _v4 = A3($MacCASOutreach$graphicsvg$GraphicSVG$Widget$init, 50, 50, name);
+				var newWidget = _v4.a;
+				var newWCmd = _v4.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							shapes: A3($elm$core$Dict$insert, name, shape, model.shapes),
+							widgets: A3($elm$core$Dict$insert, name, newWidget, model.widgets)
+						}),
+					$elm$core$Platform$Cmd$batch(
+						_List_fromArray(
+							[
+								A2(
+								$elm$core$Platform$Cmd$map,
+								$author$project$GSVGTexture$WidgetMsg(name),
+								newWCmd),
+								$author$project$SVGPorts$createPNG(
+								_Utils_Tuple3(name, 1024, 1024))
+							])));
+			default:
+				var _v5 = msg.a;
+				var widgetID = _v5.a;
+				var imageURL = _v5.b;
+				var newTextures = A3(
+					$elm$core$Dict$insert,
+					A2($elm$core$Debug$log, 'Generated...', widgetID),
+					imageURL,
+					model.textures);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							textures: newTextures,
+							widgets: A2($elm$core$Dict$remove, widgetID, model.widgets)
+						}),
+					$elm$core$Platform$Cmd$none);
+		}
+	});
+var $author$project$SpaceshipPart$Pressed = {$: 'Pressed'};
+var $author$project$SpaceshipPart$Released = {$: 'Released'};
+var $w0rm$elm_physics$Internal$Vector3$cross = F2(
+	function (a, b) {
+		return {x: (a.y * b.z) - (a.z * b.y), y: (a.z * b.x) - (a.x * b.z), z: (a.x * b.y) - (a.y * b.x)};
+	});
+var $w0rm$elm_physics$Internal$Body$applyForce = F4(
+	function (amount, direction, point, body) {
+		var relativePoint = A2(
+			$w0rm$elm_physics$Internal$Vector3$sub,
+			point,
+			$w0rm$elm_physics$Internal$Transform3d$originPoint(body.transform3d));
+		var force = A2($w0rm$elm_physics$Internal$Vector3$scale, amount, direction);
+		var torque = A2($w0rm$elm_physics$Internal$Vector3$cross, relativePoint, force);
+		return _Utils_update(
+			body,
+			{
+				force: A2($w0rm$elm_physics$Internal$Vector3$add, body.force, force),
+				torque: A2($w0rm$elm_physics$Internal$Vector3$add, body.torque, torque)
+			});
+	});
+var $w0rm$elm_physics$Physics$Body$applyForce = F4(
+	function (_v0, direction, point, _v1) {
+		var force = _v0.a;
+		var body = _v1.a;
+		return (body.mass > 0) ? $w0rm$elm_physics$Internal$Body$Protected(
+			A4(
+				$w0rm$elm_physics$Internal$Body$applyForce,
+				force,
+				$ianmackenzie$elm_geometry$Direction3d$unwrap(direction),
+				$ianmackenzie$elm_geometry$Point3d$toMeters(point),
+				body)) : $w0rm$elm_physics$Internal$Body$Protected(body);
+	});
+var $ianmackenzie$elm_geometry$Direction3d$placeIn = F2(
+	function (_v0, _v1) {
+		var frame = _v0.a;
+		var d = _v1.a;
+		var _v2 = frame.zDirection;
+		var k = _v2.a;
+		var _v3 = frame.yDirection;
+		var j = _v3.a;
+		var _v4 = frame.xDirection;
+		var i = _v4.a;
+		return $ianmackenzie$elm_geometry$Geometry$Types$Direction3d(
+			{x: ((i.x * d.x) + (j.x * d.y)) + (k.x * d.z), y: ((i.y * d.x) + (j.y * d.y)) + (k.y * d.z), z: ((i.z * d.x) + (j.z * d.y)) + (k.z * d.z)});
+	});
+var $author$project$SpaceshipPart$applyForces = F2(
+	function (forceList, body) {
+		return A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v0, intermBody) {
+					var f = _v0.a;
+					var p = _v0.b;
+					var d = _v0.c;
+					var frame = $w0rm$elm_physics$Physics$Body$frame(body);
+					var globalDir = A2($ianmackenzie$elm_geometry$Direction3d$placeIn, frame, d);
+					var globalPos = A2($ianmackenzie$elm_geometry$Point3d$placeIn, frame, p);
+					return A4($w0rm$elm_physics$Physics$Body$applyForce, f, globalDir, globalPos, intermBody);
+				}),
+			body,
+			forceList);
+	});
+var $elm$core$Basics$always = F2(
+	function (a, _v0) {
+		return a;
+	});
+var $w0rm$elm_physics$Internal$Constraint$Distance = function (a) {
+	return {$: 'Distance', a: a};
+};
+var $w0rm$elm_physics$Internal$Constraint$Hinge = F4(
+	function (a, b, c, d) {
+		return {$: 'Hinge', a: a, b: b, c: c, d: d};
+	});
+var $w0rm$elm_physics$Internal$Constraint$PointToPoint = F2(
+	function (a, b) {
+		return {$: 'PointToPoint', a: a, b: b};
+	});
+var $w0rm$elm_physics$Internal$Transform3d$directionRelativeTo = F2(
+	function (_v0, worldVector) {
+		var localOrientation = _v0.b;
+		return A2($w0rm$elm_physics$Internal$Transform3d$derotate, localOrientation, worldVector);
+	});
+var $w0rm$elm_physics$Internal$Constraint$relativeToCenterOfMass = F3(
+	function (centerOfMassFrame3d1, centerOfMassFrame3d2, _v0) {
+		var constraint = _v0.a;
+		switch (constraint.$) {
+			case 'PointToPoint':
+				var pivot1 = constraint.a;
+				var pivot2 = constraint.b;
+				return A2(
+					$w0rm$elm_physics$Internal$Constraint$PointToPoint,
+					A2($w0rm$elm_physics$Internal$Transform3d$pointRelativeTo, centerOfMassFrame3d1, pivot1),
+					A2($w0rm$elm_physics$Internal$Transform3d$pointRelativeTo, centerOfMassFrame3d2, pivot2));
+			case 'Hinge':
+				var pivot1 = constraint.a;
+				var axis1 = constraint.b;
+				var pivot2 = constraint.c;
+				var axis2 = constraint.d;
+				return A4(
+					$w0rm$elm_physics$Internal$Constraint$Hinge,
+					A2($w0rm$elm_physics$Internal$Transform3d$pointRelativeTo, centerOfMassFrame3d1, pivot1),
+					A2($w0rm$elm_physics$Internal$Transform3d$directionRelativeTo, centerOfMassFrame3d1, axis1),
+					A2($w0rm$elm_physics$Internal$Transform3d$pointRelativeTo, centerOfMassFrame3d2, pivot2),
+					A2($w0rm$elm_physics$Internal$Transform3d$directionRelativeTo, centerOfMassFrame3d2, axis2));
+			default:
+				var length = constraint.a;
+				return $w0rm$elm_physics$Internal$Constraint$Distance(length);
+		}
+	});
+var $w0rm$elm_physics$Physics$World$constrainIf = F3(
+	function (test, fn, _v0) {
+		var world = _v0.a;
+		var filteredBodies = A2(
+			$elm$core$List$filter,
+			function (body) {
+				return test(
+					$w0rm$elm_physics$Internal$Body$Protected(body));
+			},
+			world.bodies);
+		var filteredConstraints = A2(
+			$elm$core$List$filter,
+			function (_v3) {
+				var bodyId1 = _v3.bodyId1;
+				var bodyId2 = _v3.bodyId2;
+				return !A2(
+					$elm$core$List$any,
+					function (body) {
+						return _Utils_eq(body.id, bodyId1) || _Utils_eq(body.id, bodyId2);
+					},
+					filteredBodies);
+			},
+			world.constraints);
+		var addFor = F3(
+			function (body1, body2, constraintGroup) {
+				var _v2 = A2(
+					fn,
+					$w0rm$elm_physics$Internal$Body$Protected(body1),
+					$w0rm$elm_physics$Internal$Body$Protected(body2));
+				if (!_v2.b) {
+					return constraintGroup;
+				} else {
+					var constraints = _v2;
+					return A2(
+						$elm$core$List$cons,
+						{
+							bodyId1: body1.id,
+							bodyId2: body2.id,
+							constraints: A2(
+								$elm$core$List$map,
+								A2($w0rm$elm_physics$Internal$Constraint$relativeToCenterOfMass, body1.centerOfMassTransform3d, body2.centerOfMassTransform3d),
+								constraints)
+						},
+						constraintGroup);
+				}
+			});
+		var addConstraintsHelp = F2(
+			function (list, result) {
+				addConstraintsHelp:
+				while (true) {
+					if (list.b) {
+						var body1 = list.a;
+						var rest = list.b;
+						var $temp$list = rest,
+							$temp$result = A3(
+							$elm$core$List$foldl,
+							F2(
+								function (body2, constraints) {
+									return A3(
+										addFor,
+										body2,
+										body1,
+										A3(addFor, body1, body2, constraints));
+								}),
+							result,
+							rest);
+						list = $temp$list;
+						result = $temp$result;
+						continue addConstraintsHelp;
+					} else {
+						return result;
+					}
+				}
+			});
+		return $w0rm$elm_physics$Internal$World$Protected(
+			_Utils_update(
+				world,
+				{
+					constraints: A2(addConstraintsHelp, filteredBodies, filteredConstraints)
+				}));
+	});
+var $w0rm$elm_physics$Physics$World$constrain = $w0rm$elm_physics$Physics$World$constrainIf(
+	$elm$core$Basics$always(true));
+var $w0rm$elm_physics$Internal$Constraint$Protected = function (a) {
+	return {$: 'Protected', a: a};
+};
+var $w0rm$elm_physics$Physics$Constraint$hinge = F2(
+	function (axis3d1, axis3d2) {
+		var pivot2 = $ianmackenzie$elm_geometry$Point3d$toMeters(
+			$ianmackenzie$elm_geometry$Axis3d$originPoint(axis3d2));
+		var pivot1 = $ianmackenzie$elm_geometry$Point3d$toMeters(
+			$ianmackenzie$elm_geometry$Axis3d$originPoint(axis3d1));
+		var axis2 = $ianmackenzie$elm_geometry$Direction3d$unwrap(
+			$ianmackenzie$elm_geometry$Axis3d$direction(axis3d2));
+		var axis1 = $ianmackenzie$elm_geometry$Direction3d$unwrap(
+			$ianmackenzie$elm_geometry$Axis3d$direction(axis3d1));
+		return $w0rm$elm_physics$Internal$Constraint$Protected(
+			A4($w0rm$elm_physics$Internal$Constraint$Hinge, pivot1, axis1, pivot2, axis2));
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var $author$project$PhysicsWrapper3D$constrainBodies = F2(
+	function (b1, b2) {
+		var b2Data = $w0rm$elm_physics$Physics$Body$data(b2);
+		var b1Data = $w0rm$elm_physics$Physics$Body$data(b1);
+		return (A2($elm$core$List$member, b1Data.name, b2Data.linkedBodies) || A2($elm$core$List$member, b2Data.name, b1Data.linkedBodies)) ? _List_fromArray(
+			[
+				A2($w0rm$elm_physics$Physics$Constraint$hinge, $ianmackenzie$elm_geometry$Axis3d$x, $ianmackenzie$elm_geometry$Axis3d$x),
+				A2($w0rm$elm_physics$Physics$Constraint$hinge, $ianmackenzie$elm_geometry$Axis3d$y, $ianmackenzie$elm_geometry$Axis3d$y),
+				A2($w0rm$elm_physics$Physics$Constraint$hinge, $ianmackenzie$elm_geometry$Axis3d$z, $ianmackenzie$elm_geometry$Axis3d$z)
+			]) : _List_Nil;
+	});
+var $elm$core$Dict$values = function (dict) {
+	return A3(
+		$elm$core$Dict$foldr,
+		F3(
+			function (key, value, valueList) {
+				return A2($elm$core$List$cons, value, valueList);
+			}),
+		_List_Nil,
+		dict);
+};
+var $author$project$SpaceshipPart$fuelCapacity = function (spaceshipState) {
+	var fuelMasses = A2(
+		$elm$core$List$map,
+		function (f) {
+			return f.parameters.fuel;
+		},
+		$elm$core$Dict$values(spaceshipState.fuelTankStates));
+	var totalFuelMass = A3($elm$core$List$foldl, $ianmackenzie$elm_units$Quantity$plus, $ianmackenzie$elm_units$Quantity$zero, fuelMasses);
+	return totalFuelMass;
+};
+var $author$project$SpaceshipPart$fuelLeft = function (spaceshipState) {
+	var fuelMasses = A2(
+		$elm$core$List$map,
+		function ($) {
+			return $.fuelLeft;
+		},
+		$elm$core$Dict$values(spaceshipState.fuelTankStates));
+	var totalFuelMass = A3($elm$core$List$foldl, $ianmackenzie$elm_units$Quantity$plus, $ianmackenzie$elm_units$Quantity$zero, fuelMasses);
+	return totalFuelMass;
 };
 var $w0rm$elm_physics$Internal$Vector3$distance = F2(
 	function (a, b) {
@@ -18925,11 +19812,6 @@ var $w0rm$elm_physics$Collision$ConvexConvex$clipTwoFaces = F6(
 				}),
 			contacts,
 			A3($w0rm$elm_physics$Collision$ConvexConvex$clipAgainstAdjacentFaces, transform3d1, adjacentFaces, worldVertices));
-	});
-var $w0rm$elm_physics$Internal$Transform3d$directionRelativeTo = F2(
-	function (_v0, worldVector) {
-		var localOrientation = _v0.b;
-		return A2($w0rm$elm_physics$Internal$Transform3d$derotate, localOrientation, worldVector);
 	});
 var $w0rm$elm_physics$Internal$Const$precision = 1.0e-6;
 var $w0rm$elm_physics$Internal$Vector3$almostZero = function (_v0) {
@@ -20680,932 +21562,6 @@ var $w0rm$elm_physics$Physics$World$simulate = F2(
 				$w0rm$elm_physics$Internal$BroadPhase$addContacts(
 					$w0rm$elm_physics$Internal$World$addGravityForces(world))));
 	});
-var $author$project$SpaceshipScene$spaceGameAssist = function (model) {
-	return _List_fromArray(
-		[
-			A2(
-			$author$project$Wrapper3D$move3D,
-			_Utils_Tuple3(
-				0,
-				$ianmackenzie$elm_units$Length$inCentimeters(
-					$ianmackenzie$elm_units$Length$kilometers(100)),
-				0),
-			$author$project$SpaceshipScene$earthModel(model)),
-			$author$project$SpaceshipScene$satelliteModel(model)
-		]);
-};
-var $author$project$SpaceshipScene$spaceStationOrbit = F2(
-	function (model, object) {
-		var spaceStationtoEarth = $ianmackenzie$elm_units$Length$inCentimeters(
-			$ianmackenzie$elm_units$Length$kilometers(150));
-		return A2(
-			$author$project$Wrapper3D$move3D,
-			_Utils_Tuple3(
-				0,
-				$ianmackenzie$elm_units$Length$inCentimeters(
-					$ianmackenzie$elm_units$Length$meters(300)),
-				0),
-			object);
-	});
-var $author$project$SpaceshipScene$spaceStationSize = $ianmackenzie$elm_units$Length$inCentimeters(
-	$ianmackenzie$elm_units$Length$meters(20));
-var $author$project$SpaceshipScene$spaceStation = function (model) {
-	var useTexture = $author$project$Wrapper3D$getTexture(model.textureLoader.textures);
-	return A2(
-		$author$project$SpaceshipScene$spaceStationOrbit,
-		model,
-		A2(
-			$author$project$Wrapper3D$rotateY3D,
-			$elm$core$Basics$degrees(90),
-			A3(
-				$author$project$Wrapper3D$scaleTo3D,
-				$author$project$SpaceshipScene$spaceStationSize,
-				$ianmackenzie$elm_geometry$Direction3d$x,
-				$author$project$Wrapper3D$group3D(
-					_List_fromArray(
-						[
-							A2(
-							$author$project$Wrapper3D$matte,
-							A3($avh4$elm_color$Color$rgb255, 232, 226, 209),
-							A3($author$project$Wrapper3D$box, 20, 200, 15)),
-							A2(
-							$author$project$Wrapper3D$move3D,
-							_Utils_Tuple3(0, 100, 0),
-							A2(
-								$author$project$Wrapper3D$rotateY3D,
-								$elm$core$Basics$degrees(90),
-								A4(
-									$author$project$Wrapper3D$textured,
-									useTexture('solarcell'),
-									0.5,
-									0.5,
-									A2($author$project$Wrapper3D$rectangle3D, 100, 50)))),
-							A2(
-							$author$project$Wrapper3D$move3D,
-							_Utils_Tuple3(0, -100, 0),
-							A2(
-								$author$project$Wrapper3D$rotateY3D,
-								$elm$core$Basics$degrees(90),
-								A4(
-									$author$project$Wrapper3D$textured,
-									useTexture('solarcell'),
-									0.5,
-									0.5,
-									A2($author$project$Wrapper3D$rectangle3D, 100, 50))))
-						])))));
-};
-var $author$project$Wrapper3D$unwrapQ = function (_v0) {
-	var q = _v0.a;
-	return q;
-};
-var $author$project$GSVGSkybox$AllLoaded = function (a) {
-	return {$: 'AllLoaded', a: a};
-};
-var $author$project$GSVGSkybox$BordersGone = function (a) {
-	return {$: 'BordersGone', a: a};
-};
-var $MacCASOutreach$graphicsvg$GraphicSVG$Widget$update = F2(
-	function (msg, model) {
-		var mWH = msg.a;
-		if (mWH.$ === 'Just') {
-			var _v2 = mWH.a;
-			var w = _v2.a;
-			var h = _v2.b;
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{wh: h, ww: w}),
-				$elm$core$Platform$Cmd$none);
-		} else {
-			return _Utils_Tuple2(
-				model,
-				$MacCASOutreach$graphicsvg$GraphicSVG$Widget$getContainerSize(model.id));
-		}
-	});
-var $author$project$GSVGSkybox$update = F2(
-	function (msg, model) {
-		switch (msg.$) {
-			case 'TopWidgetMsg':
-				var wMsg = msg.a;
-				var _v1 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.topWidget);
-				var newWState = _v1.a;
-				var wCmd = _v1.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{topWidget: newWState}),
-					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
-			case 'BotWidgetMsg':
-				var wMsg = msg.a;
-				var _v2 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.botWidget);
-				var newWState = _v2.a;
-				var wCmd = _v2.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{botWidget: newWState}),
-					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
-			case 'Side1Widget':
-				var wMsg = msg.a;
-				var _v3 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.side1Widget);
-				var newWState = _v3.a;
-				var wCmd = _v3.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{side1Widget: newWState}),
-					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
-			case 'Side2Widget':
-				var wMsg = msg.a;
-				var _v4 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.side2Widget);
-				var newWState = _v4.a;
-				var wCmd = _v4.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{side2Widget: newWState}),
-					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
-			case 'Side3Widget':
-				var wMsg = msg.a;
-				var _v5 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.side3Widget);
-				var newWState = _v5.a;
-				var wCmd = _v5.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{side3Widget: newWState}),
-					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
-			case 'Side4Widget':
-				var wMsg = msg.a;
-				var _v6 = A2($MacCASOutreach$graphicsvg$GraphicSVG$Widget$update, wMsg, model.side4Widget);
-				var newWState = _v6.a;
-				var wCmd = _v6.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{side4Widget: newWState}),
-					A2($elm$core$Platform$Cmd$map, $author$project$GSVGSkybox$TopWidgetMsg, wCmd));
-			case 'GeneratePNG':
-				var id = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{showBorders: false}),
-					$elm$core$Platform$Cmd$batch(
-						_List_fromArray(
-							[
-								A2(
-								$elm$core$Task$perform,
-								$elm$core$Basics$identity,
-								$elm$core$Task$succeed(
-									$author$project$GSVGSkybox$BordersGone('skyT'))),
-								A2(
-								$elm$core$Task$perform,
-								$elm$core$Basics$identity,
-								$elm$core$Task$succeed(
-									$author$project$GSVGSkybox$BordersGone('skyB'))),
-								A2(
-								$elm$core$Task$perform,
-								$elm$core$Basics$identity,
-								$elm$core$Task$succeed(
-									$author$project$GSVGSkybox$BordersGone('skyS1'))),
-								A2(
-								$elm$core$Task$perform,
-								$elm$core$Basics$identity,
-								$elm$core$Task$succeed(
-									$author$project$GSVGSkybox$BordersGone('skyS2'))),
-								A2(
-								$elm$core$Task$perform,
-								$elm$core$Basics$identity,
-								$elm$core$Task$succeed(
-									$author$project$GSVGSkybox$BordersGone('skyS3'))),
-								A2(
-								$elm$core$Task$perform,
-								$elm$core$Basics$identity,
-								$elm$core$Task$succeed(
-									$author$project$GSVGSkybox$BordersGone('skyS4')))
-							])));
-			case 'BordersGone':
-				var id = msg.a;
-				return _Utils_Tuple2(
-					model,
-					$author$project$SVGPorts$createPNG(
-						_Utils_Tuple3(id, 1024, 1024)));
-			case 'ReceivePNG':
-				var _v7 = msg.a;
-				var widgetID = _v7.a;
-				var imageURL = _v7.b;
-				var newModel = function () {
-					switch (widgetID) {
-						case 'skyT':
-							return _Utils_update(
-								model,
-								{topPNG: imageURL});
-						case 'skyB':
-							return _Utils_update(
-								model,
-								{botPNG: imageURL});
-						case 'skyS1':
-							return _Utils_update(
-								model,
-								{side1PNG: imageURL});
-						case 'skyS2':
-							return _Utils_update(
-								model,
-								{side2PNG: imageURL});
-						case 'skyS3':
-							return _Utils_update(
-								model,
-								{side3PNG: imageURL});
-						case 'skyS4':
-							return _Utils_update(
-								model,
-								{side4PNG: imageURL});
-						default:
-							return model;
-					}
-				}();
-				return _Utils_Tuple2(
-					newModel,
-					((newModel.topPNG === '') || ((newModel.botPNG === '') || ((newModel.side1PNG === '') || ((newModel.side2PNG === '') || ((newModel.side3PNG === '') || (newModel.side4PNG === '')))))) ? $elm$core$Platform$Cmd$none : A2(
-						$elm$core$Task$perform,
-						$elm$core$Basics$identity,
-						$elm$core$Task$succeed(
-							$author$project$GSVGSkybox$AllLoaded(
-								_List_fromArray(
-									[
-										_Utils_Tuple2('skyB', newModel.botPNG),
-										_Utils_Tuple2('skyT', newModel.topPNG),
-										_Utils_Tuple2('skyS1', newModel.side1PNG),
-										_Utils_Tuple2('skyS2', newModel.side2PNG),
-										_Utils_Tuple2('skyS3', newModel.side3PNG),
-										_Utils_Tuple2('skyS4', newModel.side4PNG)
-									])))));
-			default:
-				var skyboxList = msg.a;
-				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-		}
-	});
-var $elm$core$Dict$getMin = function (dict) {
-	getMin:
-	while (true) {
-		if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
-			var left = dict.d;
-			var $temp$dict = left;
-			dict = $temp$dict;
-			continue getMin;
-		} else {
-			return dict;
-		}
-	}
-};
-var $elm$core$Dict$moveRedLeft = function (dict) {
-	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
-		if ((dict.e.d.$ === 'RBNode_elm_builtin') && (dict.e.d.a.$ === 'Red')) {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v1 = dict.d;
-			var lClr = _v1.a;
-			var lK = _v1.b;
-			var lV = _v1.c;
-			var lLeft = _v1.d;
-			var lRight = _v1.e;
-			var _v2 = dict.e;
-			var rClr = _v2.a;
-			var rK = _v2.b;
-			var rV = _v2.c;
-			var rLeft = _v2.d;
-			var _v3 = rLeft.a;
-			var rlK = rLeft.b;
-			var rlV = rLeft.c;
-			var rlL = rLeft.d;
-			var rlR = rLeft.e;
-			var rRight = _v2.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				$elm$core$Dict$Red,
-				rlK,
-				rlV,
-				A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					rlL),
-				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rlR, rRight));
-		} else {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v4 = dict.d;
-			var lClr = _v4.a;
-			var lK = _v4.b;
-			var lV = _v4.c;
-			var lLeft = _v4.d;
-			var lRight = _v4.e;
-			var _v5 = dict.e;
-			var rClr = _v5.a;
-			var rK = _v5.b;
-			var rV = _v5.c;
-			var rLeft = _v5.d;
-			var rRight = _v5.e;
-			if (clr.$ === 'Black') {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
-			}
-		}
-	} else {
-		return dict;
-	}
-};
-var $elm$core$Dict$moveRedRight = function (dict) {
-	if (((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) && (dict.e.$ === 'RBNode_elm_builtin')) {
-		if ((dict.d.d.$ === 'RBNode_elm_builtin') && (dict.d.d.a.$ === 'Red')) {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v1 = dict.d;
-			var lClr = _v1.a;
-			var lK = _v1.b;
-			var lV = _v1.c;
-			var _v2 = _v1.d;
-			var _v3 = _v2.a;
-			var llK = _v2.b;
-			var llV = _v2.c;
-			var llLeft = _v2.d;
-			var llRight = _v2.e;
-			var lRight = _v1.e;
-			var _v4 = dict.e;
-			var rClr = _v4.a;
-			var rK = _v4.b;
-			var rV = _v4.c;
-			var rLeft = _v4.d;
-			var rRight = _v4.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				$elm$core$Dict$Red,
-				lK,
-				lV,
-				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
-				A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					lRight,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight)));
-		} else {
-			var clr = dict.a;
-			var k = dict.b;
-			var v = dict.c;
-			var _v5 = dict.d;
-			var lClr = _v5.a;
-			var lK = _v5.b;
-			var lV = _v5.c;
-			var lLeft = _v5.d;
-			var lRight = _v5.e;
-			var _v6 = dict.e;
-			var rClr = _v6.a;
-			var rK = _v6.b;
-			var rV = _v6.c;
-			var rLeft = _v6.d;
-			var rRight = _v6.e;
-			if (clr.$ === 'Black') {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Black,
-					k,
-					v,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, rK, rV, rLeft, rRight));
-			}
-		}
-	} else {
-		return dict;
-	}
-};
-var $elm$core$Dict$removeHelpPrepEQGT = F7(
-	function (targetKey, dict, color, key, value, left, right) {
-		if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
-			var _v1 = left.a;
-			var lK = left.b;
-			var lV = left.c;
-			var lLeft = left.d;
-			var lRight = left.e;
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				color,
-				lK,
-				lV,
-				lLeft,
-				A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, lRight, right));
-		} else {
-			_v2$2:
-			while (true) {
-				if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Black')) {
-					if (right.d.$ === 'RBNode_elm_builtin') {
-						if (right.d.a.$ === 'Black') {
-							var _v3 = right.a;
-							var _v4 = right.d;
-							var _v5 = _v4.a;
-							return $elm$core$Dict$moveRedRight(dict);
-						} else {
-							break _v2$2;
-						}
-					} else {
-						var _v6 = right.a;
-						var _v7 = right.d;
-						return $elm$core$Dict$moveRedRight(dict);
-					}
-				} else {
-					break _v2$2;
-				}
-			}
-			return dict;
-		}
-	});
-var $elm$core$Dict$removeMin = function (dict) {
-	if ((dict.$ === 'RBNode_elm_builtin') && (dict.d.$ === 'RBNode_elm_builtin')) {
-		var color = dict.a;
-		var key = dict.b;
-		var value = dict.c;
-		var left = dict.d;
-		var lColor = left.a;
-		var lLeft = left.d;
-		var right = dict.e;
-		if (lColor.$ === 'Black') {
-			if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
-				var _v3 = lLeft.a;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					color,
-					key,
-					value,
-					$elm$core$Dict$removeMin(left),
-					right);
-			} else {
-				var _v4 = $elm$core$Dict$moveRedLeft(dict);
-				if (_v4.$ === 'RBNode_elm_builtin') {
-					var nColor = _v4.a;
-					var nKey = _v4.b;
-					var nValue = _v4.c;
-					var nLeft = _v4.d;
-					var nRight = _v4.e;
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						$elm$core$Dict$removeMin(nLeft),
-						nRight);
-				} else {
-					return $elm$core$Dict$RBEmpty_elm_builtin;
-				}
-			}
-		} else {
-			return A5(
-				$elm$core$Dict$RBNode_elm_builtin,
-				color,
-				key,
-				value,
-				$elm$core$Dict$removeMin(left),
-				right);
-		}
-	} else {
-		return $elm$core$Dict$RBEmpty_elm_builtin;
-	}
-};
-var $elm$core$Dict$removeHelp = F2(
-	function (targetKey, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
-			return $elm$core$Dict$RBEmpty_elm_builtin;
-		} else {
-			var color = dict.a;
-			var key = dict.b;
-			var value = dict.c;
-			var left = dict.d;
-			var right = dict.e;
-			if (_Utils_cmp(targetKey, key) < 0) {
-				if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Black')) {
-					var _v4 = left.a;
-					var lLeft = left.d;
-					if ((lLeft.$ === 'RBNode_elm_builtin') && (lLeft.a.$ === 'Red')) {
-						var _v6 = lLeft.a;
-						return A5(
-							$elm$core$Dict$RBNode_elm_builtin,
-							color,
-							key,
-							value,
-							A2($elm$core$Dict$removeHelp, targetKey, left),
-							right);
-					} else {
-						var _v7 = $elm$core$Dict$moveRedLeft(dict);
-						if (_v7.$ === 'RBNode_elm_builtin') {
-							var nColor = _v7.a;
-							var nKey = _v7.b;
-							var nValue = _v7.c;
-							var nLeft = _v7.d;
-							var nRight = _v7.e;
-							return A5(
-								$elm$core$Dict$balance,
-								nColor,
-								nKey,
-								nValue,
-								A2($elm$core$Dict$removeHelp, targetKey, nLeft),
-								nRight);
-						} else {
-							return $elm$core$Dict$RBEmpty_elm_builtin;
-						}
-					}
-				} else {
-					return A5(
-						$elm$core$Dict$RBNode_elm_builtin,
-						color,
-						key,
-						value,
-						A2($elm$core$Dict$removeHelp, targetKey, left),
-						right);
-				}
-			} else {
-				return A2(
-					$elm$core$Dict$removeHelpEQGT,
-					targetKey,
-					A7($elm$core$Dict$removeHelpPrepEQGT, targetKey, dict, color, key, value, left, right));
-			}
-		}
-	});
-var $elm$core$Dict$removeHelpEQGT = F2(
-	function (targetKey, dict) {
-		if (dict.$ === 'RBNode_elm_builtin') {
-			var color = dict.a;
-			var key = dict.b;
-			var value = dict.c;
-			var left = dict.d;
-			var right = dict.e;
-			if (_Utils_eq(targetKey, key)) {
-				var _v1 = $elm$core$Dict$getMin(right);
-				if (_v1.$ === 'RBNode_elm_builtin') {
-					var minKey = _v1.b;
-					var minValue = _v1.c;
-					return A5(
-						$elm$core$Dict$balance,
-						color,
-						minKey,
-						minValue,
-						left,
-						$elm$core$Dict$removeMin(right));
-				} else {
-					return $elm$core$Dict$RBEmpty_elm_builtin;
-				}
-			} else {
-				return A5(
-					$elm$core$Dict$balance,
-					color,
-					key,
-					value,
-					left,
-					A2($elm$core$Dict$removeHelp, targetKey, right));
-			}
-		} else {
-			return $elm$core$Dict$RBEmpty_elm_builtin;
-		}
-	});
-var $elm$core$Dict$remove = F2(
-	function (key, dict) {
-		var _v0 = A2($elm$core$Dict$removeHelp, key, dict);
-		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
-			var _v1 = _v0.a;
-			var k = _v0.b;
-			var v = _v0.c;
-			var l = _v0.d;
-			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
-		} else {
-			var x = _v0;
-			return x;
-		}
-	});
-var $author$project$GSVGTexture$update = F2(
-	function (msg, model) {
-		switch (msg.$) {
-			case 'WidgetMsg':
-				var wId = msg.a;
-				var wMsg = msg.b;
-				var _v1 = A2(
-					$elm$core$Maybe$map,
-					$MacCASOutreach$graphicsvg$GraphicSVG$Widget$update(wMsg),
-					A2($elm$core$Dict$get, wId, model.widgets));
-				if (_v1.$ === 'Just') {
-					var _v2 = _v1.a;
-					var newWState = _v2.a;
-					var wCmd = _v2.b;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								widgets: A3($elm$core$Dict$insert, wId, newWState, model.widgets)
-							}),
-						A2(
-							$elm$core$Platform$Cmd$map,
-							$author$project$GSVGTexture$WidgetMsg(wId),
-							wCmd));
-				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
-			case 'LoadNew':
-				var _v3 = msg.a;
-				var name = _v3.a;
-				var shape = _v3.b;
-				var _v4 = A3($MacCASOutreach$graphicsvg$GraphicSVG$Widget$init, 50, 50, name);
-				var newWidget = _v4.a;
-				var newWCmd = _v4.b;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							shapes: A3($elm$core$Dict$insert, name, shape, model.shapes),
-							widgets: A3($elm$core$Dict$insert, name, newWidget, model.widgets)
-						}),
-					$elm$core$Platform$Cmd$batch(
-						_List_fromArray(
-							[
-								A2(
-								$elm$core$Platform$Cmd$map,
-								$author$project$GSVGTexture$WidgetMsg(name),
-								newWCmd),
-								$author$project$SVGPorts$createPNG(
-								_Utils_Tuple3(name, 1024, 1024))
-							])));
-			default:
-				var _v5 = msg.a;
-				var widgetID = _v5.a;
-				var imageURL = _v5.b;
-				var newTextures = A3(
-					$elm$core$Dict$insert,
-					A2($elm$core$Debug$log, 'Generated...', widgetID),
-					imageURL,
-					model.textures);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							textures: newTextures,
-							widgets: A2($elm$core$Dict$remove, widgetID, model.widgets)
-						}),
-					$elm$core$Platform$Cmd$none);
-		}
-	});
-var $w0rm$elm_physics$Physics$World$update = F2(
-	function (fn, _v0) {
-		var world = _v0.a;
-		var internalUpdate = function (body) {
-			var _v1 = fn(
-				$w0rm$elm_physics$Internal$Body$Protected(body));
-			var updatedBody = _v1.a;
-			return _Utils_update(
-				updatedBody,
-				{id: body.id});
-		};
-		return $w0rm$elm_physics$Internal$World$Protected(
-			_Utils_update(
-				world,
-				{
-					bodies: A2($elm$core$List$map, internalUpdate, world.bodies)
-				}));
-	});
-var $author$project$SpaceshipPart$Pressed = {$: 'Pressed'};
-var $author$project$SpaceshipPart$Released = {$: 'Released'};
-var $author$project$SpaceshipPart$applyForces = F2(
-	function (forceList, body) {
-		return A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, intermBody) {
-					var f = _v0.a;
-					var p = _v0.b;
-					var d = _v0.c;
-					var frame = $w0rm$elm_physics$Physics$Body$frame(body);
-					var globalDir = A2($ianmackenzie$elm_geometry$Direction3d$placeIn, frame, d);
-					var globalPos = A2($ianmackenzie$elm_geometry$Point3d$placeIn, frame, p);
-					return A4($w0rm$elm_physics$Physics$Body$applyForce, f, globalDir, globalPos, intermBody);
-				}),
-			body,
-			forceList);
-	});
-var $elm$core$Basics$always = F2(
-	function (a, _v0) {
-		return a;
-	});
-var $w0rm$elm_physics$Internal$Constraint$Distance = function (a) {
-	return {$: 'Distance', a: a};
-};
-var $w0rm$elm_physics$Internal$Constraint$Hinge = F4(
-	function (a, b, c, d) {
-		return {$: 'Hinge', a: a, b: b, c: c, d: d};
-	});
-var $w0rm$elm_physics$Internal$Constraint$PointToPoint = F2(
-	function (a, b) {
-		return {$: 'PointToPoint', a: a, b: b};
-	});
-var $w0rm$elm_physics$Internal$Constraint$relativeToCenterOfMass = F3(
-	function (centerOfMassFrame3d1, centerOfMassFrame3d2, _v0) {
-		var constraint = _v0.a;
-		switch (constraint.$) {
-			case 'PointToPoint':
-				var pivot1 = constraint.a;
-				var pivot2 = constraint.b;
-				return A2(
-					$w0rm$elm_physics$Internal$Constraint$PointToPoint,
-					A2($w0rm$elm_physics$Internal$Transform3d$pointRelativeTo, centerOfMassFrame3d1, pivot1),
-					A2($w0rm$elm_physics$Internal$Transform3d$pointRelativeTo, centerOfMassFrame3d2, pivot2));
-			case 'Hinge':
-				var pivot1 = constraint.a;
-				var axis1 = constraint.b;
-				var pivot2 = constraint.c;
-				var axis2 = constraint.d;
-				return A4(
-					$w0rm$elm_physics$Internal$Constraint$Hinge,
-					A2($w0rm$elm_physics$Internal$Transform3d$pointRelativeTo, centerOfMassFrame3d1, pivot1),
-					A2($w0rm$elm_physics$Internal$Transform3d$directionRelativeTo, centerOfMassFrame3d1, axis1),
-					A2($w0rm$elm_physics$Internal$Transform3d$pointRelativeTo, centerOfMassFrame3d2, pivot2),
-					A2($w0rm$elm_physics$Internal$Transform3d$directionRelativeTo, centerOfMassFrame3d2, axis2));
-			default:
-				var length = constraint.a;
-				return $w0rm$elm_physics$Internal$Constraint$Distance(length);
-		}
-	});
-var $w0rm$elm_physics$Physics$World$constrainIf = F3(
-	function (test, fn, _v0) {
-		var world = _v0.a;
-		var filteredBodies = A2(
-			$elm$core$List$filter,
-			function (body) {
-				return test(
-					$w0rm$elm_physics$Internal$Body$Protected(body));
-			},
-			world.bodies);
-		var filteredConstraints = A2(
-			$elm$core$List$filter,
-			function (_v3) {
-				var bodyId1 = _v3.bodyId1;
-				var bodyId2 = _v3.bodyId2;
-				return !A2(
-					$elm$core$List$any,
-					function (body) {
-						return _Utils_eq(body.id, bodyId1) || _Utils_eq(body.id, bodyId2);
-					},
-					filteredBodies);
-			},
-			world.constraints);
-		var addFor = F3(
-			function (body1, body2, constraintGroup) {
-				var _v2 = A2(
-					fn,
-					$w0rm$elm_physics$Internal$Body$Protected(body1),
-					$w0rm$elm_physics$Internal$Body$Protected(body2));
-				if (!_v2.b) {
-					return constraintGroup;
-				} else {
-					var constraints = _v2;
-					return A2(
-						$elm$core$List$cons,
-						{
-							bodyId1: body1.id,
-							bodyId2: body2.id,
-							constraints: A2(
-								$elm$core$List$map,
-								A2($w0rm$elm_physics$Internal$Constraint$relativeToCenterOfMass, body1.centerOfMassTransform3d, body2.centerOfMassTransform3d),
-								constraints)
-						},
-						constraintGroup);
-				}
-			});
-		var addConstraintsHelp = F2(
-			function (list, result) {
-				addConstraintsHelp:
-				while (true) {
-					if (list.b) {
-						var body1 = list.a;
-						var rest = list.b;
-						var $temp$list = rest,
-							$temp$result = A3(
-							$elm$core$List$foldl,
-							F2(
-								function (body2, constraints) {
-									return A3(
-										addFor,
-										body2,
-										body1,
-										A3(addFor, body1, body2, constraints));
-								}),
-							result,
-							rest);
-						list = $temp$list;
-						result = $temp$result;
-						continue addConstraintsHelp;
-					} else {
-						return result;
-					}
-				}
-			});
-		return $w0rm$elm_physics$Internal$World$Protected(
-			_Utils_update(
-				world,
-				{
-					constraints: A2(addConstraintsHelp, filteredBodies, filteredConstraints)
-				}));
-	});
-var $w0rm$elm_physics$Physics$World$constrain = $w0rm$elm_physics$Physics$World$constrainIf(
-	$elm$core$Basics$always(true));
-var $w0rm$elm_physics$Internal$Constraint$Protected = function (a) {
-	return {$: 'Protected', a: a};
-};
-var $w0rm$elm_physics$Physics$Constraint$hinge = F2(
-	function (axis3d1, axis3d2) {
-		var pivot2 = $ianmackenzie$elm_geometry$Point3d$toMeters(
-			$ianmackenzie$elm_geometry$Axis3d$originPoint(axis3d2));
-		var pivot1 = $ianmackenzie$elm_geometry$Point3d$toMeters(
-			$ianmackenzie$elm_geometry$Axis3d$originPoint(axis3d1));
-		var axis2 = $ianmackenzie$elm_geometry$Direction3d$unwrap(
-			$ianmackenzie$elm_geometry$Axis3d$direction(axis3d2));
-		var axis1 = $ianmackenzie$elm_geometry$Direction3d$unwrap(
-			$ianmackenzie$elm_geometry$Axis3d$direction(axis3d1));
-		return $w0rm$elm_physics$Internal$Constraint$Protected(
-			A4($w0rm$elm_physics$Internal$Constraint$Hinge, pivot1, axis1, pivot2, axis2));
-	});
-var $elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			$elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
-	});
-var $author$project$PhysicsWrapper3D$constrainBodies = F2(
-	function (b1, b2) {
-		var b2Data = $w0rm$elm_physics$Physics$Body$data(b2);
-		var b1Data = $w0rm$elm_physics$Physics$Body$data(b1);
-		return (A2($elm$core$List$member, b1Data.name, b2Data.linkedBodies) || A2($elm$core$List$member, b2Data.name, b1Data.linkedBodies)) ? _List_fromArray(
-			[
-				A2($w0rm$elm_physics$Physics$Constraint$hinge, $ianmackenzie$elm_geometry$Axis3d$x, $ianmackenzie$elm_geometry$Axis3d$x),
-				A2($w0rm$elm_physics$Physics$Constraint$hinge, $ianmackenzie$elm_geometry$Axis3d$y, $ianmackenzie$elm_geometry$Axis3d$y),
-				A2($w0rm$elm_physics$Physics$Constraint$hinge, $ianmackenzie$elm_geometry$Axis3d$z, $ianmackenzie$elm_geometry$Axis3d$z)
-			]) : _List_Nil;
-	});
-var $elm$core$Dict$values = function (dict) {
-	return A3(
-		$elm$core$Dict$foldr,
-		F3(
-			function (key, value, valueList) {
-				return A2($elm$core$List$cons, value, valueList);
-			}),
-		_List_Nil,
-		dict);
-};
-var $author$project$SpaceshipPart$fuelCapacity = function (spaceshipState) {
-	var fuelMasses = A2(
-		$elm$core$List$map,
-		function (f) {
-			return f.parameters.fuel;
-		},
-		$elm$core$Dict$values(spaceshipState.fuelTankStates));
-	var totalFuelMass = A3($elm$core$List$foldl, $ianmackenzie$elm_units$Quantity$plus, $ianmackenzie$elm_units$Quantity$zero, fuelMasses);
-	return totalFuelMass;
-};
-var $author$project$SpaceshipPart$fuelLeft = function (spaceshipState) {
-	var fuelMasses = A2(
-		$elm$core$List$map,
-		function ($) {
-			return $.fuelLeft;
-		},
-		$elm$core$Dict$values(spaceshipState.fuelTankStates));
-	var totalFuelMass = A3($elm$core$List$foldl, $ianmackenzie$elm_units$Quantity$plus, $ianmackenzie$elm_units$Quantity$zero, fuelMasses);
-	return totalFuelMass;
-};
 var $author$project$SpaceshipPart$computeThrust = F2(
 	function (fuelVelocity, flowRate) {
 		var speedMpS = $ianmackenzie$elm_units$Speed$inMetersPerSecond(fuelVelocity);
@@ -21808,6 +21764,24 @@ var $author$project$SpaceshipPart$simulateSpaceship = F2(
 			A2($author$project$SpaceshipPart$useUpFuel, totalFuelMass, spaceshipState),
 			forces);
 	});
+var $w0rm$elm_physics$Physics$World$update = F2(
+	function (fn, _v0) {
+		var world = _v0.a;
+		var internalUpdate = function (body) {
+			var _v1 = fn(
+				$w0rm$elm_physics$Internal$Body$Protected(body));
+			var updatedBody = _v1.a;
+			return _Utils_update(
+				updatedBody,
+				{id: body.id});
+		};
+		return $w0rm$elm_physics$Internal$World$Protected(
+			_Utils_update(
+				world,
+				{
+					bodies: A2($elm$core$List$map, internalUpdate, world.bodies)
+				}));
+	});
 var $author$project$SpaceshipPart$simulateStep = F4(
 	function (meshStore, duration, spaceshipState, world) {
 		var _v0 = A2($author$project$SpaceshipPart$simulateSpaceship, duration, spaceshipState);
@@ -21976,14 +21950,21 @@ var $author$project$SpaceshipPart$updateSpaceshipKey = F3(
 			A2(spaceshipState.spaceship.keyActions, key, keyAction),
 			spaceshipState);
 	});
-var $author$project$SpaceshipPart$update = F3(
-	function (meshStore, msg, model) {
+var $author$project$SpaceshipPart$update = F4(
+	function (meshStore, _v0, msg, model) {
+		var autoPilotAction = _v0.a;
+		var useAutoPilot = _v0.b;
 		switch (msg.$) {
 			case 'Tick':
 				var t = msg.a;
-				var _v1 = A4($author$project$SpaceshipPart$simulateStep, meshStore, t, model.spaceshipState, model.world);
-				var newSpaceshipState = _v1.a;
-				var newWorld = _v1.b;
+				var _v2 = useAutoPilot ? A4(
+					$author$project$SpaceshipPart$simulateStep,
+					meshStore,
+					t,
+					A2($author$project$SpaceshipPart$updateSpaceship, autoPilotAction, model.spaceshipState),
+					model.world) : A4($author$project$SpaceshipPart$simulateStep, meshStore, t, model.spaceshipState, model.world);
+				var newSpaceshipState = _v2.a;
+				var newWorld = _v2.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -22100,6 +22081,7 @@ var $author$project$TextureLoader$update = F2(
 			}
 		}
 	});
+var $author$project$SpaceshipScene$useAutoPilot = false;
 var $author$project$SpaceshipScene$update = F2(
 	function (message, model) {
 		switch (message.$) {
@@ -22134,20 +22116,13 @@ var $author$project$SpaceshipScene$update = F2(
 					$ianmackenzie$elm_geometry$Point3d$origin,
 					A2(
 						$elm$core$Maybe$map,
-						A2($elm$core$Basics$composeL, $ianmackenzie$elm_geometry$Frame3d$originPoint, $w0rm$elm_physics$Physics$Body$frame),
-						$elm$core$List$head(
-							$w0rm$elm_physics$Physics$World$bodies(model.spaceshipState.world))));
+						$author$project$PhysicsWrapper3D$adjustedPosition,
+						A2($author$project$PhysicsWrapper3D$getBodyByName, 'spaceship', model.spaceshipState.world)));
 				var spaceStationPosition = $author$project$Wrapper3D$getPosition(
 					$author$project$SpaceshipScene$spaceStation(model));
-				var simulatedWorld = A2(
-					$w0rm$elm_physics$Physics$World$update,
-					$author$project$PhysicsWrapper3D$applyForces,
-					A2(
-						$w0rm$elm_physics$Physics$World$simulate,
-						$ianmackenzie$elm_units$Duration$seconds(1 / 60),
-						model.world));
 				var satellitePosition = $author$project$Wrapper3D$getPosition(
 					$author$project$SpaceshipScene$satelliteModel(model));
+				var newGameTime = model.ifRepair ? model.gameTime : timeAsNum;
 				var newCamera = function () {
 					var _v7 = model.cameraState;
 					if (_v7.$ === 'Orbiting') {
@@ -22182,7 +22157,7 @@ var $author$project$SpaceshipScene$update = F2(
 							});
 					}
 				}();
-				var ifStartRepair = model.ifSatelliteBroken ? (($author$project$SpaceshipScene$satelliteToShip(model) < 100000) ? true : false) : false;
+				var ifStartRepair = model.ifSatelliteBroken ? ($author$project$SpaceshipScene$satelliteToShip(model) < 1000) : false;
 				var updateRepairTime = function () {
 					var _v6 = model.startRepairtime;
 					if (_v6.$ === 'NotStarted') {
@@ -22204,7 +22179,7 @@ var $author$project$SpaceshipScene$update = F2(
 										$elm$core$Basics$modBy,
 										$author$project$SpaceshipScene$levelAdjust + 1,
 										$elm$core$Basics$round(timeAsNum - time)),
-									$author$project$SpaceshipScene$levelAdjust) ? false : true;
+									$author$project$SpaceshipScene$levelAdjust);
 							}
 						} else {
 							return true;
@@ -22219,14 +22194,17 @@ var $author$project$SpaceshipScene$update = F2(
 				var distanceToSatellite = $ianmackenzie$elm_units$Length$inMeters(
 					$ianmackenzie$elm_geometry$Vector3d$length(
 						A2($ianmackenzie$elm_geometry$Vector3d$from, spaceshipPosition, satellitePosition)));
-				var ifShowGameOver = ($author$project$SpaceshipScene$earthToShip(model) < 0) ? true : ((A2($elm$core$Debug$log, 'distanceToSatellite', distanceToSatellite) < 10) ? true : ((A2($elm$core$Debug$log, 'distanceToSpaceStation', distanceToSpaceStation) < 100) ? true : false));
+				var ifShowGameOver = A2(
+					$ianmackenzie$elm_units$Quantity$lessThanOrEqualTo,
+					$ianmackenzie$elm_units$Quantity$zero,
+					$author$project$SpaceshipScene$earthToShip(model)) ? true : ((A2($elm$core$Debug$log, 'distanceToSatellite', distanceToSatellite) < 10) ? true : ((A2($elm$core$Debug$log, 'distanceToSpaceStation', distanceToSpaceStation) < 100) ? true : model.ifGameOver));
 				return _Utils_Tuple2(
 					function () {
 						var _v2 = model.state;
 						if (_v2.$ === 'Loaded') {
 							return _Utils_update(
 								model,
-								{camera: newCamera, ifGameOver: ifShowGameOver, ifRepair: ifStartRepair, ifSatelliteBroken: updateSatellite, startRepairtime: updateRepairTime, time: timeAsNum});
+								{camera: newCamera, gameTime: newGameTime, ifGameOver: ifShowGameOver, ifRepair: ifStartRepair, ifSatelliteBroken: updateSatellite, startRepairtime: updateRepairTime, time: timeAsNum});
 						} else {
 							return model;
 						}
@@ -22533,7 +22511,14 @@ var $author$project$SpaceshipScene$update = F2(
 				}
 			case 'SpaceshipMsg':
 				var sMsg = message.a;
-				var _v28 = A3($author$project$SpaceshipPart$update, model.meshStore, sMsg, model.spaceshipState);
+				var _v28 = A4(
+					$author$project$SpaceshipPart$update,
+					model.meshStore,
+					_Utils_Tuple2(
+						$author$project$SpaceshipScene$autoPilotRoutine(model.time),
+						$author$project$SpaceshipScene$useAutoPilot),
+					sMsg,
+					model.spaceshipState);
 				var newSSState = _v28.a;
 				var sCmd = _v28.b;
 				return _Utils_Tuple2(
@@ -22576,12 +22561,6 @@ var $ianmackenzie$elm_3d_scene$Scene3d$BackgroundColor = function (a) {
 };
 var $ianmackenzie$elm_3d_scene$Scene3d$backgroundColor = function (color) {
 	return $ianmackenzie$elm_3d_scene$Scene3d$BackgroundColor(color);
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$Light$CastsShadows = function (a) {
-	return {$: 'CastsShadows', a: a};
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$Light$castsShadows = function (flag) {
-	return $ianmackenzie$elm_3d_scene$Scene3d$Light$CastsShadows(flag);
 };
 var $ianmackenzie$elm_3d_scene$Scene3d$Types$Chromaticity = function (a) {
 	return {$: 'Chromaticity', a: a};
@@ -23594,28 +23573,6 @@ var $ianmackenzie$elm_3d_scene$Scene3d$custom = function (_arguments) {
 				{entities: _arguments.entities, exposure: _arguments.exposure, lights: _arguments.lights, toneMapping: _arguments.toneMapping, whiteBalance: _arguments.whiteBalance}
 			]));
 };
-var $ianmackenzie$elm_3d_scene$Scene3d$Light$directional = F2(
-	function (_v0, light) {
-		var shadowFlag = _v0.a;
-		var _v1 = $ianmackenzie$elm_geometry$Direction3d$unwrap(light.direction);
-		var x = _v1.x;
-		var y = _v1.y;
-		var z = _v1.z;
-		var _v2 = A2($ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$chromaticityToLinearRgb, light.intensity, light.chromaticity);
-		var rgb = _v2.a;
-		return $ianmackenzie$elm_3d_scene$Scene3d$Types$Light(
-			{
-				b: $elm_explorations$linear_algebra$Math$Vector3$getZ(rgb),
-				castsShadows: shadowFlag,
-				g: $elm_explorations$linear_algebra$Math$Vector3$getY(rgb),
-				parameter: 0,
-				r: $elm_explorations$linear_algebra$Math$Vector3$getX(rgb),
-				type_: 1,
-				x: -x,
-				y: -y,
-				z: -z
-			});
-	});
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $author$project$GSVGSkybox$GeneratePNG = function (a) {
 	return {$: 'GeneratePNG', a: a};
@@ -25831,119 +25788,10 @@ var $ianmackenzie$elm_geometry$Point3d$fromTuple = F2(
 	});
 var $ianmackenzie$elm_3d_scene$Scene3d$HableFilmicToneMapping = {$: 'HableFilmicToneMapping'};
 var $ianmackenzie$elm_3d_scene$Scene3d$hableFilmicToneMapping = $ianmackenzie$elm_3d_scene$Scene3d$HableFilmicToneMapping;
+var $avh4$elm_color$Color$lightBlue = A4($avh4$elm_color$Color$RgbaSpace, 114 / 255, 159 / 255, 207 / 255, 1.0);
 var $ianmackenzie$elm_units$LuminousFlux$lumens = function (numLumens) {
 	return $ianmackenzie$elm_units$Quantity$Quantity(numLumens);
 };
-var $ianmackenzie$elm_geometry$Sphere3d$atPoint = F2(
-	function (givenCenterPoint, givenRadius) {
-		return A2($ianmackenzie$elm_geometry$Sphere3d$withRadius, givenRadius, givenCenterPoint);
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$Types$EmissiveMaterial = F3(
-	function (a, b, c) {
-		return {$: 'EmissiveMaterial', a: a, b: b, c: c};
-	});
-var $ianmackenzie$elm_units$Quantity$float = function (value) {
-	return $ianmackenzie$elm_units$Quantity$Quantity(value);
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$Material$emissive = F2(
-	function (givenChromaticity, brightness) {
-		var baseColor = A2(
-			$ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$chromaticityToLinearRgb,
-			$ianmackenzie$elm_units$Quantity$float(1),
-			givenChromaticity);
-		return A3(
-			$ianmackenzie$elm_3d_scene$Scene3d$Types$EmissiveMaterial,
-			$ianmackenzie$elm_3d_scene$Scene3d$Types$UseMeshUvs,
-			$ianmackenzie$elm_3d_scene$Scene3d$Types$Constant(baseColor),
-			brightness);
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$Light$neverCastsShadows = $ianmackenzie$elm_3d_scene$Scene3d$Light$CastsShadows(false);
-var $ianmackenzie$elm_3d_scene$Scene3d$Light$point = F2(
-	function (_v0, light) {
-		var shadowFlag = _v0.a;
-		var _v1 = $ianmackenzie$elm_geometry$Point3d$unwrap(light.position);
-		var x = _v1.x;
-		var y = _v1.y;
-		var z = _v1.z;
-		var _v2 = A2($ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$chromaticityToLinearRgb, light.intensity, light.chromaticity);
-		var rgb = _v2.a;
-		return $ianmackenzie$elm_3d_scene$Scene3d$Types$Light(
-			{
-				b: $elm_explorations$linear_algebra$Math$Vector3$getZ(rgb),
-				castsShadows: shadowFlag,
-				g: $elm_explorations$linear_algebra$Math$Vector3$getY(rgb),
-				parameter: 0,
-				r: $elm_explorations$linear_algebra$Math$Vector3$getX(rgb),
-				type_: 2,
-				x: x,
-				y: y,
-				z: z
-			});
-	});
-var $ianmackenzie$elm_units$SolidAngle$steradians = function (numSteradians) {
-	return $ianmackenzie$elm_units$Quantity$Quantity(numSteradians);
-};
-var $ianmackenzie$elm_units$SolidAngle$spats = function (numSpats) {
-	return $ianmackenzie$elm_units$SolidAngle$steradians((4 * $elm$core$Basics$pi) * numSpats);
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$sphere = F2(
-	function (givenMaterial, givenSphere) {
-		return A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$sphere, true, false, givenMaterial, givenSphere);
-	});
-var $ianmackenzie$elm_geometry$Sphere3d$surfaceArea = function (sphere) {
-	return A2(
-		$ianmackenzie$elm_units$Quantity$multiplyBy,
-		4 * $elm$core$Basics$pi,
-		$ianmackenzie$elm_units$Quantity$squared(
-			$ianmackenzie$elm_geometry$Sphere3d$radius(sphere)));
-};
-var $author$project$SpaceshipScene$pointLight = function (properties) {
-	var lightsphere = A2(
-		$ianmackenzie$elm_geometry$Sphere3d$atPoint,
-		properties.position,
-		$ianmackenzie$elm_units$Length$kilometers(5));
-	var sphereLuminance = A2(
-		$ianmackenzie$elm_units$Quantity$per,
-		$ianmackenzie$elm_geometry$Sphere3d$surfaceArea(lightsphere),
-		A2(
-			$ianmackenzie$elm_units$Quantity$per,
-			$ianmackenzie$elm_units$SolidAngle$spats(0.5),
-			properties.intensity));
-	var sphereMaterial = A2($ianmackenzie$elm_3d_scene$Scene3d$Material$emissive, properties.chromaticity, sphereLuminance);
-	return _Utils_Tuple2(
-		A2($ianmackenzie$elm_3d_scene$Scene3d$Light$point, $ianmackenzie$elm_3d_scene$Scene3d$Light$neverCastsShadows, properties),
-		A2($ianmackenzie$elm_3d_scene$Scene3d$sphere, sphereMaterial, lightsphere));
-};
-var $ianmackenzie$elm_units$Temperature$inKelvins = function (_v0) {
-	var numKelvins = _v0.a;
-	return numKelvins;
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$Light$colorTemperature = function (temperature) {
-	var t = A3(
-		$elm$core$Basics$clamp,
-		1667,
-		25000,
-		$ianmackenzie$elm_units$Temperature$inKelvins(temperature));
-	var x = (t <= 4000) ? ((((((-0.2661239) * 1.0e9) / ((t * t) * t)) - ((0.2343589 * 1.0e6) / (t * t))) + ((0.8776956 * 1.0e3) / t)) + 0.17991) : ((((((-3.0258469) * 1.0e9) / ((t * t) * t)) + ((2.1070379 * 1.0e6) / (t * t))) + ((0.2226347 * 1.0e3) / t)) + 0.24039);
-	var y = (t <= 2222) ? (((((-1.1063814) * ((x * x) * x)) - (1.3481102 * (x * x))) + (2.18555832 * x)) - 0.20219683) : ((t <= 4000) ? (((((-0.9549476) * ((x * x) * x)) - (1.37418593 * (x * x))) + (2.09137015 * x)) - 0.16748867) : ((((3.081758 * ((x * x) * x)) - (5.8733867 * (x * x))) + (3.75112997 * x)) - 0.37001483));
-	return $ianmackenzie$elm_3d_scene$Scene3d$Light$chromaticity(
-		{x: x, y: y});
-};
-var $ianmackenzie$elm_units$Temperature$Temperature = function (a) {
-	return {$: 'Temperature', a: a};
-};
-var $ianmackenzie$elm_units$Temperature$kelvins = function (numKelvins) {
-	return $ianmackenzie$elm_units$Temperature$Temperature(numKelvins);
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$Light$sunlight = $ianmackenzie$elm_3d_scene$Scene3d$Light$colorTemperature(
-	$ianmackenzie$elm_units$Temperature$kelvins(5600));
-var $author$project$SpaceshipScene$light = $author$project$SpaceshipScene$pointLight(
-	{
-		chromaticity: $ianmackenzie$elm_3d_scene$Scene3d$Light$sunlight,
-		intensity: $ianmackenzie$elm_units$LuminousFlux$lumens(10000),
-		position: A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 100)
-	});
-var $avh4$elm_color$Color$lightBlue = A4($avh4$elm_color$Color$RgbaSpace, 114 / 255, 159 / 255, 207 / 255, 1.0);
 var $ianmackenzie$elm_units$Illuminance$lux = function (numLux) {
 	return $ianmackenzie$elm_units$Quantity$Quantity(numLux);
 };
@@ -26004,161 +25852,6 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$centered = function (stencil) {
 		var a = stencil;
 		return a;
 	}
-};
-var $MacCASOutreach$graphicsvg$GraphicSVG$Custom = function (a) {
-	return {$: 'Custom', a: a};
-};
-var $MacCASOutreach$graphicsvg$GraphicSVG$customFont = F2(
-	function (fStr, stencil) {
-		if (stencil.$ === 'Text') {
-			var _v1 = stencil.a;
-			var si = _v1.a;
-			var bo = _v1.b;
-			var i = _v1.c;
-			var u = _v1.d;
-			var s = _v1.e;
-			var sel = _v1.f;
-			var f = _v1.g;
-			var c = _v1.h;
-			var str = stencil.b;
-			return A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$Text,
-				A8(
-					$MacCASOutreach$graphicsvg$GraphicSVG$Face,
-					si,
-					bo,
-					i,
-					u,
-					s,
-					sel,
-					$MacCASOutreach$graphicsvg$GraphicSVG$Custom(fStr),
-					c),
-				str);
-		} else {
-			var a = stencil;
-			return a;
-		}
-	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$darkGreen = A4($MacCASOutreach$graphicsvg$GraphicSVG$RGBA, 78, 154, 6, 1);
-var $MacCASOutreach$graphicsvg$GraphicSVG$notifyTap = F2(
-	function (msg, shape) {
-		return A2($MacCASOutreach$graphicsvg$GraphicSVG$Tap, msg, shape);
-	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$rotate = F2(
-	function (theta, shape) {
-		return A2($MacCASOutreach$graphicsvg$GraphicSVG$Rotate, theta, shape);
-	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$RoundRect = F3(
-	function (a, b, c) {
-		return {$: 'RoundRect', a: a, b: b, c: c};
-	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$roundedRect = F3(
-	function (w, h, r) {
-		return A3($MacCASOutreach$graphicsvg$GraphicSVG$RoundRect, w, h, r);
-	});
-var $author$project$SpaceshipScene$cameraUI = function (model) {
-	return $MacCASOutreach$graphicsvg$GraphicSVG$group(
-		_List_fromArray(
-			[
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				$author$project$SpaceshipScene$ChangeZoom(
-					$ianmackenzie$elm_units$Length$meters(-10)),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 150),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$darkGreen,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
-								$elm$core$Basics$degrees(180),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(0, -2.5),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										$MacCASOutreach$graphicsvg$GraphicSVG$white,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-												A2(
-													$MacCASOutreach$graphicsvg$GraphicSVG$size,
-													16,
-													$MacCASOutreach$graphicsvg$GraphicSVG$text('+')))))))
-							])))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				$author$project$SpaceshipScene$ChangeZoom(
-					$ianmackenzie$elm_units$Length$meters(10)),
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 200),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$darkGreen,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
-								$elm$core$Basics$degrees(180),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(0, -2.5),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										$MacCASOutreach$graphicsvg$GraphicSVG$white,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-												A2(
-													$MacCASOutreach$graphicsvg$GraphicSVG$size,
-													16,
-													$MacCASOutreach$graphicsvg$GraphicSVG$text('-')))))))
-							])))),
-				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
-				$author$project$SpaceshipScene$CycleCameraState,
-				A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
-						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 260),
-					$MacCASOutreach$graphicsvg$GraphicSVG$group(
-						_List_fromArray(
-							[
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-								$MacCASOutreach$graphicsvg$GraphicSVG$darkGreen,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 120, 60, 10)),
-								A2(
-								$MacCASOutreach$graphicsvg$GraphicSVG$move,
-								_Utils_Tuple2(0, -5),
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-									$MacCASOutreach$graphicsvg$GraphicSVG$white,
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-										'Audiowide',
-										$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-											A2(
-												$MacCASOutreach$graphicsvg$GraphicSVG$size,
-												16,
-												$MacCASOutreach$graphicsvg$GraphicSVG$text('Cycle Camera'))))))
-							]))))
-			]));
 };
 var $MacCASOutreach$graphicsvg$GraphicSVG$findChroma = F2(
 	function (lit, sat) {
@@ -26226,6 +25919,169 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$hsl = F3(
 		var b = _v0.c;
 		return A4($MacCASOutreach$graphicsvg$GraphicSVG$RGBA, r, g, b, 1);
 	});
+var $author$project$SpaceshipScene$colourUI = A3(
+	$MacCASOutreach$graphicsvg$GraphicSVG$hsl,
+	$elm$core$Basics$degrees(150),
+	1,
+	0.5);
+var $author$project$SpaceshipScene$colourUIText = $MacCASOutreach$graphicsvg$GraphicSVG$white;
+var $MacCASOutreach$graphicsvg$GraphicSVG$Custom = function (a) {
+	return {$: 'Custom', a: a};
+};
+var $MacCASOutreach$graphicsvg$GraphicSVG$customFont = F2(
+	function (fStr, stencil) {
+		if (stencil.$ === 'Text') {
+			var _v1 = stencil.a;
+			var si = _v1.a;
+			var bo = _v1.b;
+			var i = _v1.c;
+			var u = _v1.d;
+			var s = _v1.e;
+			var sel = _v1.f;
+			var f = _v1.g;
+			var c = _v1.h;
+			var str = stencil.b;
+			return A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$Text,
+				A8(
+					$MacCASOutreach$graphicsvg$GraphicSVG$Face,
+					si,
+					bo,
+					i,
+					u,
+					s,
+					sel,
+					$MacCASOutreach$graphicsvg$GraphicSVG$Custom(fStr),
+					c),
+				str);
+		} else {
+			var a = stencil;
+			return a;
+		}
+	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$notifyTap = F2(
+	function (msg, shape) {
+		return A2($MacCASOutreach$graphicsvg$GraphicSVG$Tap, msg, shape);
+	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$rotate = F2(
+	function (theta, shape) {
+		return A2($MacCASOutreach$graphicsvg$GraphicSVG$Rotate, theta, shape);
+	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$RoundRect = F3(
+	function (a, b, c) {
+		return {$: 'RoundRect', a: a, b: b, c: c};
+	});
+var $MacCASOutreach$graphicsvg$GraphicSVG$roundedRect = F3(
+	function (w, h, r) {
+		return A3($MacCASOutreach$graphicsvg$GraphicSVG$RoundRect, w, h, r);
+	});
+var $author$project$SpaceshipScene$cameraUI = function (model) {
+	return $MacCASOutreach$graphicsvg$GraphicSVG$group(
+		_List_fromArray(
+			[
+				A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
+				$author$project$SpaceshipScene$ChangeZoom(
+					$ianmackenzie$elm_units$Length$meters(-10)),
+				A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2(
+						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
+						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 150),
+					$MacCASOutreach$graphicsvg$GraphicSVG$group(
+						_List_fromArray(
+							[
+								A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$author$project$SpaceshipScene$colourUI,
+								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
+								A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
+								$elm$core$Basics$degrees(180),
+								A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$move,
+									_Utils_Tuple2(0, -2.5),
+									A2(
+										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+										$author$project$SpaceshipScene$colourUIText,
+										A2(
+											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+											'Audiowide',
+											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+												A2(
+													$MacCASOutreach$graphicsvg$GraphicSVG$size,
+													16,
+													$MacCASOutreach$graphicsvg$GraphicSVG$text('+')))))))
+							])))),
+				A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
+				$author$project$SpaceshipScene$ChangeZoom(
+					$ianmackenzie$elm_units$Length$meters(10)),
+				A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2(
+						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
+						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 200),
+					$MacCASOutreach$graphicsvg$GraphicSVG$group(
+						_List_fromArray(
+							[
+								A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$author$project$SpaceshipScene$colourUI,
+								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 40, 40, 10)),
+								A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
+								$elm$core$Basics$degrees(180),
+								A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$move,
+									_Utils_Tuple2(0, -2.5),
+									A2(
+										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+										$author$project$SpaceshipScene$colourUIText,
+										A2(
+											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+											'Audiowide',
+											$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+												A2(
+													$MacCASOutreach$graphicsvg$GraphicSVG$size,
+													16,
+													$MacCASOutreach$graphicsvg$GraphicSVG$text('-')))))))
+							])))),
+				A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$notifyTap,
+				$author$project$SpaceshipScene$CycleCameraState,
+				A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$move,
+					_Utils_Tuple2(
+						($author$project$Wrapper3D$unwrapQ(model.width) / 2) - 125,
+						($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 260),
+					$MacCASOutreach$graphicsvg$GraphicSVG$group(
+						_List_fromArray(
+							[
+								A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+								$author$project$SpaceshipScene$colourUI,
+								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 120, 60, 10)),
+								A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$move,
+								_Utils_Tuple2(0, -5),
+								A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+									$author$project$SpaceshipScene$colourUIText,
+									A2(
+										$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+										'Audiowide',
+										$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+											A2(
+												$MacCASOutreach$graphicsvg$GraphicSVG$size,
+												16,
+												$MacCASOutreach$graphicsvg$GraphicSVG$text('Cycle Camera'))))))
+							]))))
+			]));
+};
+var $ianmackenzie$elm_units$Length$inKilometers = function (length) {
+	return 0.001 * $ianmackenzie$elm_units$Length$inMeters(length);
+};
 var $MacCASOutreach$graphicsvg$GraphicSVG$makeTransparent = F2(
 	function (alpha, shape) {
 		switch (shape.$) {
@@ -26724,28 +26580,6 @@ var $myrho$elm_round$Round$round = $myrho$elm_round$Round$roundFun(
 				}
 			}
 		}));
-var $MacCASOutreach$graphicsvg$GraphicSVG$Sansserif = {$: 'Sansserif'};
-var $MacCASOutreach$graphicsvg$GraphicSVG$sansserif = function (stencil) {
-	if (stencil.$ === 'Text') {
-		var _v1 = stencil.a;
-		var si = _v1.a;
-		var bo = _v1.b;
-		var i = _v1.c;
-		var u = _v1.d;
-		var s = _v1.e;
-		var sel = _v1.f;
-		var f = _v1.g;
-		var c = _v1.h;
-		var str = stencil.b;
-		return A2(
-			$MacCASOutreach$graphicsvg$GraphicSVG$Text,
-			A8($MacCASOutreach$graphicsvg$GraphicSVG$Face, si, bo, i, u, s, sel, $MacCASOutreach$graphicsvg$GraphicSVG$Sansserif, c),
-			str);
-	} else {
-		var a = stencil;
-		return a;
-	}
-};
 var $MacCASOutreach$graphicsvg$GraphicSVG$Polygon = function (a) {
 	return {$: 'Polygon', a: a};
 };
@@ -26782,17 +26616,17 @@ var $author$project$SpaceshipScene$cautionSign = F2(
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 					A3($MacCASOutreach$graphicsvg$GraphicSVG$rgb, 252, 198, 3),
-					A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 130, 30)),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 180, 30)),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$makeTransparent,
 					1,
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						A3($MacCASOutreach$graphicsvg$GraphicSVG$rgb, 255, 207, 31),
-						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 120, 20))),
+						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 170, 20))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(-45, -1),
+					_Utils_Tuple2(-70, -1),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
 						$elm$core$Basics$degrees(90),
@@ -26802,49 +26636,38 @@ var $author$project$SpaceshipScene$cautionSign = F2(
 							$MacCASOutreach$graphicsvg$GraphicSVG$triangle(8)))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(-45, -4),
+					_Utils_Tuple2(-70, -4),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						$MacCASOutreach$graphicsvg$GraphicSVG$yellow,
-						$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-							$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+						$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$size,
+								11,
 								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$size,
-									11,
-									$MacCASOutreach$graphicsvg$GraphicSVG$fixedwidth(
-										$MacCASOutreach$graphicsvg$GraphicSVG$text('!'))))))),
+									$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+									'Audiowide',
+									$MacCASOutreach$graphicsvg$GraphicSVG$text('!')))))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(-8, -5),
+					_Utils_Tuple2(10, -5),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						$MacCASOutreach$graphicsvg$GraphicSVG$black,
-						$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-							$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+						$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$size,
+								13,
 								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$size,
-									13,
-									$MacCASOutreach$graphicsvg$GraphicSVG$fixedwidth(
-										$MacCASOutreach$graphicsvg$GraphicSVG$text('CAUTION'))))))),
-					A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(40, -5),
-					A2(
-						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-						$MacCASOutreach$graphicsvg$GraphicSVG$black,
-						$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-							$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$size,
-									13,
-									$MacCASOutreach$graphicsvg$GraphicSVG$fixedwidth(
-										$MacCASOutreach$graphicsvg$GraphicSVG$text(
-											A2($myrho$elm_round$Round$round, 0, distance))))))))
+									$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+									'Audiowide',
+									$MacCASOutreach$graphicsvg$GraphicSVG$text(
+										'CAUTION ' + (A2(
+											$myrho$elm_round$Round$round,
+											3,
+											$ianmackenzie$elm_units$Length$inKilometers(distance)) + ' KM')))))))
 				]));
 	});
-var $ianmackenzie$elm_units$Length$inKilometers = function (length) {
-	return 0.001 * $ianmackenzie$elm_units$Length$inMeters(length);
-};
 var $MacCASOutreach$graphicsvg$GraphicSVG$map = F2(
 	function (f, sh) {
 		switch (sh.$) {
@@ -27079,13 +26902,14 @@ var $author$project$SpaceshipScene$missionFailSign = function (model) {
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						$MacCASOutreach$graphicsvg$GraphicSVG$red,
-						$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-							$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+						$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$size,
+								11,
 								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$size,
-									11,
-									$MacCASOutreach$graphicsvg$GraphicSVG$fixedwidth(
-										$MacCASOutreach$graphicsvg$GraphicSVG$text('MISSION FAILED')))))))
+									$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+									'Audiowide',
+									$MacCASOutreach$graphicsvg$GraphicSVG$text('MISSION FAILED'))))))
 				])));
 };
 var $author$project$SpaceshipPart$progressBar = F4(
@@ -27113,8 +26937,11 @@ var $author$project$SpaceshipPart$progressBar = F4(
 						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, width * percent, 15)))
 				]));
 	});
-var $author$project$SpaceshipPart$overlay = F3(
-	function (width, height, model) {
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $author$project$SpaceshipPart$overlay = F4(
+	function (width, height, colour, model) {
 		var velocity = A2(
 			$elm$core$Maybe$withDefault,
 			0,
@@ -27171,7 +26998,7 @@ var $author$project$SpaceshipPart$overlay = F3(
 						20),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						colour,
 						$MacCASOutreach$graphicsvg$GraphicSVG$text(
 							'Mass : ' + (A2($myrho$elm_round$Round$round, 3, mass) + ' kg')))),
 					A2(
@@ -27181,7 +27008,7 @@ var $author$project$SpaceshipPart$overlay = F3(
 						0),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						colour,
 						$MacCASOutreach$graphicsvg$GraphicSVG$text(
 							'Velocity : ' + (A2($myrho$elm_round$Round$round, 3, velocity) + ' m/s')))),
 					A2(
@@ -27191,7 +27018,7 @@ var $author$project$SpaceshipPart$overlay = F3(
 						-20),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						colour,
 						$MacCASOutreach$graphicsvg$GraphicSVG$text(
 							'Distance from space station : ' + (A2($myrho$elm_round$Round$round, 3, distance) + ' km')))),
 					A2(
@@ -27201,7 +27028,7 @@ var $author$project$SpaceshipPart$overlay = F3(
 						-40),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-						$MacCASOutreach$graphicsvg$GraphicSVG$white,
+						colour,
 						$MacCASOutreach$graphicsvg$GraphicSVG$text(
 							'Fuel : ' + (A2($myrho$elm_round$Round$round, 3, fuelRemaining) + (' / ' + (A2($myrho$elm_round$Round$round, 3, fuelOriginalCap) + (' kg (' + (A2($myrho$elm_round$Round$round, 3, fuelPercent) + '%)')))))))),
 					A2(
@@ -27211,7 +27038,7 @@ var $author$project$SpaceshipPart$overlay = F3(
 						-60),
 					A4(
 						$author$project$SpaceshipPart$progressBar,
-						((fuelRemaining / fuelOriginalCap) < 0.10) ? $MacCASOutreach$graphicsvg$GraphicSVG$red : (((fuelRemaining / fuelOriginalCap) < 0.20) ? $MacCASOutreach$graphicsvg$GraphicSVG$orange : $MacCASOutreach$graphicsvg$GraphicSVG$white),
+						((fuelRemaining / fuelOriginalCap) < 0.10) ? $MacCASOutreach$graphicsvg$GraphicSVG$red : (((fuelRemaining / fuelOriginalCap) < 0.20) ? $MacCASOutreach$graphicsvg$GraphicSVG$orange : colour),
 						_Utils_Tuple2(200, 15),
 						fuelOriginalCap,
 						fuelRemaining))
@@ -27240,13 +27067,14 @@ var $author$project$SpaceshipScene$repair = F3(
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						$MacCASOutreach$graphicsvg$GraphicSVG$black,
-						$MacCASOutreach$graphicsvg$GraphicSVG$sansserif(
-							$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+						$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+							A2(
+								$MacCASOutreach$graphicsvg$GraphicSVG$size,
+								11,
 								A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$size,
-									11,
-									$MacCASOutreach$graphicsvg$GraphicSVG$fixedwidth(
-										$MacCASOutreach$graphicsvg$GraphicSVG$text('REPAIRING')))))))
+									$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+									'Audiowide',
+									$MacCASOutreach$graphicsvg$GraphicSVG$text('REPAIRING'))))))
 				]));
 	});
 var $MacCASOutreach$graphicsvg$GraphicSVG$Circle = function (a) {
@@ -27535,7 +27363,10 @@ var $author$project$SpaceshipScene$spaceGameUI = function (model) {
 		$author$project$SpaceshipScene$spaceStation(model));
 	var showRepair = model.ifRepair ? 1 : 0;
 	var showGameOver = model.ifGameOver ? 1 : 0;
-	var showCause = ($author$project$SpaceshipScene$earthToShip(model) <= 200000) ? (0.6 + (0.4 * $elm$core$Basics$sin((5 * model.time) - 1.5))) : 0;
+	var showCaution = A2(
+		$ianmackenzie$elm_units$Quantity$lessThan,
+		$ianmackenzie$elm_units$Length$kilometers(10),
+		$author$project$SpaceshipScene$earthToShip(model)) ? (0.6 + (0.4 * $elm$core$Basics$sin((5 * model.time) - 1.5))) : 0;
 	var satellitePosition = $author$project$Wrapper3D$getPosition(
 		$author$project$SpaceshipScene$satelliteModel(model));
 	var fixprocess = function () {
@@ -27561,11 +27392,15 @@ var $author$project$SpaceshipScene$spaceGameUI = function (model) {
 			[
 				A2(
 				$MacCASOutreach$graphicsvg$GraphicSVG$makeTransparent,
-				showCause,
+				showCaution,
 				A2(
 					$author$project$SpaceshipScene$cautionSign,
 					model,
 					$author$project$SpaceshipScene$earthToShip(model))),
+				A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$makeTransparent,
+				showRepair,
+				A3($author$project$SpaceshipScene$repair, model, fixprocess, $author$project$SpaceshipScene$levelAdjust)),
 				A2(
 				$MacCASOutreach$graphicsvg$GraphicSVG$makeTransparent,
 				showGameOver,
@@ -27574,13 +27409,26 @@ var $author$project$SpaceshipScene$spaceGameUI = function (model) {
 					3,
 					$author$project$SpaceshipScene$missionFailSign(model))),
 				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$makeTransparent,
-				showRepair,
-				A3($author$project$SpaceshipScene$repair, model, fixprocess, $author$project$SpaceshipScene$levelAdjust)),
-				A2(
 				$MacCASOutreach$graphicsvg$GraphicSVG$map,
 				$author$project$SpaceshipScene$SpaceshipMsg,
-				A3($author$project$SpaceshipPart$overlay, model.width, model.height, model.spaceshipState)),
+				A4($author$project$SpaceshipPart$overlay, model.width, model.height, $author$project$SpaceshipScene$colourUI, model.spaceshipState)),
+				A2(
+				$MacCASOutreach$graphicsvg$GraphicSVG$move,
+				_Utils_Tuple2(
+					0,
+					($author$project$Wrapper3D$unwrapQ(model.height) / 2) - 50),
+				A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$filled,
+					$author$project$SpaceshipScene$colourUIText,
+					A2(
+						$MacCASOutreach$graphicsvg$GraphicSVG$size,
+						24,
+						A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+							'Audiowide',
+							$MacCASOutreach$graphicsvg$GraphicSVG$centered(
+								$MacCASOutreach$graphicsvg$GraphicSVG$text(
+									'Mission Time: T+' + (A2($myrho$elm_round$Round$round, 3, model.gameTime) + 's'))))))),
 				A8(
 				$author$project$PhysicsWrapper3D$tracker,
 				model.camera,
@@ -27588,8 +27436,8 @@ var $author$project$SpaceshipScene$spaceGameUI = function (model) {
 				$author$project$Wrapper3D$getPosition(
 					$author$project$SpaceshipScene$satelliteModel(model)),
 				20,
-				$MacCASOutreach$graphicsvg$GraphicSVG$white,
-				$MacCASOutreach$graphicsvg$GraphicSVG$white,
+				$author$project$SpaceshipScene$colourUI,
+				$author$project$SpaceshipScene$colourUI,
 				'satellite (' + (A2($myrho$elm_round$Round$round, 3, distanceToSatellite) + 'km)'),
 				false),
 				A8(
@@ -27599,8 +27447,8 @@ var $author$project$SpaceshipScene$spaceGameUI = function (model) {
 				$author$project$Wrapper3D$getPosition(
 					$author$project$SpaceshipScene$spaceStation(model)),
 				20,
-				$MacCASOutreach$graphicsvg$GraphicSVG$white,
-				$MacCASOutreach$graphicsvg$GraphicSVG$white,
+				$author$project$SpaceshipScene$colourUI,
+				$author$project$SpaceshipScene$colourUI,
 				'space station (' + (A2($myrho$elm_round$Round$round, 3, distanceToSpaceStation) + 'km)'),
 				false)
 			]));
@@ -27813,26 +27661,99 @@ var $author$project$SpaceshipScene$spaceshipDebug = F5(
 		}();
 		return $MacCASOutreach$graphicsvg$GraphicSVG$group(
 			_List_fromArray(
-				[bodyInfo, theTracker]));
+				[bodyInfo]));
 	});
 var $author$project$SpaceshipScene$overlay = function (model) {
 	return _List_fromArray(
 		[
 			$author$project$SpaceshipScene$angleDisplay(model),
-			A5(
-			$author$project$SpaceshipScene$spaceshipDebug,
-			'spaceship',
-			model,
-			30,
-			A3(
-				$MacCASOutreach$graphicsvg$GraphicSVG$hsl,
-				$elm$core$Basics$degrees(225),
-				1,
-				0.65),
-			$MacCASOutreach$graphicsvg$GraphicSVG$black),
+			A5($author$project$SpaceshipScene$spaceshipDebug, 'spaceship', model, 30, $author$project$SpaceshipScene$colourUI, $author$project$SpaceshipScene$colourUIText),
 			$author$project$SpaceshipScene$spaceGameUI(model),
 			$author$project$SpaceshipScene$cameraUI(model)
 		]);
+};
+var $ianmackenzie$elm_geometry$Sphere3d$atPoint = F2(
+	function (givenCenterPoint, givenRadius) {
+		return A2($ianmackenzie$elm_geometry$Sphere3d$withRadius, givenRadius, givenCenterPoint);
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$Types$EmissiveMaterial = F3(
+	function (a, b, c) {
+		return {$: 'EmissiveMaterial', a: a, b: b, c: c};
+	});
+var $ianmackenzie$elm_units$Quantity$float = function (value) {
+	return $ianmackenzie$elm_units$Quantity$Quantity(value);
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Material$emissive = F2(
+	function (givenChromaticity, brightness) {
+		var baseColor = A2(
+			$ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$chromaticityToLinearRgb,
+			$ianmackenzie$elm_units$Quantity$float(1),
+			givenChromaticity);
+		return A3(
+			$ianmackenzie$elm_3d_scene$Scene3d$Types$EmissiveMaterial,
+			$ianmackenzie$elm_3d_scene$Scene3d$Types$UseMeshUvs,
+			$ianmackenzie$elm_3d_scene$Scene3d$Types$Constant(baseColor),
+			brightness);
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$Light$CastsShadows = function (a) {
+	return {$: 'CastsShadows', a: a};
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Light$neverCastsShadows = $ianmackenzie$elm_3d_scene$Scene3d$Light$CastsShadows(false);
+var $ianmackenzie$elm_3d_scene$Scene3d$Light$point = F2(
+	function (_v0, light) {
+		var shadowFlag = _v0.a;
+		var _v1 = $ianmackenzie$elm_geometry$Point3d$unwrap(light.position);
+		var x = _v1.x;
+		var y = _v1.y;
+		var z = _v1.z;
+		var _v2 = A2($ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$chromaticityToLinearRgb, light.intensity, light.chromaticity);
+		var rgb = _v2.a;
+		return $ianmackenzie$elm_3d_scene$Scene3d$Types$Light(
+			{
+				b: $elm_explorations$linear_algebra$Math$Vector3$getZ(rgb),
+				castsShadows: shadowFlag,
+				g: $elm_explorations$linear_algebra$Math$Vector3$getY(rgb),
+				parameter: 0,
+				r: $elm_explorations$linear_algebra$Math$Vector3$getX(rgb),
+				type_: 2,
+				x: x,
+				y: y,
+				z: z
+			});
+	});
+var $ianmackenzie$elm_units$SolidAngle$steradians = function (numSteradians) {
+	return $ianmackenzie$elm_units$Quantity$Quantity(numSteradians);
+};
+var $ianmackenzie$elm_units$SolidAngle$spats = function (numSpats) {
+	return $ianmackenzie$elm_units$SolidAngle$steradians((4 * $elm$core$Basics$pi) * numSpats);
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$sphere = F2(
+	function (givenMaterial, givenSphere) {
+		return A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$sphere, true, false, givenMaterial, givenSphere);
+	});
+var $ianmackenzie$elm_geometry$Sphere3d$surfaceArea = function (sphere) {
+	return A2(
+		$ianmackenzie$elm_units$Quantity$multiplyBy,
+		4 * $elm$core$Basics$pi,
+		$ianmackenzie$elm_units$Quantity$squared(
+			$ianmackenzie$elm_geometry$Sphere3d$radius(sphere)));
+};
+var $author$project$SpaceshipScene$pointLight = function (properties) {
+	var lightsphere = A2(
+		$ianmackenzie$elm_geometry$Sphere3d$atPoint,
+		properties.position,
+		$ianmackenzie$elm_units$Length$kilometers(5));
+	var sphereLuminance = A2(
+		$ianmackenzie$elm_units$Quantity$per,
+		$ianmackenzie$elm_geometry$Sphere3d$surfaceArea(lightsphere),
+		A2(
+			$ianmackenzie$elm_units$Quantity$per,
+			$ianmackenzie$elm_units$SolidAngle$spats(0.5),
+			properties.intensity));
+	var sphereMaterial = A2($ianmackenzie$elm_3d_scene$Scene3d$Material$emissive, properties.chromaticity, sphereLuminance);
+	return _Utils_Tuple2(
+		A2($ianmackenzie$elm_3d_scene$Scene3d$Light$point, $ianmackenzie$elm_3d_scene$Scene3d$Light$neverCastsShadows, properties),
+		A2($ianmackenzie$elm_3d_scene$Scene3d$sphere, sphereMaterial, lightsphere));
 };
 var $author$project$Wrapper3D$renderEntities = function (objects) {
 	var extract = function (obj) {
@@ -27975,7 +27896,6 @@ var $ianmackenzie$elm_3d_scene$Scene3d$sevenLights = F7(
 	function (first, second, third, fourth, fifth, sixth, seventh) {
 		return A8($ianmackenzie$elm_3d_scene$Scene3d$eightLights, first, second, third, fourth, fifth, sixth, seventh, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled);
 	});
-var $author$project$SpaceshipScene$showLight = true;
 var $ianmackenzie$elm_3d_scene$Scene3d$sixLights = F6(
 	function (first, second, third, fourth, fifth, sixth) {
 		return A8($ianmackenzie$elm_3d_scene$Scene3d$eightLights, first, second, third, fourth, fifth, sixth, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled);
@@ -28121,6 +28041,29 @@ var $author$project$SpaceshipPart$spaceshipFrame = function (model) {
 	return frame;
 };
 var $elm$html$Html$span = _VirtualDom_node('span');
+var $ianmackenzie$elm_units$Temperature$inKelvins = function (_v0) {
+	var numKelvins = _v0.a;
+	return numKelvins;
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Light$colorTemperature = function (temperature) {
+	var t = A3(
+		$elm$core$Basics$clamp,
+		1667,
+		25000,
+		$ianmackenzie$elm_units$Temperature$inKelvins(temperature));
+	var x = (t <= 4000) ? ((((((-0.2661239) * 1.0e9) / ((t * t) * t)) - ((0.2343589 * 1.0e6) / (t * t))) + ((0.8776956 * 1.0e3) / t)) + 0.17991) : ((((((-3.0258469) * 1.0e9) / ((t * t) * t)) + ((2.1070379 * 1.0e6) / (t * t))) + ((0.2226347 * 1.0e3) / t)) + 0.24039);
+	var y = (t <= 2222) ? (((((-1.1063814) * ((x * x) * x)) - (1.3481102 * (x * x))) + (2.18555832 * x)) - 0.20219683) : ((t <= 4000) ? (((((-0.9549476) * ((x * x) * x)) - (1.37418593 * (x * x))) + (2.09137015 * x)) - 0.16748867) : ((((3.081758 * ((x * x) * x)) - (5.8733867 * (x * x))) + (3.75112997 * x)) - 0.37001483));
+	return $ianmackenzie$elm_3d_scene$Scene3d$Light$chromaticity(
+		{x: x, y: y});
+};
+var $ianmackenzie$elm_units$Temperature$Temperature = function (a) {
+	return {$: 'Temperature', a: a};
+};
+var $ianmackenzie$elm_units$Temperature$kelvins = function (numKelvins) {
+	return $ianmackenzie$elm_units$Temperature$Temperature(numKelvins);
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Light$sunlight = $ianmackenzie$elm_3d_scene$Scene3d$Light$colorTemperature(
+	$ianmackenzie$elm_units$Temperature$kelvins(5600));
 var $ianmackenzie$elm_3d_scene$Scene3d$threeLights = F3(
 	function (first, second, third) {
 		return A8($ianmackenzie$elm_3d_scene$Scene3d$eightLights, first, second, third, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled, $ianmackenzie$elm_3d_scene$Scene3d$Light$disabled);
@@ -28182,17 +28125,6 @@ var $author$project$SpaceshipScene$view = function (model) {
 				return t.thrustPercent > 0;
 			},
 			$elm$core$Dict$values(model.spaceshipState.spaceshipState.thrusterStates)));
-	var thirdLight = A2(
-		$ianmackenzie$elm_3d_scene$Scene3d$Light$directional,
-		$ianmackenzie$elm_3d_scene$Scene3d$Light$castsShadows(true),
-		{
-			chromaticity: $ianmackenzie$elm_3d_scene$Scene3d$Light$sunlight,
-			direction: A2(
-				$ianmackenzie$elm_geometry$Direction3d$xyZ,
-				$ianmackenzie$elm_units$Angle$degrees(-90),
-				$ianmackenzie$elm_units$Angle$degrees(-45)),
-			intensity: $ianmackenzie$elm_units$Illuminance$lux(100)
-		});
 	var textures = model.textureLoader.textures;
 	var spaceshipFrame = $author$project$SpaceshipPart$spaceshipFrame(model.spaceshipState);
 	var thrusterLight = function (pt) {
@@ -28222,6 +28154,52 @@ var $author$project$SpaceshipScene$view = function (model) {
 		});
 	var sunLighting = _v0.a;
 	var sun = _v0.b;
+	var baseEntities = _List_fromArray(
+		[
+			sun,
+			function () {
+			var _v19 = $author$project$SpaceshipScene$skyboxType;
+			switch (_v19.$) {
+				case 'GSVGSkybox':
+					return A2(
+						$author$project$Skybox$skybox,
+						_List_fromArray(
+							[
+								A2($elm$core$Dict$get, 'skyB', textures),
+								A2($elm$core$Dict$get, 'skyT', textures),
+								A2($elm$core$Dict$get, 'skyS1', textures),
+								A2($elm$core$Dict$get, 'skyS2', textures),
+								A2($elm$core$Dict$get, 'skyS3', textures),
+								A2($elm$core$Dict$get, 'skyS4', textures)
+							]),
+						0);
+				case 'URLSkybox':
+					return A2(
+						$author$project$Skybox$skybox,
+						_List_fromArray(
+							[
+								A2($elm$core$Dict$get, 'skyB', textures),
+								A2($elm$core$Dict$get, 'skyT', textures),
+								A2($elm$core$Dict$get, 'skyS1', textures),
+								A2($elm$core$Dict$get, 'skyS2', textures),
+								A2($elm$core$Dict$get, 'skyS3', textures),
+								A2($elm$core$Dict$get, 'skyS4', textures)
+							]),
+						0);
+				case 'URLSphericalSkybox':
+					return A2(
+						$author$project$Skybox$roundSkybox,
+						A2($elm$core$Dict$get, 'skyT', textures),
+						$ianmackenzie$elm_units$Length$inCentimeters(
+							$ianmackenzie$elm_units$Length$kilometers(1000)));
+				default:
+					return A2(
+						$author$project$Skybox$roundSkybox,
+						A2($elm$core$Dict$get, 'skyT', textures),
+						5000);
+			}
+		}()
+		]);
 	var lights = function () {
 		if (!thrustersOn.b) {
 			return A2($ianmackenzie$elm_3d_scene$Scene3d$twoLights, sunLighting, softLighting);
@@ -28236,8 +28214,8 @@ var $author$project$SpaceshipScene$view = function (model) {
 			} else {
 				if (!thrustersOn.b.b.b) {
 					var l1 = thrustersOn.a;
-					var _v6 = thrustersOn.b;
-					var l2 = _v6.a;
+					var _v4 = thrustersOn.b;
+					var l2 = _v4.a;
 					return A4(
 						$ianmackenzie$elm_3d_scene$Scene3d$fourLights,
 						sunLighting,
@@ -28247,10 +28225,10 @@ var $author$project$SpaceshipScene$view = function (model) {
 				} else {
 					if (!thrustersOn.b.b.b.b) {
 						var l1 = thrustersOn.a;
-						var _v7 = thrustersOn.b;
-						var l2 = _v7.a;
-						var _v8 = _v7.b;
-						var l3 = _v8.a;
+						var _v5 = thrustersOn.b;
+						var l2 = _v5.a;
+						var _v6 = _v5.b;
+						var l3 = _v6.a;
 						return A5(
 							$ianmackenzie$elm_3d_scene$Scene3d$fiveLights,
 							sunLighting,
@@ -28261,12 +28239,12 @@ var $author$project$SpaceshipScene$view = function (model) {
 					} else {
 						if (!thrustersOn.b.b.b.b.b) {
 							var l1 = thrustersOn.a;
-							var _v9 = thrustersOn.b;
-							var l2 = _v9.a;
-							var _v10 = _v9.b;
-							var l3 = _v10.a;
-							var _v11 = _v10.b;
-							var l4 = _v11.a;
+							var _v7 = thrustersOn.b;
+							var l2 = _v7.a;
+							var _v8 = _v7.b;
+							var l3 = _v8.a;
+							var _v9 = _v8.b;
+							var l4 = _v9.a;
 							return A6(
 								$ianmackenzie$elm_3d_scene$Scene3d$sixLights,
 								sunLighting,
@@ -28278,14 +28256,14 @@ var $author$project$SpaceshipScene$view = function (model) {
 						} else {
 							if (!thrustersOn.b.b.b.b.b.b) {
 								var l1 = thrustersOn.a;
-								var _v12 = thrustersOn.b;
-								var l2 = _v12.a;
+								var _v10 = thrustersOn.b;
+								var l2 = _v10.a;
+								var _v11 = _v10.b;
+								var l3 = _v11.a;
+								var _v12 = _v11.b;
+								var l4 = _v12.a;
 								var _v13 = _v12.b;
-								var l3 = _v13.a;
-								var _v14 = _v13.b;
-								var l4 = _v14.a;
-								var _v15 = _v14.b;
-								var l5 = _v15.a;
+								var l5 = _v13.a;
 								return A7(
 									$ianmackenzie$elm_3d_scene$Scene3d$sevenLights,
 									sunLighting,
@@ -28297,17 +28275,17 @@ var $author$project$SpaceshipScene$view = function (model) {
 									softLighting);
 							} else {
 								var l1 = thrustersOn.a;
-								var _v16 = thrustersOn.b;
-								var l2 = _v16.a;
+								var _v14 = thrustersOn.b;
+								var l2 = _v14.a;
+								var _v15 = _v14.b;
+								var l3 = _v15.a;
+								var _v16 = _v15.b;
+								var l4 = _v16.a;
 								var _v17 = _v16.b;
-								var l3 = _v17.a;
+								var l5 = _v17.a;
 								var _v18 = _v17.b;
-								var l4 = _v18.a;
-								var _v19 = _v18.b;
-								var l5 = _v19.a;
-								var _v20 = _v19.b;
-								var l6 = _v20.a;
-								var rest = _v20.b;
+								var l6 = _v18.a;
+								var rest = _v18.b;
 								return A8(
 									$ianmackenzie$elm_3d_scene$Scene3d$eightLights,
 									sunLighting,
@@ -28325,75 +28303,21 @@ var $author$project$SpaceshipScene$view = function (model) {
 			}
 		}
 	}();
-	var _v1 = $author$project$SpaceshipScene$light;
-	var firstLight = _v1.a;
-	var firstLightBall = _v1.b;
-	var baseEntities = _Utils_ap(
-		$author$project$SpaceshipScene$showLight ? _List_fromArray(
-			[firstLightBall]) : _List_Nil,
-		A2(
-			$elm$core$List$cons,
-			sun,
-			_List_fromArray(
-				[
-					function () {
-					var _v4 = $author$project$SpaceshipScene$skyboxType;
-					switch (_v4.$) {
-						case 'GSVGSkybox':
-							return A2(
-								$author$project$Skybox$skybox,
-								_List_fromArray(
-									[
-										A2($elm$core$Dict$get, 'skyB', textures),
-										A2($elm$core$Dict$get, 'skyT', textures),
-										A2($elm$core$Dict$get, 'skyS1', textures),
-										A2($elm$core$Dict$get, 'skyS2', textures),
-										A2($elm$core$Dict$get, 'skyS3', textures),
-										A2($elm$core$Dict$get, 'skyS4', textures)
-									]),
-								0);
-						case 'URLSkybox':
-							return A2(
-								$author$project$Skybox$skybox,
-								_List_fromArray(
-									[
-										A2($elm$core$Dict$get, 'skyB', textures),
-										A2($elm$core$Dict$get, 'skyT', textures),
-										A2($elm$core$Dict$get, 'skyS1', textures),
-										A2($elm$core$Dict$get, 'skyS2', textures),
-										A2($elm$core$Dict$get, 'skyS3', textures),
-										A2($elm$core$Dict$get, 'skyS4', textures)
-									]),
-								0);
-						case 'URLSphericalSkybox':
-							return A2(
-								$author$project$Skybox$roundSkybox,
-								A2($elm$core$Dict$get, 'skyT', textures),
-								$ianmackenzie$elm_units$Length$inCentimeters(
-									$ianmackenzie$elm_units$Length$kilometers(1000)));
-						default:
-							return A2(
-								$author$project$Skybox$roundSkybox,
-								A2($elm$core$Dict$get, 'skyT', textures),
-								5000);
-					}
-				}()
-				])));
-	var _v2 = model.state;
-	if (_v2.$ === 'Loaded') {
+	var _v1 = model.state;
+	if (_v1.$ === 'Loaded') {
 		return A2(
 			$elm$html$Html$div,
 			_List_Nil,
 			_List_fromArray(
 				[
 					function () {
-					var _v3 = $author$project$SpaceshipScene$skyboxType;
-					switch (_v3.$) {
+					var _v2 = $author$project$SpaceshipScene$skyboxType;
+					switch (_v2.$) {
 						case 'GSVGSkybox':
-							var debug = _v3.a;
-							var sT = _v3.b;
-							var sS = _v3.c;
-							var sB = _v3.d;
+							var debug = _v2.a;
+							var sT = _v2.b;
+							var sS = _v2.c;
+							var sB = _v2.d;
 							return A2(
 								$elm$html$Html$div,
 								_List_fromArray(
@@ -28414,8 +28338,8 @@ var $author$project$SpaceshipScene$view = function (model) {
 										A5($author$project$GSVGSkybox$drawSkybox, debug, model.gSkyboxModel, sT, sS, sB))
 									]));
 						case 'GSVGSphericalSkybox':
-							var debug = _v3.a;
-							var sT = _v3.b;
+							var debug = _v2.a;
+							var sT = _v2.b;
 							return A2(
 								$elm$html$Html$div,
 								_List_fromArray(
