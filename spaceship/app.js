@@ -26985,8 +26985,11 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						colour,
-						$MacCASOutreach$graphicsvg$GraphicSVG$text(
-							'Mass : ' + (A2($myrho$elm_round$Round$round, 3, mass) + ' kg')))),
+						A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+							'audiowide',
+							$MacCASOutreach$graphicsvg$GraphicSVG$text(
+								'Mass : ' + (A2($myrho$elm_round$Round$round, 3, mass) + ' kg'))))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
@@ -26995,8 +26998,11 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						colour,
-						$MacCASOutreach$graphicsvg$GraphicSVG$text(
-							'Velocity : ' + (A2($myrho$elm_round$Round$round, 3, velocity) + ' m/s')))),
+						A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+							'audiowide',
+							$MacCASOutreach$graphicsvg$GraphicSVG$text(
+								'Velocity : ' + (A2($myrho$elm_round$Round$round, 3, velocity) + ' m/s'))))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
@@ -27005,8 +27011,11 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						colour,
-						$MacCASOutreach$graphicsvg$GraphicSVG$text(
-							'Distance from space station : ' + (A2($myrho$elm_round$Round$round, 3, distance) + ' km')))),
+						A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+							'audiowide',
+							$MacCASOutreach$graphicsvg$GraphicSVG$text(
+								'Distance from space station : ' + (A2($myrho$elm_round$Round$round, 3, distance) + ' km'))))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
@@ -27015,8 +27024,11 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						colour,
-						$MacCASOutreach$graphicsvg$GraphicSVG$text(
-							'Fuel : ' + (A2($myrho$elm_round$Round$round, 3, fuelRemaining) + (' / ' + (A2($myrho$elm_round$Round$round, 3, fuelOriginalCap) + (' kg (' + (A2($myrho$elm_round$Round$round, 3, fuelPercent) + '%)')))))))),
+						A2(
+							$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
+							'audiowide',
+							$MacCASOutreach$graphicsvg$GraphicSVG$text(
+								'Fuel : ' + (A2($myrho$elm_round$Round$round, 3, fuelRemaining) + (' / ' + (A2($myrho$elm_round$Round$round, 3, fuelOriginalCap) + (' kg (' + (A2($myrho$elm_round$Round$round, 3, fuelPercent) + '%)'))))))))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
@@ -27439,221 +27451,10 @@ var $author$project$SpaceshipScene$spaceGameUI = function (model) {
 				false)
 			]));
 };
-var $w0rm$elm_physics$Physics$Body$angularVelocity = function (_v0) {
-	var body = _v0.a;
-	return $ianmackenzie$elm_geometry$Vector3d$unsafe(body.angularVelocity);
-};
-var $author$project$PhysicsWrapper3D$bodyTracker = F6(
-	function (objToTrack, model, trackerSize, trackerColour, textColour, showDistance) {
-		var toTrack = A2(
-			$elm$core$List$filter,
-			function (body) {
-				return _Utils_eq(
-					$w0rm$elm_physics$Physics$Body$data(body).name,
-					objToTrack);
-			},
-			$w0rm$elm_physics$Physics$World$bodies(model.world));
-		var trackingName = function () {
-			var _v1 = $elm$core$List$head(toTrack);
-			if (_v1.$ === 'Just') {
-				var body = _v1.a;
-				return $w0rm$elm_physics$Physics$Body$data(body).name;
-			} else {
-				return 'Nothing';
-			}
-		}();
-		var bodyMaybe = $elm$core$List$head(toTrack);
-		if (bodyMaybe.$ === 'Just') {
-			var body = bodyMaybe.a;
-			return A8(
-				$author$project$PhysicsWrapper3D$tracker,
-				model.camera,
-				model,
-				$author$project$PhysicsWrapper3D$adjustedPosition(body),
-				trackerSize,
-				trackerColour,
-				textColour,
-				trackingName,
-				showDistance);
-		} else {
-			return $MacCASOutreach$graphicsvg$GraphicSVG$group(_List_Nil);
-		}
-	});
-var $elm$core$Debug$toString = _Debug_toString;
-var $author$project$SpaceshipScene$spaceshipDebug = F5(
-	function (objToTrack, model, trackerSize, trackerColour, textColour) {
-		var toTrack = A2($author$project$PhysicsWrapper3D$getBodyByName, objToTrack, model.spaceshipState.world);
-		var trackingName = function () {
-			if (toTrack.$ === 'Just') {
-				var body = toTrack.a;
-				return $w0rm$elm_physics$Physics$Body$data(body).name;
-			} else {
-				return 'Nothing';
-			}
-		}();
-		var theTracker = A6($author$project$PhysicsWrapper3D$bodyTracker, objToTrack, model, trackerSize, trackerColour, textColour, true);
-		var textLeft = ((-300) * $author$project$Wrapper3D$unwrapQ(model.width)) / 1920;
-		var bodyInfo = function () {
-			if (toTrack.$ === 'Just') {
-				var body = toTrack.a;
-				var vectorToString = function (vector) {
-					return '{ x = ' + (A2(
-						$myrho$elm_round$Round$round,
-						2,
-						$author$project$Wrapper3D$unwrapQ(
-							$ianmackenzie$elm_geometry$Vector3d$xComponent(vector))) + ('m/s, y = ' + (A2(
-						$myrho$elm_round$Round$round,
-						2,
-						$author$project$Wrapper3D$unwrapQ(
-							$ianmackenzie$elm_geometry$Vector3d$yComponent(vector))) + ('m/s, z = ' + (A2(
-						$myrho$elm_round$Round$round,
-						2,
-						$author$project$Wrapper3D$unwrapQ(
-							$ianmackenzie$elm_geometry$Vector3d$zComponent(vector))) + 'm/s }')))));
-				};
-				var pointToString = function (point) {
-					var _v1 = A2($ianmackenzie$elm_geometry$Point3d$toTuple, $ianmackenzie$elm_units$Length$inMeters, point);
-					var x = _v1.a;
-					var y = _v1.b;
-					var z = _v1.c;
-					return '{ x = ' + (A2($myrho$elm_round$Round$round, 2, x) + ('m, y = ' + (A2($myrho$elm_round$Round$round, 2, y) + ('m, z = ' + (A2($myrho$elm_round$Round$round, 2, z) + 'm }')))));
-				};
-				var frame = $w0rm$elm_physics$Physics$Body$frame(body);
-				var dirToString = function (dir) {
-					return '{ x = ' + (A2(
-						$myrho$elm_round$Round$round,
-						2,
-						$ianmackenzie$elm_geometry$Direction3d$xComponent(dir)) + (', y = ' + (A2(
-						$myrho$elm_round$Round$round,
-						2,
-						$ianmackenzie$elm_geometry$Direction3d$yComponent(dir)) + (', z = ' + (A2(
-						$myrho$elm_round$Round$round,
-						2,
-						$ianmackenzie$elm_geometry$Direction3d$zComponent(dir)) + ' }')))));
-				};
-				return A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(
-						0,
-						((-250) * $author$project$Wrapper3D$unwrapQ(model.height)) / 970),
-					A2(
-						$MacCASOutreach$graphicsvg$GraphicSVG$scale,
-						2 * ($author$project$Wrapper3D$unwrapQ(model.height) / 970),
-						$MacCASOutreach$graphicsvg$GraphicSVG$group(
-							_List_fromArray(
-								[
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(textLeft, 50),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										textColour,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$text('Name: ' + trackingName)))),
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(textLeft, 35),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										textColour,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$text(
-												'Velocity: ' + vectorToString(
-													$w0rm$elm_physics$Physics$Body$velocity(body)))))),
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(textLeft, 20),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										textColour,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$text(
-												'Origin Point: ' + pointToString(
-													$ianmackenzie$elm_geometry$Frame3d$originPoint(frame)))))),
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(textLeft, 5),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										textColour,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$text(
-												'Rotational velocity: ' + vectorToString(
-													$w0rm$elm_physics$Physics$Body$angularVelocity(body)))))),
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(textLeft, -10),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										textColour,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$text(
-												'x direction: ' + dirToString(
-													$ianmackenzie$elm_geometry$Frame3d$xDirection(frame)))))),
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(textLeft, -25),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										textColour,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$text(
-												'y direction: ' + dirToString(
-													$ianmackenzie$elm_geometry$Frame3d$yDirection(frame)))))),
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(textLeft, -40),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										textColour,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$text(
-												'z direction: ' + dirToString(
-													$ianmackenzie$elm_geometry$Frame3d$zDirection(frame)))))),
-									A2(
-									$MacCASOutreach$graphicsvg$GraphicSVG$move,
-									_Utils_Tuple2(textLeft, -55),
-									A2(
-										$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-										textColour,
-										A2(
-											$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-											'Audiowide',
-											$MacCASOutreach$graphicsvg$GraphicSVG$text(
-												$elm$core$Debug$toString(
-													$w0rm$elm_physics$Physics$Body$data(body).visualizers)))))
-								]))));
-			} else {
-				return A2(
-					$MacCASOutreach$graphicsvg$GraphicSVG$filled,
-					textColour,
-					$MacCASOutreach$graphicsvg$GraphicSVG$centered(
-						$MacCASOutreach$graphicsvg$GraphicSVG$text('Error: Invalid Physics Body')));
-			}
-		}();
-		return $MacCASOutreach$graphicsvg$GraphicSVG$group(
-			_List_fromArray(
-				[bodyInfo]));
-	});
 var $author$project$SpaceshipScene$overlay = function (model) {
 	return _List_fromArray(
 		[
 			$author$project$SpaceshipScene$angleDisplay(model),
-			A5($author$project$SpaceshipScene$spaceshipDebug, 'spaceship', model, 30, $author$project$SpaceshipScene$colourUI, $author$project$SpaceshipScene$colourUIText),
 			$author$project$SpaceshipScene$spaceGameUI(model),
 			$author$project$SpaceshipScene$cameraUI(model)
 		]);
