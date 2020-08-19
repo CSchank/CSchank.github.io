@@ -14574,6 +14574,8 @@ var $author$project$SpaceshipScene$init = function (_v0) {
 			meshStore: {generatedMeshes: $elm$core$Dict$empty, generatedShadows: $elm$core$Dict$empty},
 			meshStoreWorld: {generatedMeshes: $elm$core$Dict$empty, generatedShadows: $elm$core$Dict$empty},
 			orbiting: false,
+			showDetailedSatellite: false,
+			showDetailedSpaceStation: false,
 			spaceshipState: A2(
 				$author$project$SpaceshipPart$init,
 				{generatedMeshes: $elm$core$Dict$empty, generatedShadows: $elm$core$Dict$empty},
@@ -16640,6 +16642,1011 @@ var $ianmackenzie$elm_units$Duration$inSeconds = function (_v0) {
 	var numSeconds = _v0.a;
 	return numSeconds;
 };
+var $author$project$Wrapper3D$cube = F2(
+	function (size, material) {
+		var cubeShape = A2(
+			$ianmackenzie$elm_geometry$Block3d$from,
+			A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
+			A3($ianmackenzie$elm_geometry$Point3d$centimeters, size, size, size));
+		return $author$project$Wrapper3D$Object(
+			{
+				approxShape: $author$project$Wrapper3D$Block(
+					_Utils_Tuple3(size, size, size)),
+				boundingBox: $author$project$Wrapper3D$Box(
+					$ianmackenzie$elm_geometry$Block3d$boundingBox(cubeShape)),
+				customMesh: $author$project$Wrapper3D$Primitive,
+				name: 'cube',
+				shape: A2($ianmackenzie$elm_3d_scene$Scene3d$blockWithShadow, material, cubeShape)
+			});
+	});
+var $author$project$Wrapper3D$rotateY3D = F2(
+	function (angle, entityBBox) {
+		var toBlock3d = function (boundingBox) {
+			return $ianmackenzie$elm_geometry$Block3d$with(
+				{
+					x1: $ianmackenzie$elm_geometry$BoundingBox3d$minX(boundingBox),
+					x2: $ianmackenzie$elm_geometry$BoundingBox3d$maxX(boundingBox),
+					y1: $ianmackenzie$elm_geometry$BoundingBox3d$minY(boundingBox),
+					y2: $ianmackenzie$elm_geometry$BoundingBox3d$maxY(boundingBox),
+					z1: $ianmackenzie$elm_geometry$BoundingBox3d$minZ(boundingBox),
+					z2: $ianmackenzie$elm_geometry$BoundingBox3d$maxZ(boundingBox)
+				});
+		};
+		if (entityBBox.$ === 'ObjectGroup') {
+			var attributes = entityBBox.a;
+			return $author$project$Wrapper3D$ObjectGroup(
+				_Utils_update(
+					attributes,
+					{
+						boundingBox: function () {
+							var _v1 = attributes.boundingBox;
+							switch (_v1.$) {
+								case 'Box':
+									var boundingbox = _v1.a;
+									return $author$project$Wrapper3D$Box(
+										$ianmackenzie$elm_geometry$Block3d$boundingBox(
+											A3(
+												$ianmackenzie$elm_geometry$Block3d$rotateAround,
+												$ianmackenzie$elm_geometry$Axis3d$y,
+												$ianmackenzie$elm_units$Angle$radians(angle),
+												toBlock3d(boundingbox))));
+								case 'Composite':
+									var boxes = _v1.a;
+									return $author$project$Wrapper3D$Composite(
+										A2(
+											$elm$core$List$map,
+											function (compositeBox) {
+												return $ianmackenzie$elm_geometry$Block3d$boundingBox(
+													A3(
+														$ianmackenzie$elm_geometry$Block3d$rotateAround,
+														$ianmackenzie$elm_geometry$Axis3d$y,
+														$ianmackenzie$elm_units$Angle$radians(angle),
+														toBlock3d(compositeBox)));
+											},
+											boxes));
+								default:
+									return $author$project$Wrapper3D$NoBox;
+							}
+						}(),
+						subObjects: A2(
+							$elm$core$List$map,
+							function (object) {
+								return A2($author$project$Wrapper3D$rotateY3D, angle, object);
+							},
+							attributes.subObjects)
+					}));
+		} else {
+			var object = entityBBox.a;
+			var _v2 = object.boundingBox;
+			switch (_v2.$) {
+				case 'Box':
+					var boundingBox = _v2.a;
+					return $author$project$Wrapper3D$Object(
+						_Utils_update(
+							object,
+							{
+								boundingBox: $author$project$Wrapper3D$Box(
+									$ianmackenzie$elm_geometry$Block3d$boundingBox(
+										A3(
+											$ianmackenzie$elm_geometry$Block3d$rotateAround,
+											$ianmackenzie$elm_geometry$Axis3d$y,
+											$ianmackenzie$elm_units$Angle$radians(angle),
+											toBlock3d(boundingBox)))),
+								shape: A3(
+									$ianmackenzie$elm_3d_scene$Scene3d$rotateAround,
+									$ianmackenzie$elm_geometry$Axis3d$y,
+									$ianmackenzie$elm_units$Angle$radians(angle),
+									object.shape)
+							}));
+				case 'Composite':
+					var boxes = _v2.a;
+					return $author$project$Wrapper3D$Object(
+						_Utils_update(
+							object,
+							{
+								boundingBox: $author$project$Wrapper3D$Composite(
+									A2(
+										$elm$core$List$map,
+										function (compositeBox) {
+											return $ianmackenzie$elm_geometry$Block3d$boundingBox(
+												A3(
+													$ianmackenzie$elm_geometry$Block3d$rotateAround,
+													$ianmackenzie$elm_geometry$Axis3d$y,
+													$ianmackenzie$elm_units$Angle$radians(angle),
+													toBlock3d(compositeBox)));
+										},
+										boxes)),
+								shape: A3(
+									$ianmackenzie$elm_3d_scene$Scene3d$rotateAround,
+									$ianmackenzie$elm_geometry$Axis3d$y,
+									$ianmackenzie$elm_units$Angle$radians(angle),
+									object.shape)
+							}));
+				default:
+					return $author$project$Wrapper3D$Object(
+						_Utils_update(
+							object,
+							{
+								boundingBox: $author$project$Wrapper3D$NoBox,
+								shape: A3(
+									$ianmackenzie$elm_3d_scene$Scene3d$rotateAround,
+									$ianmackenzie$elm_geometry$Axis3d$y,
+									$ianmackenzie$elm_units$Angle$radians(angle),
+									object.shape)
+							}));
+			}
+		}
+	});
+var $ianmackenzie$elm_units$Quantity$in_ = F2(
+	function (units, quantity) {
+		return A2(
+			$ianmackenzie$elm_units$Quantity$ratio,
+			quantity,
+			units(1));
+	});
+var $author$project$Wrapper3D$RingShape = F2(
+	function (a, b) {
+		return {$: 'RingShape', a: a, b: b};
+	});
+var $ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout = F3(
+	function (_v0, scale, _v1) {
+		var x0 = _v0.a;
+		var x = _v1.a;
+		return $ianmackenzie$elm_units$Quantity$Quantity(x0 + (scale * (x - x0)));
+	});
+var $ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout = F3(
+	function (point, scale, boundingBox) {
+		var z0 = $ianmackenzie$elm_geometry$Point3d$zCoordinate(point);
+		var y0 = $ianmackenzie$elm_geometry$Point3d$yCoordinate(point);
+		var x0 = $ianmackenzie$elm_geometry$Point3d$xCoordinate(point);
+		var scaledMinZ = A3(
+			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
+			z0,
+			scale,
+			$ianmackenzie$elm_geometry$BoundingBox3d$minZ(boundingBox));
+		var scaledMinY = A3(
+			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
+			y0,
+			scale,
+			$ianmackenzie$elm_geometry$BoundingBox3d$minY(boundingBox));
+		var scaledMinX = A3(
+			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
+			x0,
+			scale,
+			$ianmackenzie$elm_geometry$BoundingBox3d$minX(boundingBox));
+		var scaledMaxZ = A3(
+			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
+			z0,
+			scale,
+			$ianmackenzie$elm_geometry$BoundingBox3d$maxZ(boundingBox));
+		var scaledMaxY = A3(
+			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
+			y0,
+			scale,
+			$ianmackenzie$elm_geometry$BoundingBox3d$maxY(boundingBox));
+		var scaledMaxX = A3(
+			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
+			x0,
+			scale,
+			$ianmackenzie$elm_geometry$BoundingBox3d$maxX(boundingBox));
+		return (scale >= 0) ? $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
+			{maxX: scaledMaxX, maxY: scaledMaxY, maxZ: scaledMaxZ, minX: scaledMinX, minY: scaledMinY, minZ: scaledMinZ}) : $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
+			{maxX: scaledMinX, maxY: scaledMinY, maxZ: scaledMinZ, minX: scaledMaxX, minY: scaledMaxY, minZ: scaledMaxZ});
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$Transformation$scaleAbout = F2(
+	function (point, k) {
+		var p = $ianmackenzie$elm_geometry$Point3d$unwrap(point);
+		var oneMinusK = 1 - k;
+		return {isRightHanded: k >= 0, ix: 1, iy: 0, iz: 0, jx: 0, jy: 1, jz: 0, kx: 0, ky: 0, kz: 1, px: oneMinusK * p.x, py: oneMinusK * p.y, pz: oneMinusK * p.z, scale: k};
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$Entity$scaleAbout = F3(
+	function (centerPoint, scale, givenDrawable) {
+		return A2(
+			$ianmackenzie$elm_3d_scene$Scene3d$Entity$transformBy,
+			A2($ianmackenzie$elm_3d_scene$Scene3d$Transformation$scaleAbout, centerPoint, scale),
+			givenDrawable);
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$scaleAbout = F3(
+	function (centerPoint, scale, entity) {
+		return A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$scaleAbout, centerPoint, scale, entity);
+	});
+var $author$project$Wrapper3D$scale3D = F2(
+	function (factor, entityBBox) {
+		if (entityBBox.$ === 'ObjectGroup') {
+			var attributes = entityBBox.a;
+			return $author$project$Wrapper3D$ObjectGroup(
+				_Utils_update(
+					attributes,
+					{
+						boundingBox: function () {
+							var _v1 = attributes.boundingBox;
+							switch (_v1.$) {
+								case 'Box':
+									var boundingbox = _v1.a;
+									return $author$project$Wrapper3D$Box(
+										A3(
+											$ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout,
+											A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
+											factor,
+											boundingbox));
+								case 'Composite':
+									var boxes = _v1.a;
+									return $author$project$Wrapper3D$Composite(
+										A2(
+											$elm$core$List$map,
+											function (compositeBox) {
+												return A3(
+													$ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout,
+													A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
+													factor,
+													compositeBox);
+											},
+											boxes));
+								default:
+									return $author$project$Wrapper3D$NoBox;
+							}
+						}(),
+						subObjects: A2(
+							$elm$core$List$map,
+							function (object) {
+								return A2($author$project$Wrapper3D$scale3D, factor, object);
+							},
+							attributes.subObjects)
+					}));
+		} else {
+			var object = entityBBox.a;
+			var scaledShape = function () {
+				var _v3 = object.approxShape;
+				switch (_v3.$) {
+					case 'EmptyShape':
+						return $author$project$Wrapper3D$EmptyShape;
+					case 'Block':
+						var _v4 = _v3.a;
+						var l = _v4.a;
+						var w = _v4.b;
+						var h = _v4.c;
+						return $author$project$Wrapper3D$Block(
+							_Utils_Tuple3(l * factor, w * factor, h * factor));
+					case 'EllipsoidShape':
+						var _v5 = _v3.a;
+						var l = _v5.a;
+						var w = _v5.b;
+						var h = _v5.c;
+						return $author$project$Wrapper3D$EllipsoidShape(
+							_Utils_Tuple3(l * factor, w * factor, h * factor));
+					case 'RingShape':
+						var r = _v3.a;
+						var t = _v3.b;
+						return A2($author$project$Wrapper3D$RingShape, r * factor, t * factor);
+					case 'Cone':
+						var r = _v3.a;
+						var h = _v3.b;
+						return A2($author$project$Wrapper3D$Cone, r * factor, h * factor);
+					default:
+						var r = _v3.a;
+						var h = _v3.b;
+						return A2($author$project$Wrapper3D$Cylinder, r * factor, h * factor);
+				}
+			}();
+			var _v2 = object.boundingBox;
+			switch (_v2.$) {
+				case 'Box':
+					var boundingBox = _v2.a;
+					return $author$project$Wrapper3D$Object(
+						_Utils_update(
+							object,
+							{
+								approxShape: scaledShape,
+								boundingBox: $author$project$Wrapper3D$Box(
+									A3(
+										$ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout,
+										A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
+										factor,
+										boundingBox)),
+								shape: A3(
+									$ianmackenzie$elm_3d_scene$Scene3d$scaleAbout,
+									A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
+									factor,
+									object.shape)
+							}));
+				case 'Composite':
+					var boxes = _v2.a;
+					return $author$project$Wrapper3D$Object(
+						_Utils_update(
+							object,
+							{
+								approxShape: scaledShape,
+								boundingBox: $author$project$Wrapper3D$Composite(
+									A2(
+										$elm$core$List$map,
+										function (compositeBox) {
+											return A3(
+												$ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout,
+												A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
+												factor,
+												compositeBox);
+										},
+										boxes)),
+								shape: A3(
+									$ianmackenzie$elm_3d_scene$Scene3d$scaleAbout,
+									A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
+									factor,
+									object.shape)
+							}));
+				default:
+					return $author$project$Wrapper3D$Object(
+						_Utils_update(
+							object,
+							{
+								approxShape: scaledShape,
+								boundingBox: object.boundingBox,
+								shape: A3(
+									$ianmackenzie$elm_3d_scene$Scene3d$scaleAbout,
+									A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
+									factor,
+									object.shape)
+							}));
+			}
+		}
+	});
+var $author$project$Wrapper3D$scaleTo3D = F3(
+	function (scaleTo, direction, object) {
+		var scale = F2(
+			function (to, boxsize) {
+				return to / boxsize;
+			});
+		var boxSize = function (box_attri) {
+			var boxExtrema = $ianmackenzie$elm_geometry$BoundingBox3d$extrema(box_attri);
+			return _Utils_eq(direction, $ianmackenzie$elm_geometry$Direction3d$x) ? $ianmackenzie$elm_units$Length$inCentimeters(
+				$ianmackenzie$elm_units$Length$meters(
+					A2(
+						$ianmackenzie$elm_units$Quantity$in_,
+						$ianmackenzie$elm_units$Length$meters,
+						A2($ianmackenzie$elm_units$Quantity$minus, boxExtrema.maxX, boxExtrema.minX)))) : (_Utils_eq(direction, $ianmackenzie$elm_geometry$Direction3d$y) ? $ianmackenzie$elm_units$Length$inCentimeters(
+				$ianmackenzie$elm_units$Length$meters(
+					A2(
+						$ianmackenzie$elm_units$Quantity$in_,
+						$ianmackenzie$elm_units$Length$meters,
+						A2($ianmackenzie$elm_units$Quantity$minus, boxExtrema.maxY, boxExtrema.minY)))) : $ianmackenzie$elm_units$Length$inCentimeters(
+				$ianmackenzie$elm_units$Length$meters(
+					A2(
+						$ianmackenzie$elm_units$Quantity$in_,
+						$ianmackenzie$elm_units$Length$meters,
+						A2($ianmackenzie$elm_units$Quantity$minus, boxExtrema.maxZ, boxExtrema.minZ)))));
+		};
+		var aggregate = function (boxList) {
+			var _v3 = $ianmackenzie$elm_geometry$BoundingBox3d$aggregateN(boxList);
+			if (_v3.$ === 'Just') {
+				var attri = _v3.a;
+				return attri;
+			} else {
+				return $ianmackenzie$elm_geometry$BoundingBox3d$singleton($ianmackenzie$elm_geometry$Point3d$origin);
+			}
+		};
+		if (object.$ === 'ObjectGroup') {
+			var attri = object.a;
+			var _v1 = attri.boundingBox;
+			switch (_v1.$) {
+				case 'Box':
+					var box_attri = _v1.a;
+					return A2(
+						$author$project$Wrapper3D$scale3D,
+						A2(
+							scale,
+							scaleTo,
+							boxSize(box_attri)),
+						object);
+				case 'Composite':
+					var box_attri = _v1.a;
+					return A2(
+						$author$project$Wrapper3D$scale3D,
+						A2(
+							scale,
+							scaleTo,
+							boxSize(
+								aggregate(box_attri))),
+						object);
+				default:
+					return object;
+			}
+		} else {
+			var attri = object.a;
+			var _v2 = attri.boundingBox;
+			switch (_v2.$) {
+				case 'Box':
+					var box_attri = _v2.a;
+					return A2(
+						$author$project$Wrapper3D$scale3D,
+						A2(
+							scale,
+							scaleTo,
+							boxSize(box_attri)),
+						object);
+				case 'Composite':
+					var box_attri = _v2.a;
+					return A2(
+						$author$project$Wrapper3D$scale3D,
+						A2(
+							scale,
+							scaleTo,
+							boxSize(
+								aggregate(box_attri))),
+						object);
+				default:
+					return object;
+			}
+		}
+	});
+var $ianmackenzie$elm_geometry$BoundingBox3d$from = F2(
+	function (firstPoint, secondPoint) {
+		var z2 = $ianmackenzie$elm_geometry$Point3d$zCoordinate(secondPoint);
+		var z1 = $ianmackenzie$elm_geometry$Point3d$zCoordinate(firstPoint);
+		var y2 = $ianmackenzie$elm_geometry$Point3d$yCoordinate(secondPoint);
+		var y1 = $ianmackenzie$elm_geometry$Point3d$yCoordinate(firstPoint);
+		var x2 = $ianmackenzie$elm_geometry$Point3d$xCoordinate(secondPoint);
+		var x1 = $ianmackenzie$elm_geometry$Point3d$xCoordinate(firstPoint);
+		return $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
+			{
+				maxX: A2($ianmackenzie$elm_units$Quantity$max, x1, x2),
+				maxY: A2($ianmackenzie$elm_units$Quantity$max, y1, y2),
+				maxZ: A2($ianmackenzie$elm_units$Quantity$max, z1, z2),
+				minX: A2($ianmackenzie$elm_units$Quantity$min, x1, x2),
+				minY: A2($ianmackenzie$elm_units$Quantity$min, y1, y2),
+				minZ: A2($ianmackenzie$elm_units$Quantity$min, z1, z2)
+			});
+	});
+var $ianmackenzie$elm_geometry$BoundingBox3d$hullHelp = F7(
+	function (currentMinX, currentMaxX, currentMinY, currentMaxY, currentMinZ, currentMaxZ, points) {
+		hullHelp:
+		while (true) {
+			if (points.b) {
+				var next = points.a;
+				var rest = points.b;
+				var _v1 = next;
+				var x = _v1.a.x;
+				var y = _v1.a.y;
+				var z = _v1.a.z;
+				var $temp$currentMinX = A2($elm$core$Basics$min, x, currentMinX),
+					$temp$currentMaxX = A2($elm$core$Basics$max, x, currentMaxX),
+					$temp$currentMinY = A2($elm$core$Basics$min, y, currentMinY),
+					$temp$currentMaxY = A2($elm$core$Basics$max, y, currentMaxY),
+					$temp$currentMinZ = A2($elm$core$Basics$min, z, currentMinZ),
+					$temp$currentMaxZ = A2($elm$core$Basics$max, z, currentMaxZ),
+					$temp$points = rest;
+				currentMinX = $temp$currentMinX;
+				currentMaxX = $temp$currentMaxX;
+				currentMinY = $temp$currentMinY;
+				currentMaxY = $temp$currentMaxY;
+				currentMinZ = $temp$currentMinZ;
+				currentMaxZ = $temp$currentMaxZ;
+				points = $temp$points;
+				continue hullHelp;
+			} else {
+				return $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
+					{
+						maxX: $ianmackenzie$elm_units$Quantity$Quantity(currentMaxX),
+						maxY: $ianmackenzie$elm_units$Quantity$Quantity(currentMaxY),
+						maxZ: $ianmackenzie$elm_units$Quantity$Quantity(currentMaxZ),
+						minX: $ianmackenzie$elm_units$Quantity$Quantity(currentMinX),
+						minY: $ianmackenzie$elm_units$Quantity$Quantity(currentMinY),
+						minZ: $ianmackenzie$elm_units$Quantity$Quantity(currentMinZ)
+					});
+			}
+		}
+	});
+var $ianmackenzie$elm_geometry$BoundingBox3d$hull = F2(
+	function (first, rest) {
+		var _v0 = first;
+		var x = _v0.a.x;
+		var y = _v0.a.y;
+		var z = _v0.a.z;
+		return A7($ianmackenzie$elm_geometry$BoundingBox3d$hullHelp, x, x, y, y, z, z, rest);
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$plainQuadVertex = {
+	src: '\n        precision highp float;\n        \n        attribute highp vec3 quadVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 quadVertexPositions;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        void main() {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadVertex.z), quadVertexPositions, position, normal, tangent);\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            gl_Position = projectionMatrix * (viewMatrix * worldPosition);\n        }\n    ',
+	attributes: {quadVertex: 'quadVertex'},
+	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', viewMatrix: 'viewMatrix'}
+};
+var $elm_explorations$linear_algebra$Math$Matrix4$fromRecord = _MJS_m4x4fromRecord;
+var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions = F4(
+	function (firstPoint, secondPoint, thirdPoint, fourthPoint) {
+		var p4 = $ianmackenzie$elm_geometry$Point3d$toMeters(fourthPoint);
+		var p3 = $ianmackenzie$elm_geometry$Point3d$toMeters(thirdPoint);
+		var p2 = $ianmackenzie$elm_geometry$Point3d$toMeters(secondPoint);
+		var p1 = $ianmackenzie$elm_geometry$Point3d$toMeters(firstPoint);
+		return $elm_explorations$linear_algebra$Math$Matrix4$fromRecord(
+			{m11: p1.x, m12: p2.x, m13: p3.x, m14: p4.x, m21: p1.y, m22: p2.y, m23: p3.y, m24: p4.y, m31: p1.z, m32: p2.z, m33: p3.z, m34: p4.z, m41: 0, m42: 0, m43: 0, m44: 0});
+	});
+var $elm_explorations$webgl$WebGL$Mesh1 = F2(
+	function (a, b) {
+		return {$: 'Mesh1', a: a, b: b};
+	});
+var $elm_explorations$webgl$WebGL$triangleFan = $elm_explorations$webgl$WebGL$Mesh1(
+	{elemSize: 1, indexSize: 0, mode: 6});
+var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices = $elm_explorations$webgl$WebGL$triangleFan(
+	_List_fromArray(
+		[
+			{
+			quadVertex: A3($elm_explorations$linear_algebra$Math$Vector3$vec3, 0, 0, 0)
+		},
+			{
+			quadVertex: A3($elm_explorations$linear_algebra$Math$Vector3$vec3, 1, 0, 1)
+		},
+			{
+			quadVertex: A3($elm_explorations$linear_algebra$Math$Vector3$vec3, 1, 1, 2)
+		},
+			{
+			quadVertex: A3($elm_explorations$linear_algebra$Math$Vector3$vec3, 0, 1, 3)
+		}
+		]));
+var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$smoothQuadVertex = {
+	src: '\n        precision highp float;\n        \n        attribute highp vec3 quadVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 quadVertexPositions;\n        \n        varying highp vec3 interpolatedPosition;\n        varying highp vec3 interpolatedNormal;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        vec3 safeNormalize(vec3 vector) {\n            if (vector == vec3(0.0, 0.0, 0.0)) {\n                return vector;\n            } else {\n                return normalize(vector);\n            }\n        }\n        \n        vec3 getWorldNormal(vec3 modelNormal, vec4 modelScale, mat4 modelMatrix) {\n            vec3 normalScale = vec3(modelScale.w / modelScale.x, modelScale.w / modelScale.y, modelScale.w / modelScale.z);\n            return (modelMatrix * vec4(safeNormalize(normalScale * modelNormal), 0.0)).xyz;\n        }\n        \n        void main() {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadVertex.z), quadVertexPositions, position, normal, tangent);\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            gl_Position = projectionMatrix * (viewMatrix * worldPosition);\n            interpolatedPosition = worldPosition.xyz;\n            interpolatedNormal = getWorldNormal(normal, modelScale, modelMatrix);\n        }\n    ',
+	attributes: {quadVertex: 'quadVertex'},
+	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', viewMatrix: 'viewMatrix'}
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$texturedQuadVertex = {
+	src: '\n        precision highp float;\n        \n        attribute highp vec3 quadVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 quadVertexPositions;\n        \n        varying highp vec3 interpolatedPosition;\n        varying highp vec3 interpolatedNormal;\n        varying mediump vec2 interpolatedUv;\n        varying highp vec3 interpolatedTangent;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        vec3 safeNormalize(vec3 vector) {\n            if (vector == vec3(0.0, 0.0, 0.0)) {\n                return vector;\n            } else {\n                return normalize(vector);\n            }\n        }\n        \n        vec3 getWorldNormal(vec3 modelNormal, vec4 modelScale, mat4 modelMatrix) {\n            vec3 normalScale = vec3(modelScale.w / modelScale.x, modelScale.w / modelScale.y, modelScale.w / modelScale.z);\n            return (modelMatrix * vec4(safeNormalize(normalScale * modelNormal), 0.0)).xyz;\n        }\n        \n        void main() {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadVertex.z), quadVertexPositions, position, normal, tangent);\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            gl_Position = projectionMatrix * (viewMatrix * worldPosition);\n            interpolatedPosition = worldPosition.xyz;\n            interpolatedNormal = getWorldNormal(normal, modelScale, modelMatrix);\n            interpolatedUv = quadVertex.xy;\n            interpolatedTangent = tangent;\n        }\n    ',
+	attributes: {quadVertex: 'quadVertex'},
+	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', viewMatrix: 'viewMatrix'}
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$unlitQuadVertex = {
+	src: '\n        precision highp float;\n        \n        attribute highp vec3 quadVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 quadVertexPositions;\n        \n        varying mediump vec2 interpolatedUv;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        void main() {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadVertex.z), quadVertexPositions, position, normal, tangent);\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            gl_Position = projectionMatrix * (viewMatrix * worldPosition);\n            interpolatedUv = quadVertex.xy;\n        }\n    ',
+	attributes: {quadVertex: 'quadVertex'},
+	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', viewMatrix: 'viewMatrix'}
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadMesh = F5(
+	function (givenMaterial, firstPoint, secondPoint, thirdPoint, fourthPoint) {
+		var boundingBox = A2(
+			$ianmackenzie$elm_geometry$BoundingBox3d$hull,
+			firstPoint,
+			_List_fromArray(
+				[secondPoint, thirdPoint, fourthPoint]));
+		var bounds = $ianmackenzie$elm_3d_scene$Scene3d$Entity$toBounds(boundingBox);
+		return $ianmackenzie$elm_3d_scene$Scene3d$Types$Entity(
+			A2(
+				$ianmackenzie$elm_3d_scene$Scene3d$Types$MeshNode,
+				bounds,
+				function () {
+					switch (givenMaterial.$) {
+						case 'UnlitMaterial':
+							if (givenMaterial.b.$ === 'Constant') {
+								var color = givenMaterial.b.a;
+								return F8(
+									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, lights, settings) {
+										return A5(
+											$elm_explorations$webgl$WebGL$entityWith,
+											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$plainQuadVertex,
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$constantFragment,
+											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
+											{
+												constantColor: color,
+												modelMatrix: modelMatrix,
+												modelScale: modelScale,
+												projectionMatrix: projectionMatrix,
+												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
+												sceneProperties: sceneProperties,
+												viewMatrix: viewMatrix
+											});
+									});
+							} else {
+								var _v1 = givenMaterial.a;
+								var data = givenMaterial.b.a.data;
+								return F8(
+									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, lights, settings) {
+										return A5(
+											$elm_explorations$webgl$WebGL$entityWith,
+											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$unlitQuadVertex,
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$colorTextureFragment,
+											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
+											{
+												colorTexture: data,
+												modelMatrix: modelMatrix,
+												modelScale: modelScale,
+												projectionMatrix: projectionMatrix,
+												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
+												sceneProperties: sceneProperties,
+												viewMatrix: viewMatrix
+											});
+									});
+							}
+						case 'EmissiveMaterial':
+							if (givenMaterial.b.$ === 'Constant') {
+								var emissiveColor = givenMaterial.b.a.a;
+								var backlight = givenMaterial.c;
+								return F8(
+									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, lights, settings) {
+										return A5(
+											$elm_explorations$webgl$WebGL$entityWith,
+											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$plainQuadVertex,
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$emissiveFragment,
+											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
+											{
+												backlight: backlight,
+												emissiveColor: A2(
+													$elm_explorations$linear_algebra$Math$Vector3$scale,
+													$ianmackenzie$elm_units$Luminance$inNits(backlight),
+													emissiveColor),
+												modelMatrix: modelMatrix,
+												modelScale: modelScale,
+												projectionMatrix: projectionMatrix,
+												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
+												sceneProperties: sceneProperties,
+												viewMatrix: viewMatrix
+											});
+									});
+							} else {
+								var _v2 = givenMaterial.a;
+								var data = givenMaterial.b.a.data;
+								var backlight = givenMaterial.c;
+								return F8(
+									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, lights, settings) {
+										return A5(
+											$elm_explorations$webgl$WebGL$entityWith,
+											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$unlitQuadVertex,
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$emissiveTextureFragment,
+											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
+											{
+												backlight: $ianmackenzie$elm_units$Luminance$inNits(backlight),
+												colorTexture: data,
+												modelMatrix: modelMatrix,
+												modelScale: modelScale,
+												projectionMatrix: projectionMatrix,
+												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
+												sceneProperties: sceneProperties,
+												viewMatrix: viewMatrix
+											});
+									});
+							}
+						case 'LambertianMaterial':
+							var _v3 = givenMaterial.a;
+							var materialColorTexture = givenMaterial.b;
+							var normalMapTexture = givenMaterial.c;
+							var _v4 = A2($ianmackenzie$elm_3d_scene$Scene3d$Entity$resolveLambertian, materialColorTexture, normalMapTexture);
+							if (_v4.$ === 'ConstantLambertianMaterial') {
+								var materialColor = _v4.a.a;
+								return F8(
+									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, _v5, settings) {
+										var lights = _v5.a;
+										var enabledLights = _v5.b;
+										return A5(
+											$elm_explorations$webgl$WebGL$entityWith,
+											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$smoothQuadVertex,
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$lambertianFragment,
+											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
+											{
+												enabledLights: enabledLights,
+												lights12: lights.lights12,
+												lights34: lights.lights34,
+												lights56: lights.lights56,
+												lights78: lights.lights78,
+												materialColor: materialColor,
+												modelMatrix: modelMatrix,
+												modelScale: modelScale,
+												projectionMatrix: projectionMatrix,
+												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
+												sceneProperties: sceneProperties,
+												viewMatrix: viewMatrix
+											});
+									});
+							} else {
+								var _v6 = _v4.a;
+								var materialColorData = _v6.a;
+								var constantMaterialColor = _v6.b;
+								var _v7 = _v4.b;
+								var normalMapData = _v7.a;
+								var useNormalMap = _v7.b;
+								return F8(
+									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, _v8, settings) {
+										var lights = _v8.a;
+										var enabledLights = _v8.b;
+										return A5(
+											$elm_explorations$webgl$WebGL$entityWith,
+											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$texturedQuadVertex,
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$lambertianTextureFragment,
+											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
+											{
+												enabledLights: enabledLights,
+												lights12: lights.lights12,
+												lights34: lights.lights34,
+												lights56: lights.lights56,
+												lights78: lights.lights78,
+												materialColorTexture: materialColorData,
+												modelMatrix: modelMatrix,
+												modelScale: modelScale,
+												normalMapTexture: normalMapData,
+												projectionMatrix: projectionMatrix,
+												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
+												sceneProperties: sceneProperties,
+												useNormalMap: useNormalMap,
+												viewMatrix: viewMatrix
+											});
+									});
+							}
+						default:
+							var _v9 = givenMaterial.a;
+							var baseColorTexture = givenMaterial.b;
+							var roughnessTexture = givenMaterial.c;
+							var metallicTexture = givenMaterial.d;
+							var normalMapTexture = givenMaterial.e;
+							var _v10 = A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$resolvePbr, baseColorTexture, roughnessTexture, metallicTexture, normalMapTexture);
+							if (_v10.$ === 'ConstantPbrMaterial') {
+								var baseColor = _v10.a.a;
+								var roughness = _v10.b;
+								var metallic = _v10.c;
+								return F8(
+									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, _v11, settings) {
+										var lights = _v11.a;
+										var enabledLights = _v11.b;
+										return A5(
+											$elm_explorations$webgl$WebGL$entityWith,
+											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$smoothQuadVertex,
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$physicalFragment,
+											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
+											{
+												baseColor: baseColor,
+												enabledLights: enabledLights,
+												lights12: lights.lights12,
+												lights34: lights.lights34,
+												lights56: lights.lights56,
+												lights78: lights.lights78,
+												metallic: metallic,
+												modelMatrix: modelMatrix,
+												modelScale: modelScale,
+												projectionMatrix: projectionMatrix,
+												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
+												roughness: roughness,
+												sceneProperties: sceneProperties,
+												viewMatrix: viewMatrix
+											});
+									});
+							} else {
+								var _v12 = _v10.a;
+								var baseColorData = _v12.a;
+								var constantBaseColor = _v12.b;
+								var _v13 = _v10.b;
+								var roughnessData = _v13.a;
+								var constantRoughness = _v13.b;
+								var _v14 = _v10.c;
+								var metallicData = _v14.a;
+								var constantMetallic = _v14.b;
+								var _v15 = _v10.d;
+								var normalMapData = _v15.a;
+								var useNormalMap = _v15.b;
+								return F8(
+									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, _v16, settings) {
+										var lights = _v16.a;
+										var enabledLights = _v16.b;
+										return A5(
+											$elm_explorations$webgl$WebGL$entityWith,
+											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$texturedQuadVertex,
+											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$physicalTexturesFragment,
+											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
+											{
+												baseColorTexture: baseColorData,
+												constantBaseColor: constantBaseColor,
+												constantMetallic: constantMetallic,
+												constantRoughness: constantRoughness,
+												enabledLights: enabledLights,
+												lights12: lights.lights12,
+												lights34: lights.lights34,
+												lights56: lights.lights56,
+												lights78: lights.lights78,
+												metallicTexture: metallicData,
+												modelMatrix: modelMatrix,
+												modelScale: modelScale,
+												normalMapTexture: normalMapData,
+												projectionMatrix: projectionMatrix,
+												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
+												roughnessTexture: roughnessData,
+												sceneProperties: sceneProperties,
+												useNormalMap: useNormalMap,
+												viewMatrix: viewMatrix
+											});
+									});
+							}
+					}
+				}()));
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadowMesh = function () {
+	var quadShadowVertices = _List_fromArray(
+		[
+			{
+			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 0, 1)
+		},
+			{
+			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 1, 1)
+		},
+			{
+			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 2, 1)
+		},
+			{
+			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 3, 1)
+		},
+			{
+			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 0, -1)
+		},
+			{
+			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 1, -1)
+		},
+			{
+			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 2, -1)
+		},
+			{
+			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 3, -1)
+		}
+		]);
+	var quadShadowFaces = _List_fromArray(
+		[
+			_Utils_Tuple3(0, 1, 2),
+			_Utils_Tuple3(0, 2, 3),
+			_Utils_Tuple3(4, 6, 5),
+			_Utils_Tuple3(4, 7, 6),
+			_Utils_Tuple3(4, 5, 1),
+			_Utils_Tuple3(1, 0, 4),
+			_Utils_Tuple3(5, 6, 2),
+			_Utils_Tuple3(2, 1, 5),
+			_Utils_Tuple3(6, 7, 3),
+			_Utils_Tuple3(3, 2, 6),
+			_Utils_Tuple3(7, 4, 0),
+			_Utils_Tuple3(0, 3, 7)
+		]);
+	return A2($elm_explorations$webgl$WebGL$indexedTriangles, quadShadowVertices, quadShadowFaces);
+}();
+var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$quadShadowVertex = {
+	src: '\n        precision highp float;\n        \n        attribute highp vec2 quadShadowVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 shadowLight;\n        uniform highp mat4 quadVertexPositions;\n        \n        const lowp float kDirectionalLight = 1.0;\n        const lowp float kPointLight = 2.0;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        vec3 safeNormalize(vec3 vector) {\n            if (vector == vec3(0.0, 0.0, 0.0)) {\n                return vector;\n            } else {\n                return normalize(vector);\n            }\n        }\n        \n        vec3 getWorldNormal(vec3 modelNormal, vec4 modelScale, mat4 modelMatrix) {\n            vec3 normalScale = vec3(modelScale.w / modelScale.x, modelScale.w / modelScale.y, modelScale.w / modelScale.z);\n            return (modelMatrix * vec4(safeNormalize(normalScale * modelNormal), 0.0)).xyz;\n        }\n        \n        vec3 getDirectionToLight(vec3 surfacePosition, vec4 xyz_type, vec4 rgb_parameter) {\n            float lightType = xyz_type.w;\n            if (lightType == kDirectionalLight) {\n                return xyz_type.xyz;\n            } else if (lightType == kPointLight) {\n                vec3 lightPosition = xyz_type.xyz;\n                return normalize(lightPosition - surfacePosition);\n            } else {\n                return vec3(0.0, 0.0, 0.0);\n            }\n        }\n        \n        vec4 shadowVertexPosition(vec3 position, vec3 normal, mat4 shadowLight, vec4 modelScale, mat4 modelMatrix, mat4 viewMatrix, mat4 projectionMatrix, mat4 sceneProperties) {\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            vec3 worldNormal = getWorldNormal(normal, vec4(modelScale.xyz, 1.0), modelMatrix);\n            vec4 xyz_type = shadowLight[0];\n            vec4 rgb_parameter = shadowLight[1];\n            vec3 directionToLight = getDirectionToLight(worldPosition.xyz, xyz_type, rgb_parameter);\n            vec3 offset = vec3(0.0, 0.0, 0.0);\n            float sceneDiameter = sceneProperties[3][1];\n            if (dot(directionToLight, worldNormal) <= 0.0) {\n                offset = -sceneDiameter * directionToLight;\n            } else {\n                offset = -0.001 * sceneDiameter * directionToLight;\n            }\n            vec4 offsetPosition = worldPosition + vec4(offset, 0.0);\n            return projectionMatrix * (viewMatrix * offsetPosition);\n        }\n        \n        void main () {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadShadowVertex.x), quadVertexPositions, position, normal, tangent);\n            normal *= quadShadowVertex.y;\n            gl_Position = shadowVertexPosition(\n                position,\n                normal,\n                shadowLight,\n                modelScale,\n                modelMatrix,\n                viewMatrix,\n                projectionMatrix,\n                sceneProperties\n            );\n        }\n    ',
+	attributes: {quadShadowVertex: 'quadShadowVertex'},
+	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', shadowLight: 'shadowLight', viewMatrix: 'viewMatrix'}
+};
+var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadow = F4(
+	function (firstPoint, secondPoint, thirdPoint, fourthPoint) {
+		return $ianmackenzie$elm_3d_scene$Scene3d$Types$Entity(
+			$ianmackenzie$elm_3d_scene$Scene3d$Types$ShadowNode(
+				F8(
+					function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, shadowLight, settings) {
+						return A5(
+							$elm_explorations$webgl$WebGL$entityWith,
+							A2($ianmackenzie$elm_3d_scene$Scene3d$Entity$shadowSettings, isRightHanded, settings),
+							$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$quadShadowVertex,
+							$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$shadowFragment,
+							$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadowMesh,
+							{
+								modelMatrix: modelMatrix,
+								modelScale: modelScale,
+								projectionMatrix: projectionMatrix,
+								quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
+								sceneProperties: sceneProperties,
+								shadowLight: shadowLight,
+								viewMatrix: viewMatrix
+							});
+					})));
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quad = F7(
+	function (renderObject, renderShadow, givenMaterial, firstPoint, secondPoint, thirdPoint, fourthPoint) {
+		var meshEntity = A5($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadMesh, givenMaterial, firstPoint, secondPoint, thirdPoint, fourthPoint);
+		var _v0 = _Utils_Tuple2(renderObject, renderShadow);
+		if (_v0.a) {
+			if (_v0.b) {
+				return $ianmackenzie$elm_3d_scene$Scene3d$Entity$group(
+					_List_fromArray(
+						[
+							meshEntity,
+							A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadow, firstPoint, secondPoint, thirdPoint, fourthPoint)
+						]));
+			} else {
+				return meshEntity;
+			}
+		} else {
+			if (_v0.b) {
+				return A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadow, firstPoint, secondPoint, thirdPoint, fourthPoint);
+			} else {
+				return $ianmackenzie$elm_3d_scene$Scene3d$Entity$empty;
+			}
+		}
+	});
+var $ianmackenzie$elm_3d_scene$Scene3d$quadWithShadow = F5(
+	function (givenMaterial, p1, p2, p3, p4) {
+		return A7($ianmackenzie$elm_3d_scene$Scene3d$Entity$quad, true, true, givenMaterial, p1, p2, p3, p4);
+	});
+var $author$project$Wrapper3D$rectangle3D = F3(
+	function (length, width, material) {
+		var wValue = width / 2;
+		var lValue = length / 2;
+		var rectangleBBox = A2(
+			$ianmackenzie$elm_geometry$BoundingBox3d$from,
+			A3($ianmackenzie$elm_geometry$Point3d$centimeters, -lValue, -wValue, 0),
+			A3($ianmackenzie$elm_geometry$Point3d$centimeters, lValue, wValue, 0));
+		var rectangleShape = A5(
+			$ianmackenzie$elm_3d_scene$Scene3d$quadWithShadow,
+			material,
+			A3($ianmackenzie$elm_geometry$Point3d$centimeters, -lValue, -wValue, 0),
+			A3($ianmackenzie$elm_geometry$Point3d$centimeters, -lValue, wValue, 0),
+			A3($ianmackenzie$elm_geometry$Point3d$centimeters, lValue, wValue, 0),
+			A3($ianmackenzie$elm_geometry$Point3d$centimeters, lValue, -wValue, 0));
+		return $author$project$Wrapper3D$Object(
+			{
+				approxShape: $author$project$Wrapper3D$Block(
+					_Utils_Tuple3(length, width, 0.1)),
+				boundingBox: $author$project$Wrapper3D$Box(rectangleBBox),
+				customMesh: $author$project$Wrapper3D$Primitive,
+				name: 'rectangle',
+				shape: rectangleShape
+			});
+	});
+var $author$project$SpaceshipScene$spaceStation = function (model) {
+	var useTexture = $author$project$Wrapper3D$getTexture(model.textureLoader.textures);
+	return $author$project$Wrapper3D$group3D(
+		_List_fromArray(
+			[
+				A2(
+				$author$project$Wrapper3D$matte,
+				A3($avh4$elm_color$Color$rgb255, 232, 226, 209),
+				A3($author$project$Wrapper3D$box, 20, 200, 15)),
+				A2(
+				$author$project$Wrapper3D$move3D,
+				_Utils_Tuple3(0, 100, 0),
+				A2(
+					$author$project$Wrapper3D$rotateY3D,
+					$elm$core$Basics$degrees(90),
+					A4(
+						$author$project$Wrapper3D$textured,
+						useTexture('solarcell'),
+						0.5,
+						0.5,
+						A2($author$project$Wrapper3D$rectangle3D, 100, 50)))),
+				A2(
+				$author$project$Wrapper3D$move3D,
+				_Utils_Tuple3(0, -100, 0),
+				A2(
+					$author$project$Wrapper3D$rotateY3D,
+					$elm$core$Basics$degrees(90),
+					A4(
+						$author$project$Wrapper3D$textured,
+						useTexture('solarcell'),
+						0.5,
+						0.5,
+						A2($author$project$Wrapper3D$rectangle3D, 100, 50))))
+			]));
+};
+var $author$project$SpaceshipScene$spaceStationOrbit = F2(
+	function (model, object) {
+		var spaceStationtoEarth = $ianmackenzie$elm_units$Length$inCentimeters(
+			$ianmackenzie$elm_units$Length$kilometers(150));
+		return A2(
+			$author$project$Wrapper3D$move3D,
+			_Utils_Tuple3(
+				0,
+				$ianmackenzie$elm_units$Length$inCentimeters(
+					$ianmackenzie$elm_units$Length$meters(300)),
+				0),
+			object);
+	});
+var $author$project$SpaceshipScene$spaceStationSize = $ianmackenzie$elm_units$Length$inCentimeters(
+	$ianmackenzie$elm_units$Length$meters(20));
+var $author$project$SpaceshipScene$internalSpaceStation = function (model) {
+	var useTexture = $author$project$Wrapper3D$getTexture(model.textureLoader.textures);
+	return A2(
+		$author$project$SpaceshipScene$spaceStationOrbit,
+		model,
+		A2(
+			$author$project$Wrapper3D$rotateY3D,
+			$elm$core$Basics$degrees(90),
+			A3(
+				$author$project$Wrapper3D$scaleTo3D,
+				$author$project$SpaceshipScene$spaceStationSize,
+				$ianmackenzie$elm_geometry$Direction3d$x,
+				model.showDetailedSpaceStation ? $author$project$SpaceshipScene$spaceStation(model) : A2(
+					$author$project$Wrapper3D$matte,
+					$avh4$elm_color$Color$black,
+					$author$project$Wrapper3D$cube(1)))));
+};
 var $ianmackenzie$elm_geometry$Vector3d$length = function (_v0) {
 	var v = _v0.a;
 	var largestComponent = A2(
@@ -17148,141 +18155,6 @@ var $author$project$PhysicsWrapper3D$renderBodies = F2(
 			},
 			$w0rm$elm_physics$Physics$World$bodies(world));
 	});
-var $author$project$Wrapper3D$rotateY3D = F2(
-	function (angle, entityBBox) {
-		var toBlock3d = function (boundingBox) {
-			return $ianmackenzie$elm_geometry$Block3d$with(
-				{
-					x1: $ianmackenzie$elm_geometry$BoundingBox3d$minX(boundingBox),
-					x2: $ianmackenzie$elm_geometry$BoundingBox3d$maxX(boundingBox),
-					y1: $ianmackenzie$elm_geometry$BoundingBox3d$minY(boundingBox),
-					y2: $ianmackenzie$elm_geometry$BoundingBox3d$maxY(boundingBox),
-					z1: $ianmackenzie$elm_geometry$BoundingBox3d$minZ(boundingBox),
-					z2: $ianmackenzie$elm_geometry$BoundingBox3d$maxZ(boundingBox)
-				});
-		};
-		if (entityBBox.$ === 'ObjectGroup') {
-			var attributes = entityBBox.a;
-			return $author$project$Wrapper3D$ObjectGroup(
-				_Utils_update(
-					attributes,
-					{
-						boundingBox: function () {
-							var _v1 = attributes.boundingBox;
-							switch (_v1.$) {
-								case 'Box':
-									var boundingbox = _v1.a;
-									return $author$project$Wrapper3D$Box(
-										$ianmackenzie$elm_geometry$Block3d$boundingBox(
-											A3(
-												$ianmackenzie$elm_geometry$Block3d$rotateAround,
-												$ianmackenzie$elm_geometry$Axis3d$y,
-												$ianmackenzie$elm_units$Angle$radians(angle),
-												toBlock3d(boundingbox))));
-								case 'Composite':
-									var boxes = _v1.a;
-									return $author$project$Wrapper3D$Composite(
-										A2(
-											$elm$core$List$map,
-											function (compositeBox) {
-												return $ianmackenzie$elm_geometry$Block3d$boundingBox(
-													A3(
-														$ianmackenzie$elm_geometry$Block3d$rotateAround,
-														$ianmackenzie$elm_geometry$Axis3d$y,
-														$ianmackenzie$elm_units$Angle$radians(angle),
-														toBlock3d(compositeBox)));
-											},
-											boxes));
-								default:
-									return $author$project$Wrapper3D$NoBox;
-							}
-						}(),
-						subObjects: A2(
-							$elm$core$List$map,
-							function (object) {
-								return A2($author$project$Wrapper3D$rotateY3D, angle, object);
-							},
-							attributes.subObjects)
-					}));
-		} else {
-			var object = entityBBox.a;
-			var _v2 = object.boundingBox;
-			switch (_v2.$) {
-				case 'Box':
-					var boundingBox = _v2.a;
-					return $author$project$Wrapper3D$Object(
-						_Utils_update(
-							object,
-							{
-								boundingBox: $author$project$Wrapper3D$Box(
-									$ianmackenzie$elm_geometry$Block3d$boundingBox(
-										A3(
-											$ianmackenzie$elm_geometry$Block3d$rotateAround,
-											$ianmackenzie$elm_geometry$Axis3d$y,
-											$ianmackenzie$elm_units$Angle$radians(angle),
-											toBlock3d(boundingBox)))),
-								shape: A3(
-									$ianmackenzie$elm_3d_scene$Scene3d$rotateAround,
-									$ianmackenzie$elm_geometry$Axis3d$y,
-									$ianmackenzie$elm_units$Angle$radians(angle),
-									object.shape)
-							}));
-				case 'Composite':
-					var boxes = _v2.a;
-					return $author$project$Wrapper3D$Object(
-						_Utils_update(
-							object,
-							{
-								boundingBox: $author$project$Wrapper3D$Composite(
-									A2(
-										$elm$core$List$map,
-										function (compositeBox) {
-											return $ianmackenzie$elm_geometry$Block3d$boundingBox(
-												A3(
-													$ianmackenzie$elm_geometry$Block3d$rotateAround,
-													$ianmackenzie$elm_geometry$Axis3d$y,
-													$ianmackenzie$elm_units$Angle$radians(angle),
-													toBlock3d(compositeBox)));
-										},
-										boxes)),
-								shape: A3(
-									$ianmackenzie$elm_3d_scene$Scene3d$rotateAround,
-									$ianmackenzie$elm_geometry$Axis3d$y,
-									$ianmackenzie$elm_units$Angle$radians(angle),
-									object.shape)
-							}));
-				default:
-					return $author$project$Wrapper3D$Object(
-						_Utils_update(
-							object,
-							{
-								boundingBox: $author$project$Wrapper3D$NoBox,
-								shape: A3(
-									$ianmackenzie$elm_3d_scene$Scene3d$rotateAround,
-									$ianmackenzie$elm_geometry$Axis3d$y,
-									$ianmackenzie$elm_units$Angle$radians(angle),
-									object.shape)
-							}));
-			}
-		}
-	});
-var $author$project$Wrapper3D$cube = F2(
-	function (size, material) {
-		var cubeShape = A2(
-			$ianmackenzie$elm_geometry$Block3d$from,
-			A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
-			A3($ianmackenzie$elm_geometry$Point3d$centimeters, size, size, size));
-		return $author$project$Wrapper3D$Object(
-			{
-				approxShape: $author$project$Wrapper3D$Block(
-					_Utils_Tuple3(size, size, size)),
-				boundingBox: $author$project$Wrapper3D$Box(
-					$ianmackenzie$elm_geometry$Block3d$boundingBox(cubeShape)),
-				customMesh: $author$project$Wrapper3D$Primitive,
-				name: 'cube',
-				shape: A2($ianmackenzie$elm_3d_scene$Scene3d$blockWithShadow, material, cubeShape)
-			});
-	});
 var $author$project$SpaceshipScene$link = $author$project$Wrapper3D$group3D(
 	_List_fromArray(
 		[
@@ -17456,211 +18328,6 @@ var $author$project$Wrapper3D$rotateX3D = F2(
 			}
 		}
 	});
-var $author$project$Wrapper3D$RingShape = F2(
-	function (a, b) {
-		return {$: 'RingShape', a: a, b: b};
-	});
-var $ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout = F3(
-	function (_v0, scale, _v1) {
-		var x0 = _v0.a;
-		var x = _v1.a;
-		return $ianmackenzie$elm_units$Quantity$Quantity(x0 + (scale * (x - x0)));
-	});
-var $ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout = F3(
-	function (point, scale, boundingBox) {
-		var z0 = $ianmackenzie$elm_geometry$Point3d$zCoordinate(point);
-		var y0 = $ianmackenzie$elm_geometry$Point3d$yCoordinate(point);
-		var x0 = $ianmackenzie$elm_geometry$Point3d$xCoordinate(point);
-		var scaledMinZ = A3(
-			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
-			z0,
-			scale,
-			$ianmackenzie$elm_geometry$BoundingBox3d$minZ(boundingBox));
-		var scaledMinY = A3(
-			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
-			y0,
-			scale,
-			$ianmackenzie$elm_geometry$BoundingBox3d$minY(boundingBox));
-		var scaledMinX = A3(
-			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
-			x0,
-			scale,
-			$ianmackenzie$elm_geometry$BoundingBox3d$minX(boundingBox));
-		var scaledMaxZ = A3(
-			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
-			z0,
-			scale,
-			$ianmackenzie$elm_geometry$BoundingBox3d$maxZ(boundingBox));
-		var scaledMaxY = A3(
-			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
-			y0,
-			scale,
-			$ianmackenzie$elm_geometry$BoundingBox3d$maxY(boundingBox));
-		var scaledMaxX = A3(
-			$ianmackenzie$elm_geometry$Quantity$Extra$scaleAbout,
-			x0,
-			scale,
-			$ianmackenzie$elm_geometry$BoundingBox3d$maxX(boundingBox));
-		return (scale >= 0) ? $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
-			{maxX: scaledMaxX, maxY: scaledMaxY, maxZ: scaledMaxZ, minX: scaledMinX, minY: scaledMinY, minZ: scaledMinZ}) : $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
-			{maxX: scaledMinX, maxY: scaledMinY, maxZ: scaledMinZ, minX: scaledMaxX, minY: scaledMaxY, minZ: scaledMaxZ});
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$Transformation$scaleAbout = F2(
-	function (point, k) {
-		var p = $ianmackenzie$elm_geometry$Point3d$unwrap(point);
-		var oneMinusK = 1 - k;
-		return {isRightHanded: k >= 0, ix: 1, iy: 0, iz: 0, jx: 0, jy: 1, jz: 0, kx: 0, ky: 0, kz: 1, px: oneMinusK * p.x, py: oneMinusK * p.y, pz: oneMinusK * p.z, scale: k};
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$Entity$scaleAbout = F3(
-	function (centerPoint, scale, givenDrawable) {
-		return A2(
-			$ianmackenzie$elm_3d_scene$Scene3d$Entity$transformBy,
-			A2($ianmackenzie$elm_3d_scene$Scene3d$Transformation$scaleAbout, centerPoint, scale),
-			givenDrawable);
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$scaleAbout = F3(
-	function (centerPoint, scale, entity) {
-		return A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$scaleAbout, centerPoint, scale, entity);
-	});
-var $author$project$Wrapper3D$scale3D = F2(
-	function (factor, entityBBox) {
-		if (entityBBox.$ === 'ObjectGroup') {
-			var attributes = entityBBox.a;
-			return $author$project$Wrapper3D$ObjectGroup(
-				_Utils_update(
-					attributes,
-					{
-						boundingBox: function () {
-							var _v1 = attributes.boundingBox;
-							switch (_v1.$) {
-								case 'Box':
-									var boundingbox = _v1.a;
-									return $author$project$Wrapper3D$Box(
-										A3(
-											$ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout,
-											A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
-											factor,
-											boundingbox));
-								case 'Composite':
-									var boxes = _v1.a;
-									return $author$project$Wrapper3D$Composite(
-										A2(
-											$elm$core$List$map,
-											function (compositeBox) {
-												return A3(
-													$ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout,
-													A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
-													factor,
-													compositeBox);
-											},
-											boxes));
-								default:
-									return $author$project$Wrapper3D$NoBox;
-							}
-						}(),
-						subObjects: A2(
-							$elm$core$List$map,
-							function (object) {
-								return A2($author$project$Wrapper3D$scale3D, factor, object);
-							},
-							attributes.subObjects)
-					}));
-		} else {
-			var object = entityBBox.a;
-			var scaledShape = function () {
-				var _v3 = object.approxShape;
-				switch (_v3.$) {
-					case 'EmptyShape':
-						return $author$project$Wrapper3D$EmptyShape;
-					case 'Block':
-						var _v4 = _v3.a;
-						var l = _v4.a;
-						var w = _v4.b;
-						var h = _v4.c;
-						return $author$project$Wrapper3D$Block(
-							_Utils_Tuple3(l * factor, w * factor, h * factor));
-					case 'EllipsoidShape':
-						var _v5 = _v3.a;
-						var l = _v5.a;
-						var w = _v5.b;
-						var h = _v5.c;
-						return $author$project$Wrapper3D$EllipsoidShape(
-							_Utils_Tuple3(l * factor, w * factor, h * factor));
-					case 'RingShape':
-						var r = _v3.a;
-						var t = _v3.b;
-						return A2($author$project$Wrapper3D$RingShape, r * factor, t * factor);
-					case 'Cone':
-						var r = _v3.a;
-						var h = _v3.b;
-						return A2($author$project$Wrapper3D$Cone, r * factor, h * factor);
-					default:
-						var r = _v3.a;
-						var h = _v3.b;
-						return A2($author$project$Wrapper3D$Cylinder, r * factor, h * factor);
-				}
-			}();
-			var _v2 = object.boundingBox;
-			switch (_v2.$) {
-				case 'Box':
-					var boundingBox = _v2.a;
-					return $author$project$Wrapper3D$Object(
-						_Utils_update(
-							object,
-							{
-								approxShape: scaledShape,
-								boundingBox: $author$project$Wrapper3D$Box(
-									A3(
-										$ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout,
-										A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
-										factor,
-										boundingBox)),
-								shape: A3(
-									$ianmackenzie$elm_3d_scene$Scene3d$scaleAbout,
-									A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
-									factor,
-									object.shape)
-							}));
-				case 'Composite':
-					var boxes = _v2.a;
-					return $author$project$Wrapper3D$Object(
-						_Utils_update(
-							object,
-							{
-								approxShape: scaledShape,
-								boundingBox: $author$project$Wrapper3D$Composite(
-									A2(
-										$elm$core$List$map,
-										function (compositeBox) {
-											return A3(
-												$ianmackenzie$elm_geometry$BoundingBox3d$scaleAbout,
-												A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
-												factor,
-												compositeBox);
-										},
-										boxes)),
-								shape: A3(
-									$ianmackenzie$elm_3d_scene$Scene3d$scaleAbout,
-									A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
-									factor,
-									object.shape)
-							}));
-				default:
-					return $author$project$Wrapper3D$Object(
-						_Utils_update(
-							object,
-							{
-								approxShape: scaledShape,
-								boundingBox: object.boundingBox,
-								shape: A3(
-									$ianmackenzie$elm_3d_scene$Scene3d$scaleAbout,
-									A3($ianmackenzie$elm_geometry$Point3d$centimeters, 0, 0, 0),
-									factor,
-									object.shape)
-							}));
-			}
-		}
-	});
 var $author$project$Wrapper3D$texturedCylinder = F4(
 	function (radius, height, model, material) {
 		var meshName = $author$project$Wrapper3D$getMeshName(
@@ -17743,24 +18410,6 @@ var $author$project$Wrapper3D$customPolyMesh = F5(
 			points);
 		return $ianmackenzie$elm_3d_scene$Scene3d$Mesh$texturedFacets(
 			A2($ianmackenzie$elm_triangular_mesh$TriangularMesh$fan, tip, apron));
-	});
-var $ianmackenzie$elm_geometry$BoundingBox3d$from = F2(
-	function (firstPoint, secondPoint) {
-		var z2 = $ianmackenzie$elm_geometry$Point3d$zCoordinate(secondPoint);
-		var z1 = $ianmackenzie$elm_geometry$Point3d$zCoordinate(firstPoint);
-		var y2 = $ianmackenzie$elm_geometry$Point3d$yCoordinate(secondPoint);
-		var y1 = $ianmackenzie$elm_geometry$Point3d$yCoordinate(firstPoint);
-		var x2 = $ianmackenzie$elm_geometry$Point3d$xCoordinate(secondPoint);
-		var x1 = $ianmackenzie$elm_geometry$Point3d$xCoordinate(firstPoint);
-		return $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
-			{
-				maxX: A2($ianmackenzie$elm_units$Quantity$max, x1, x2),
-				maxY: A2($ianmackenzie$elm_units$Quantity$max, y1, y2),
-				maxZ: A2($ianmackenzie$elm_units$Quantity$max, z1, z2),
-				minX: A2($ianmackenzie$elm_units$Quantity$min, x1, x2),
-				minY: A2($ianmackenzie$elm_units$Quantity$min, y1, y2),
-				minZ: A2($ianmackenzie$elm_units$Quantity$min, z1, z2)
-			});
 	});
 var $author$project$Wrapper3D$customPolygon = F2(
 	function (points, material) {
@@ -17860,491 +18509,6 @@ var $author$project$Wrapper3D$customPolygon = F2(
 						A4(shadow, 0, 0, 0, 0))
 				});
 		}
-	});
-var $ianmackenzie$elm_geometry$BoundingBox3d$hullHelp = F7(
-	function (currentMinX, currentMaxX, currentMinY, currentMaxY, currentMinZ, currentMaxZ, points) {
-		hullHelp:
-		while (true) {
-			if (points.b) {
-				var next = points.a;
-				var rest = points.b;
-				var _v1 = next;
-				var x = _v1.a.x;
-				var y = _v1.a.y;
-				var z = _v1.a.z;
-				var $temp$currentMinX = A2($elm$core$Basics$min, x, currentMinX),
-					$temp$currentMaxX = A2($elm$core$Basics$max, x, currentMaxX),
-					$temp$currentMinY = A2($elm$core$Basics$min, y, currentMinY),
-					$temp$currentMaxY = A2($elm$core$Basics$max, y, currentMaxY),
-					$temp$currentMinZ = A2($elm$core$Basics$min, z, currentMinZ),
-					$temp$currentMaxZ = A2($elm$core$Basics$max, z, currentMaxZ),
-					$temp$points = rest;
-				currentMinX = $temp$currentMinX;
-				currentMaxX = $temp$currentMaxX;
-				currentMinY = $temp$currentMinY;
-				currentMaxY = $temp$currentMaxY;
-				currentMinZ = $temp$currentMinZ;
-				currentMaxZ = $temp$currentMaxZ;
-				points = $temp$points;
-				continue hullHelp;
-			} else {
-				return $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d(
-					{
-						maxX: $ianmackenzie$elm_units$Quantity$Quantity(currentMaxX),
-						maxY: $ianmackenzie$elm_units$Quantity$Quantity(currentMaxY),
-						maxZ: $ianmackenzie$elm_units$Quantity$Quantity(currentMaxZ),
-						minX: $ianmackenzie$elm_units$Quantity$Quantity(currentMinX),
-						minY: $ianmackenzie$elm_units$Quantity$Quantity(currentMinY),
-						minZ: $ianmackenzie$elm_units$Quantity$Quantity(currentMinZ)
-					});
-			}
-		}
-	});
-var $ianmackenzie$elm_geometry$BoundingBox3d$hull = F2(
-	function (first, rest) {
-		var _v0 = first;
-		var x = _v0.a.x;
-		var y = _v0.a.y;
-		var z = _v0.a.z;
-		return A7($ianmackenzie$elm_geometry$BoundingBox3d$hullHelp, x, x, y, y, z, z, rest);
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$plainQuadVertex = {
-	src: '\n        precision highp float;\n        \n        attribute highp vec3 quadVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 quadVertexPositions;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        void main() {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadVertex.z), quadVertexPositions, position, normal, tangent);\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            gl_Position = projectionMatrix * (viewMatrix * worldPosition);\n        }\n    ',
-	attributes: {quadVertex: 'quadVertex'},
-	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', viewMatrix: 'viewMatrix'}
-};
-var $elm_explorations$linear_algebra$Math$Matrix4$fromRecord = _MJS_m4x4fromRecord;
-var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions = F4(
-	function (firstPoint, secondPoint, thirdPoint, fourthPoint) {
-		var p4 = $ianmackenzie$elm_geometry$Point3d$toMeters(fourthPoint);
-		var p3 = $ianmackenzie$elm_geometry$Point3d$toMeters(thirdPoint);
-		var p2 = $ianmackenzie$elm_geometry$Point3d$toMeters(secondPoint);
-		var p1 = $ianmackenzie$elm_geometry$Point3d$toMeters(firstPoint);
-		return $elm_explorations$linear_algebra$Math$Matrix4$fromRecord(
-			{m11: p1.x, m12: p2.x, m13: p3.x, m14: p4.x, m21: p1.y, m22: p2.y, m23: p3.y, m24: p4.y, m31: p1.z, m32: p2.z, m33: p3.z, m34: p4.z, m41: 0, m42: 0, m43: 0, m44: 0});
-	});
-var $elm_explorations$webgl$WebGL$Mesh1 = F2(
-	function (a, b) {
-		return {$: 'Mesh1', a: a, b: b};
-	});
-var $elm_explorations$webgl$WebGL$triangleFan = $elm_explorations$webgl$WebGL$Mesh1(
-	{elemSize: 1, indexSize: 0, mode: 6});
-var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices = $elm_explorations$webgl$WebGL$triangleFan(
-	_List_fromArray(
-		[
-			{
-			quadVertex: A3($elm_explorations$linear_algebra$Math$Vector3$vec3, 0, 0, 0)
-		},
-			{
-			quadVertex: A3($elm_explorations$linear_algebra$Math$Vector3$vec3, 1, 0, 1)
-		},
-			{
-			quadVertex: A3($elm_explorations$linear_algebra$Math$Vector3$vec3, 1, 1, 2)
-		},
-			{
-			quadVertex: A3($elm_explorations$linear_algebra$Math$Vector3$vec3, 0, 1, 3)
-		}
-		]));
-var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$smoothQuadVertex = {
-	src: '\n        precision highp float;\n        \n        attribute highp vec3 quadVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 quadVertexPositions;\n        \n        varying highp vec3 interpolatedPosition;\n        varying highp vec3 interpolatedNormal;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        vec3 safeNormalize(vec3 vector) {\n            if (vector == vec3(0.0, 0.0, 0.0)) {\n                return vector;\n            } else {\n                return normalize(vector);\n            }\n        }\n        \n        vec3 getWorldNormal(vec3 modelNormal, vec4 modelScale, mat4 modelMatrix) {\n            vec3 normalScale = vec3(modelScale.w / modelScale.x, modelScale.w / modelScale.y, modelScale.w / modelScale.z);\n            return (modelMatrix * vec4(safeNormalize(normalScale * modelNormal), 0.0)).xyz;\n        }\n        \n        void main() {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadVertex.z), quadVertexPositions, position, normal, tangent);\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            gl_Position = projectionMatrix * (viewMatrix * worldPosition);\n            interpolatedPosition = worldPosition.xyz;\n            interpolatedNormal = getWorldNormal(normal, modelScale, modelMatrix);\n        }\n    ',
-	attributes: {quadVertex: 'quadVertex'},
-	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', viewMatrix: 'viewMatrix'}
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$texturedQuadVertex = {
-	src: '\n        precision highp float;\n        \n        attribute highp vec3 quadVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 quadVertexPositions;\n        \n        varying highp vec3 interpolatedPosition;\n        varying highp vec3 interpolatedNormal;\n        varying mediump vec2 interpolatedUv;\n        varying highp vec3 interpolatedTangent;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        vec3 safeNormalize(vec3 vector) {\n            if (vector == vec3(0.0, 0.0, 0.0)) {\n                return vector;\n            } else {\n                return normalize(vector);\n            }\n        }\n        \n        vec3 getWorldNormal(vec3 modelNormal, vec4 modelScale, mat4 modelMatrix) {\n            vec3 normalScale = vec3(modelScale.w / modelScale.x, modelScale.w / modelScale.y, modelScale.w / modelScale.z);\n            return (modelMatrix * vec4(safeNormalize(normalScale * modelNormal), 0.0)).xyz;\n        }\n        \n        void main() {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadVertex.z), quadVertexPositions, position, normal, tangent);\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            gl_Position = projectionMatrix * (viewMatrix * worldPosition);\n            interpolatedPosition = worldPosition.xyz;\n            interpolatedNormal = getWorldNormal(normal, modelScale, modelMatrix);\n            interpolatedUv = quadVertex.xy;\n            interpolatedTangent = tangent;\n        }\n    ',
-	attributes: {quadVertex: 'quadVertex'},
-	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', viewMatrix: 'viewMatrix'}
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$unlitQuadVertex = {
-	src: '\n        precision highp float;\n        \n        attribute highp vec3 quadVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 quadVertexPositions;\n        \n        varying mediump vec2 interpolatedUv;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        void main() {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadVertex.z), quadVertexPositions, position, normal, tangent);\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            gl_Position = projectionMatrix * (viewMatrix * worldPosition);\n            interpolatedUv = quadVertex.xy;\n        }\n    ',
-	attributes: {quadVertex: 'quadVertex'},
-	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', viewMatrix: 'viewMatrix'}
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadMesh = F5(
-	function (givenMaterial, firstPoint, secondPoint, thirdPoint, fourthPoint) {
-		var boundingBox = A2(
-			$ianmackenzie$elm_geometry$BoundingBox3d$hull,
-			firstPoint,
-			_List_fromArray(
-				[secondPoint, thirdPoint, fourthPoint]));
-		var bounds = $ianmackenzie$elm_3d_scene$Scene3d$Entity$toBounds(boundingBox);
-		return $ianmackenzie$elm_3d_scene$Scene3d$Types$Entity(
-			A2(
-				$ianmackenzie$elm_3d_scene$Scene3d$Types$MeshNode,
-				bounds,
-				function () {
-					switch (givenMaterial.$) {
-						case 'UnlitMaterial':
-							if (givenMaterial.b.$ === 'Constant') {
-								var color = givenMaterial.b.a;
-								return F8(
-									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, lights, settings) {
-										return A5(
-											$elm_explorations$webgl$WebGL$entityWith,
-											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$plainQuadVertex,
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$constantFragment,
-											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
-											{
-												constantColor: color,
-												modelMatrix: modelMatrix,
-												modelScale: modelScale,
-												projectionMatrix: projectionMatrix,
-												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
-												sceneProperties: sceneProperties,
-												viewMatrix: viewMatrix
-											});
-									});
-							} else {
-								var _v1 = givenMaterial.a;
-								var data = givenMaterial.b.a.data;
-								return F8(
-									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, lights, settings) {
-										return A5(
-											$elm_explorations$webgl$WebGL$entityWith,
-											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$unlitQuadVertex,
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$colorTextureFragment,
-											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
-											{
-												colorTexture: data,
-												modelMatrix: modelMatrix,
-												modelScale: modelScale,
-												projectionMatrix: projectionMatrix,
-												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
-												sceneProperties: sceneProperties,
-												viewMatrix: viewMatrix
-											});
-									});
-							}
-						case 'EmissiveMaterial':
-							if (givenMaterial.b.$ === 'Constant') {
-								var emissiveColor = givenMaterial.b.a.a;
-								var backlight = givenMaterial.c;
-								return F8(
-									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, lights, settings) {
-										return A5(
-											$elm_explorations$webgl$WebGL$entityWith,
-											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$plainQuadVertex,
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$emissiveFragment,
-											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
-											{
-												backlight: backlight,
-												emissiveColor: A2(
-													$elm_explorations$linear_algebra$Math$Vector3$scale,
-													$ianmackenzie$elm_units$Luminance$inNits(backlight),
-													emissiveColor),
-												modelMatrix: modelMatrix,
-												modelScale: modelScale,
-												projectionMatrix: projectionMatrix,
-												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
-												sceneProperties: sceneProperties,
-												viewMatrix: viewMatrix
-											});
-									});
-							} else {
-								var _v2 = givenMaterial.a;
-								var data = givenMaterial.b.a.data;
-								var backlight = givenMaterial.c;
-								return F8(
-									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, lights, settings) {
-										return A5(
-											$elm_explorations$webgl$WebGL$entityWith,
-											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$unlitQuadVertex,
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$emissiveTextureFragment,
-											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
-											{
-												backlight: $ianmackenzie$elm_units$Luminance$inNits(backlight),
-												colorTexture: data,
-												modelMatrix: modelMatrix,
-												modelScale: modelScale,
-												projectionMatrix: projectionMatrix,
-												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
-												sceneProperties: sceneProperties,
-												viewMatrix: viewMatrix
-											});
-									});
-							}
-						case 'LambertianMaterial':
-							var _v3 = givenMaterial.a;
-							var materialColorTexture = givenMaterial.b;
-							var normalMapTexture = givenMaterial.c;
-							var _v4 = A2($ianmackenzie$elm_3d_scene$Scene3d$Entity$resolveLambertian, materialColorTexture, normalMapTexture);
-							if (_v4.$ === 'ConstantLambertianMaterial') {
-								var materialColor = _v4.a.a;
-								return F8(
-									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, _v5, settings) {
-										var lights = _v5.a;
-										var enabledLights = _v5.b;
-										return A5(
-											$elm_explorations$webgl$WebGL$entityWith,
-											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$smoothQuadVertex,
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$lambertianFragment,
-											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
-											{
-												enabledLights: enabledLights,
-												lights12: lights.lights12,
-												lights34: lights.lights34,
-												lights56: lights.lights56,
-												lights78: lights.lights78,
-												materialColor: materialColor,
-												modelMatrix: modelMatrix,
-												modelScale: modelScale,
-												projectionMatrix: projectionMatrix,
-												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
-												sceneProperties: sceneProperties,
-												viewMatrix: viewMatrix
-											});
-									});
-							} else {
-								var _v6 = _v4.a;
-								var materialColorData = _v6.a;
-								var constantMaterialColor = _v6.b;
-								var _v7 = _v4.b;
-								var normalMapData = _v7.a;
-								var useNormalMap = _v7.b;
-								return F8(
-									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, _v8, settings) {
-										var lights = _v8.a;
-										var enabledLights = _v8.b;
-										return A5(
-											$elm_explorations$webgl$WebGL$entityWith,
-											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$texturedQuadVertex,
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$lambertianTextureFragment,
-											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
-											{
-												enabledLights: enabledLights,
-												lights12: lights.lights12,
-												lights34: lights.lights34,
-												lights56: lights.lights56,
-												lights78: lights.lights78,
-												materialColorTexture: materialColorData,
-												modelMatrix: modelMatrix,
-												modelScale: modelScale,
-												normalMapTexture: normalMapData,
-												projectionMatrix: projectionMatrix,
-												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
-												sceneProperties: sceneProperties,
-												useNormalMap: useNormalMap,
-												viewMatrix: viewMatrix
-											});
-									});
-							}
-						default:
-							var _v9 = givenMaterial.a;
-							var baseColorTexture = givenMaterial.b;
-							var roughnessTexture = givenMaterial.c;
-							var metallicTexture = givenMaterial.d;
-							var normalMapTexture = givenMaterial.e;
-							var _v10 = A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$resolvePbr, baseColorTexture, roughnessTexture, metallicTexture, normalMapTexture);
-							if (_v10.$ === 'ConstantPbrMaterial') {
-								var baseColor = _v10.a.a;
-								var roughness = _v10.b;
-								var metallic = _v10.c;
-								return F8(
-									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, _v11, settings) {
-										var lights = _v11.a;
-										var enabledLights = _v11.b;
-										return A5(
-											$elm_explorations$webgl$WebGL$entityWith,
-											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$smoothQuadVertex,
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$physicalFragment,
-											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
-											{
-												baseColor: baseColor,
-												enabledLights: enabledLights,
-												lights12: lights.lights12,
-												lights34: lights.lights34,
-												lights56: lights.lights56,
-												lights78: lights.lights78,
-												metallic: metallic,
-												modelMatrix: modelMatrix,
-												modelScale: modelScale,
-												projectionMatrix: projectionMatrix,
-												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
-												roughness: roughness,
-												sceneProperties: sceneProperties,
-												viewMatrix: viewMatrix
-											});
-									});
-							} else {
-								var _v12 = _v10.a;
-								var baseColorData = _v12.a;
-								var constantBaseColor = _v12.b;
-								var _v13 = _v10.b;
-								var roughnessData = _v13.a;
-								var constantRoughness = _v13.b;
-								var _v14 = _v10.c;
-								var metallicData = _v14.a;
-								var constantMetallic = _v14.b;
-								var _v15 = _v10.d;
-								var normalMapData = _v15.a;
-								var useNormalMap = _v15.b;
-								return F8(
-									function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, _v16, settings) {
-										var lights = _v16.a;
-										var enabledLights = _v16.b;
-										return A5(
-											$elm_explorations$webgl$WebGL$entityWith,
-											A3($ianmackenzie$elm_3d_scene$Scene3d$Entity$meshSettings, isRightHanded, $ianmackenzie$elm_3d_scene$Scene3d$Types$KeepBackFaces, settings),
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$texturedQuadVertex,
-											$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$physicalTexturesFragment,
-											$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertices,
-											{
-												baseColorTexture: baseColorData,
-												constantBaseColor: constantBaseColor,
-												constantMetallic: constantMetallic,
-												constantRoughness: constantRoughness,
-												enabledLights: enabledLights,
-												lights12: lights.lights12,
-												lights34: lights.lights34,
-												lights56: lights.lights56,
-												lights78: lights.lights78,
-												metallicTexture: metallicData,
-												modelMatrix: modelMatrix,
-												modelScale: modelScale,
-												normalMapTexture: normalMapData,
-												projectionMatrix: projectionMatrix,
-												quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
-												roughnessTexture: roughnessData,
-												sceneProperties: sceneProperties,
-												useNormalMap: useNormalMap,
-												viewMatrix: viewMatrix
-											});
-									});
-							}
-					}
-				}()));
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadowMesh = function () {
-	var quadShadowVertices = _List_fromArray(
-		[
-			{
-			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 0, 1)
-		},
-			{
-			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 1, 1)
-		},
-			{
-			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 2, 1)
-		},
-			{
-			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 3, 1)
-		},
-			{
-			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 0, -1)
-		},
-			{
-			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 1, -1)
-		},
-			{
-			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 2, -1)
-		},
-			{
-			quadShadowVertex: A2($elm_explorations$linear_algebra$Math$Vector2$vec2, 3, -1)
-		}
-		]);
-	var quadShadowFaces = _List_fromArray(
-		[
-			_Utils_Tuple3(0, 1, 2),
-			_Utils_Tuple3(0, 2, 3),
-			_Utils_Tuple3(4, 6, 5),
-			_Utils_Tuple3(4, 7, 6),
-			_Utils_Tuple3(4, 5, 1),
-			_Utils_Tuple3(1, 0, 4),
-			_Utils_Tuple3(5, 6, 2),
-			_Utils_Tuple3(2, 1, 5),
-			_Utils_Tuple3(6, 7, 3),
-			_Utils_Tuple3(3, 2, 6),
-			_Utils_Tuple3(7, 4, 0),
-			_Utils_Tuple3(0, 3, 7)
-		]);
-	return A2($elm_explorations$webgl$WebGL$indexedTriangles, quadShadowVertices, quadShadowFaces);
-}();
-var $ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$quadShadowVertex = {
-	src: '\n        precision highp float;\n        \n        attribute highp vec2 quadShadowVertex;\n        \n        uniform highp vec4 modelScale;\n        uniform highp mat4 modelMatrix;\n        uniform highp mat4 viewMatrix;\n        uniform highp mat4 projectionMatrix;\n        uniform highp mat4 sceneProperties;\n        uniform highp mat4 shadowLight;\n        uniform highp mat4 quadVertexPositions;\n        \n        const lowp float kDirectionalLight = 1.0;\n        const lowp float kPointLight = 2.0;\n        \n        void getQuadVertex(int quadVertexIndex, mat4 quadVertexPositions, out vec3 position, out vec3 normal, out vec3 tangent) {\n            vec3 next = vec3(0.0, 0.0, 0.0);\n            vec3 prev = vec3(0.0, 0.0, 0.0);\n            if (quadVertexIndex == 0) {\n                prev = quadVertexPositions[3].xyz;\n                position = quadVertexPositions[0].xyz;\n                next = quadVertexPositions[1].xyz;\n                tangent = normalize(next - position);\n            } else if (quadVertexIndex == 1) {\n                prev = quadVertexPositions[0].xyz;\n                position = quadVertexPositions[1].xyz;\n                next = quadVertexPositions[2].xyz;\n                tangent = normalize(position - prev);\n            } else if (quadVertexIndex == 2) {\n                prev = quadVertexPositions[1].xyz;\n                position = quadVertexPositions[2].xyz;\n                next = quadVertexPositions[3].xyz;\n                tangent = normalize(position - next);\n            } else {\n                prev = quadVertexPositions[2].xyz;\n                position = quadVertexPositions[3].xyz;\n                next = quadVertexPositions[0].xyz;\n                tangent = normalize(prev - position);\n            }\n            normal = normalize(cross(next - position, prev - position));\n        }\n        \n        vec4 getWorldPosition(vec3 modelPosition, vec4 modelScale, mat4 modelMatrix) {\n            vec4 scaledPosition = vec4(modelScale.xyz * modelPosition, 1.0);\n            return modelMatrix * scaledPosition;\n        }\n        \n        vec3 safeNormalize(vec3 vector) {\n            if (vector == vec3(0.0, 0.0, 0.0)) {\n                return vector;\n            } else {\n                return normalize(vector);\n            }\n        }\n        \n        vec3 getWorldNormal(vec3 modelNormal, vec4 modelScale, mat4 modelMatrix) {\n            vec3 normalScale = vec3(modelScale.w / modelScale.x, modelScale.w / modelScale.y, modelScale.w / modelScale.z);\n            return (modelMatrix * vec4(safeNormalize(normalScale * modelNormal), 0.0)).xyz;\n        }\n        \n        vec3 getDirectionToLight(vec3 surfacePosition, vec4 xyz_type, vec4 rgb_parameter) {\n            float lightType = xyz_type.w;\n            if (lightType == kDirectionalLight) {\n                return xyz_type.xyz;\n            } else if (lightType == kPointLight) {\n                vec3 lightPosition = xyz_type.xyz;\n                return normalize(lightPosition - surfacePosition);\n            } else {\n                return vec3(0.0, 0.0, 0.0);\n            }\n        }\n        \n        vec4 shadowVertexPosition(vec3 position, vec3 normal, mat4 shadowLight, vec4 modelScale, mat4 modelMatrix, mat4 viewMatrix, mat4 projectionMatrix, mat4 sceneProperties) {\n            vec4 worldPosition = getWorldPosition(position, modelScale, modelMatrix);\n            vec3 worldNormal = getWorldNormal(normal, vec4(modelScale.xyz, 1.0), modelMatrix);\n            vec4 xyz_type = shadowLight[0];\n            vec4 rgb_parameter = shadowLight[1];\n            vec3 directionToLight = getDirectionToLight(worldPosition.xyz, xyz_type, rgb_parameter);\n            vec3 offset = vec3(0.0, 0.0, 0.0);\n            float sceneDiameter = sceneProperties[3][1];\n            if (dot(directionToLight, worldNormal) <= 0.0) {\n                offset = -sceneDiameter * directionToLight;\n            } else {\n                offset = -0.001 * sceneDiameter * directionToLight;\n            }\n            vec4 offsetPosition = worldPosition + vec4(offset, 0.0);\n            return projectionMatrix * (viewMatrix * offsetPosition);\n        }\n        \n        void main () {\n            vec3 position = vec3(0.0, 0.0, 0.0);\n            vec3 normal = vec3(0.0, 0.0, 0.0);\n            vec3 tangent = vec3(0.0, 0.0, 0.0);\n            getQuadVertex(int(quadShadowVertex.x), quadVertexPositions, position, normal, tangent);\n            normal *= quadShadowVertex.y;\n            gl_Position = shadowVertexPosition(\n                position,\n                normal,\n                shadowLight,\n                modelScale,\n                modelMatrix,\n                viewMatrix,\n                projectionMatrix,\n                sceneProperties\n            );\n        }\n    ',
-	attributes: {quadShadowVertex: 'quadShadowVertex'},
-	uniforms: {modelMatrix: 'modelMatrix', modelScale: 'modelScale', projectionMatrix: 'projectionMatrix', quadVertexPositions: 'quadVertexPositions', sceneProperties: 'sceneProperties', shadowLight: 'shadowLight', viewMatrix: 'viewMatrix'}
-};
-var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadow = F4(
-	function (firstPoint, secondPoint, thirdPoint, fourthPoint) {
-		return $ianmackenzie$elm_3d_scene$Scene3d$Types$Entity(
-			$ianmackenzie$elm_3d_scene$Scene3d$Types$ShadowNode(
-				F8(
-					function (sceneProperties, modelScale, modelMatrix, isRightHanded, viewMatrix, projectionMatrix, shadowLight, settings) {
-						return A5(
-							$elm_explorations$webgl$WebGL$entityWith,
-							A2($ianmackenzie$elm_3d_scene$Scene3d$Entity$shadowSettings, isRightHanded, settings),
-							$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$quadShadowVertex,
-							$ianmackenzie$elm_3d_scene$Scene3d$UnoptimizedShaders$shadowFragment,
-							$ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadowMesh,
-							{
-								modelMatrix: modelMatrix,
-								modelScale: modelScale,
-								projectionMatrix: projectionMatrix,
-								quadVertexPositions: A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadVertexPositions, firstPoint, secondPoint, thirdPoint, fourthPoint),
-								sceneProperties: sceneProperties,
-								shadowLight: shadowLight,
-								viewMatrix: viewMatrix
-							});
-					})));
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$Entity$quad = F7(
-	function (renderObject, renderShadow, givenMaterial, firstPoint, secondPoint, thirdPoint, fourthPoint) {
-		var meshEntity = A5($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadMesh, givenMaterial, firstPoint, secondPoint, thirdPoint, fourthPoint);
-		var _v0 = _Utils_Tuple2(renderObject, renderShadow);
-		if (_v0.a) {
-			if (_v0.b) {
-				return $ianmackenzie$elm_3d_scene$Scene3d$Entity$group(
-					_List_fromArray(
-						[
-							meshEntity,
-							A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadow, firstPoint, secondPoint, thirdPoint, fourthPoint)
-						]));
-			} else {
-				return meshEntity;
-			}
-		} else {
-			if (_v0.b) {
-				return A4($ianmackenzie$elm_3d_scene$Scene3d$Entity$quadShadow, firstPoint, secondPoint, thirdPoint, fourthPoint);
-			} else {
-				return $ianmackenzie$elm_3d_scene$Scene3d$Entity$empty;
-			}
-		}
-	});
-var $ianmackenzie$elm_3d_scene$Scene3d$quadWithShadow = F5(
-	function (givenMaterial, p1, p2, p3, p4) {
-		return A7($ianmackenzie$elm_3d_scene$Scene3d$Entity$quad, true, true, givenMaterial, p1, p2, p3, p4);
-	});
-var $author$project$Wrapper3D$rectangle3D = F3(
-	function (length, width, material) {
-		var wValue = width / 2;
-		var lValue = length / 2;
-		var rectangleBBox = A2(
-			$ianmackenzie$elm_geometry$BoundingBox3d$from,
-			A3($ianmackenzie$elm_geometry$Point3d$centimeters, -lValue, -wValue, 0),
-			A3($ianmackenzie$elm_geometry$Point3d$centimeters, lValue, wValue, 0));
-		var rectangleShape = A5(
-			$ianmackenzie$elm_3d_scene$Scene3d$quadWithShadow,
-			material,
-			A3($ianmackenzie$elm_geometry$Point3d$centimeters, -lValue, -wValue, 0),
-			A3($ianmackenzie$elm_geometry$Point3d$centimeters, -lValue, wValue, 0),
-			A3($ianmackenzie$elm_geometry$Point3d$centimeters, lValue, wValue, 0),
-			A3($ianmackenzie$elm_geometry$Point3d$centimeters, lValue, -wValue, 0));
-		return $author$project$Wrapper3D$Object(
-			{
-				approxShape: $author$project$Wrapper3D$Block(
-					_Utils_Tuple3(length, width, 0.1)),
-				boundingBox: $author$project$Wrapper3D$Box(rectangleBBox),
-				customMesh: $author$project$Wrapper3D$Primitive,
-				name: 'rectangle',
-				shape: rectangleShape
-			});
 	});
 var $author$project$SpaceshipScene$wing1 = F2(
 	function (model, ifBreaken) {
@@ -18506,101 +18670,6 @@ var $author$project$SpaceshipScene$satellite = F2(
 	});
 var $author$project$SpaceshipScene$satelliteSize = $ianmackenzie$elm_units$Length$inCentimeters(
 	$ianmackenzie$elm_units$Length$meters(20));
-var $ianmackenzie$elm_units$Quantity$in_ = F2(
-	function (units, quantity) {
-		return A2(
-			$ianmackenzie$elm_units$Quantity$ratio,
-			quantity,
-			units(1));
-	});
-var $author$project$Wrapper3D$scaleTo3D = F3(
-	function (scaleTo, direction, object) {
-		var scale = F2(
-			function (to, boxsize) {
-				return to / boxsize;
-			});
-		var boxSize = function (box_attri) {
-			var boxExtrema = $ianmackenzie$elm_geometry$BoundingBox3d$extrema(box_attri);
-			return _Utils_eq(direction, $ianmackenzie$elm_geometry$Direction3d$x) ? $ianmackenzie$elm_units$Length$inCentimeters(
-				$ianmackenzie$elm_units$Length$meters(
-					A2(
-						$ianmackenzie$elm_units$Quantity$in_,
-						$ianmackenzie$elm_units$Length$meters,
-						A2($ianmackenzie$elm_units$Quantity$minus, boxExtrema.maxX, boxExtrema.minX)))) : (_Utils_eq(direction, $ianmackenzie$elm_geometry$Direction3d$y) ? $ianmackenzie$elm_units$Length$inCentimeters(
-				$ianmackenzie$elm_units$Length$meters(
-					A2(
-						$ianmackenzie$elm_units$Quantity$in_,
-						$ianmackenzie$elm_units$Length$meters,
-						A2($ianmackenzie$elm_units$Quantity$minus, boxExtrema.maxY, boxExtrema.minY)))) : $ianmackenzie$elm_units$Length$inCentimeters(
-				$ianmackenzie$elm_units$Length$meters(
-					A2(
-						$ianmackenzie$elm_units$Quantity$in_,
-						$ianmackenzie$elm_units$Length$meters,
-						A2($ianmackenzie$elm_units$Quantity$minus, boxExtrema.maxZ, boxExtrema.minZ)))));
-		};
-		var aggregate = function (boxList) {
-			var _v3 = $ianmackenzie$elm_geometry$BoundingBox3d$aggregateN(boxList);
-			if (_v3.$ === 'Just') {
-				var attri = _v3.a;
-				return attri;
-			} else {
-				return $ianmackenzie$elm_geometry$BoundingBox3d$singleton($ianmackenzie$elm_geometry$Point3d$origin);
-			}
-		};
-		if (object.$ === 'ObjectGroup') {
-			var attri = object.a;
-			var _v1 = attri.boundingBox;
-			switch (_v1.$) {
-				case 'Box':
-					var box_attri = _v1.a;
-					return A2(
-						$author$project$Wrapper3D$scale3D,
-						A2(
-							scale,
-							scaleTo,
-							boxSize(box_attri)),
-						object);
-				case 'Composite':
-					var box_attri = _v1.a;
-					return A2(
-						$author$project$Wrapper3D$scale3D,
-						A2(
-							scale,
-							scaleTo,
-							boxSize(
-								aggregate(box_attri))),
-						object);
-				default:
-					return object;
-			}
-		} else {
-			var attri = object.a;
-			var _v2 = attri.boundingBox;
-			switch (_v2.$) {
-				case 'Box':
-					var box_attri = _v2.a;
-					return A2(
-						$author$project$Wrapper3D$scale3D,
-						A2(
-							scale,
-							scaleTo,
-							boxSize(box_attri)),
-						object);
-				case 'Composite':
-					var box_attri = _v2.a;
-					return A2(
-						$author$project$Wrapper3D$scale3D,
-						A2(
-							scale,
-							scaleTo,
-							boxSize(
-								aggregate(box_attri))),
-						object);
-				default:
-					return object;
-			}
-		}
-	});
 var $author$project$SpaceshipScene$satelliteModel = function (model) {
 	var useTexture = $author$project$Wrapper3D$getTexture(model.textureLoader.textures);
 	var earthToSatellite = $ianmackenzie$elm_units$Length$inCentimeters(
@@ -18628,7 +18697,10 @@ var $author$project$SpaceshipScene$satelliteModel = function (model) {
 							A2(
 								$author$project$Wrapper3D$rotateY3D,
 								$elm$core$Basics$degrees(180),
-								A2($author$project$SpaceshipScene$satellite, model, model.ifSatelliteBroken))))))
+								model.showDetailedSatellite ? A2($author$project$SpaceshipScene$satellite, model, model.ifSatelliteBroken) : A2(
+									$author$project$Wrapper3D$matte,
+									$avh4$elm_color$Color$black,
+									$author$project$Wrapper3D$cube(1)))))))
 			]));
 };
 var $author$project$SpaceshipScene$satelliteToShip = function (model) {
@@ -18660,66 +18732,6 @@ var $author$project$SpaceshipScene$spaceGameAssist = function (model) {
 			$author$project$SpaceshipScene$earthModel(model)),
 			$author$project$SpaceshipScene$satelliteModel(model)
 		]);
-};
-var $author$project$SpaceshipScene$spaceStationOrbit = F2(
-	function (model, object) {
-		var spaceStationtoEarth = $ianmackenzie$elm_units$Length$inCentimeters(
-			$ianmackenzie$elm_units$Length$kilometers(150));
-		return A2(
-			$author$project$Wrapper3D$move3D,
-			_Utils_Tuple3(
-				0,
-				$ianmackenzie$elm_units$Length$inCentimeters(
-					$ianmackenzie$elm_units$Length$meters(300)),
-				0),
-			object);
-	});
-var $author$project$SpaceshipScene$spaceStationSize = $ianmackenzie$elm_units$Length$inCentimeters(
-	$ianmackenzie$elm_units$Length$meters(20));
-var $author$project$SpaceshipScene$spaceStation = function (model) {
-	var useTexture = $author$project$Wrapper3D$getTexture(model.textureLoader.textures);
-	return A2(
-		$author$project$SpaceshipScene$spaceStationOrbit,
-		model,
-		A2(
-			$author$project$Wrapper3D$rotateY3D,
-			$elm$core$Basics$degrees(90),
-			A3(
-				$author$project$Wrapper3D$scaleTo3D,
-				$author$project$SpaceshipScene$spaceStationSize,
-				$ianmackenzie$elm_geometry$Direction3d$x,
-				$author$project$Wrapper3D$group3D(
-					_List_fromArray(
-						[
-							A2(
-							$author$project$Wrapper3D$matte,
-							A3($avh4$elm_color$Color$rgb255, 232, 226, 209),
-							A3($author$project$Wrapper3D$box, 20, 200, 15)),
-							A2(
-							$author$project$Wrapper3D$move3D,
-							_Utils_Tuple3(0, 100, 0),
-							A2(
-								$author$project$Wrapper3D$rotateY3D,
-								$elm$core$Basics$degrees(90),
-								A4(
-									$author$project$Wrapper3D$textured,
-									useTexture('solarcell'),
-									0.5,
-									0.5,
-									A2($author$project$Wrapper3D$rectangle3D, 100, 50)))),
-							A2(
-							$author$project$Wrapper3D$move3D,
-							_Utils_Tuple3(0, -100, 0),
-							A2(
-								$author$project$Wrapper3D$rotateY3D,
-								$elm$core$Basics$degrees(90),
-								A4(
-									$author$project$Wrapper3D$textured,
-									useTexture('solarcell'),
-									0.5,
-									0.5,
-									A2($author$project$Wrapper3D$rectangle3D, 100, 50))))
-						])))));
 };
 var $author$project$Wrapper3D$unwrapQ = function (_v0) {
 	var q = _v0.a;
@@ -22105,7 +22117,7 @@ var $author$project$SpaceshipScene$update = F2(
 						$author$project$PhysicsWrapper3D$adjustedPosition,
 						A2($author$project$PhysicsWrapper3D$getBodyByName, 'spaceship', model.spaceshipState.world)));
 				var spaceStationPosition = $author$project$Wrapper3D$getPosition(
-					$author$project$SpaceshipScene$spaceStation(model));
+					$author$project$SpaceshipScene$internalSpaceStation(model));
 				var satellitePosition = $author$project$Wrapper3D$getPosition(
 					$author$project$SpaceshipScene$satelliteModel(model));
 				var newGameTime = model.ifRepair ? model.gameTime : timeAsNum;
@@ -22190,7 +22202,23 @@ var $author$project$SpaceshipScene$update = F2(
 						if (_v2.$ === 'Loaded') {
 							return _Utils_update(
 								model,
-								{camera: newCamera, gameTime: newGameTime, ifGameOver: ifShowGameOver, ifRepair: ifStartRepair, ifSatelliteBroken: updateSatellite, startRepairtime: updateRepairTime, time: timeAsNum});
+								{
+									camera: newCamera,
+									gameTime: newGameTime,
+									ifGameOver: ifShowGameOver,
+									ifRepair: ifStartRepair,
+									ifSatelliteBroken: updateSatellite,
+									showDetailedSatellite: _Utils_cmp(
+										distanceToSatellite,
+										$ianmackenzie$elm_units$Length$inMeters(
+											$ianmackenzie$elm_units$Length$kilometers(10))) < 0,
+									showDetailedSpaceStation: _Utils_cmp(
+										distanceToSpaceStation,
+										$ianmackenzie$elm_units$Length$inMeters(
+											$ianmackenzie$elm_units$Length$kilometers(10))) < 0,
+									startRepairtime: updateRepairTime,
+									time: timeAsNum
+								});
 						} else {
 							return model;
 						}
@@ -26980,7 +27008,7 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
-						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 350,
 						20),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
@@ -26993,7 +27021,7 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
-						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 350,
 						0),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
@@ -27006,7 +27034,7 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
-						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 350,
 						-20),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
@@ -27019,7 +27047,7 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
-						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 350,
 						-40),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
@@ -27032,7 +27060,7 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
-						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 135,
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 235,
 						-60),
 					A4(
 						$author$project$SpaceshipPart$progressBar,
@@ -27358,7 +27386,7 @@ var $author$project$SpaceshipScene$spaceGameUI = function (model) {
 			$elm$core$List$head(
 				$w0rm$elm_physics$Physics$World$bodies(model.spaceshipState.world))));
 	var spaceStationPosition = $author$project$Wrapper3D$getPosition(
-		$author$project$SpaceshipScene$spaceStation(model));
+		$author$project$SpaceshipScene$internalSpaceStation(model));
 	var showRepair = model.ifRepair ? 1 : 0;
 	var showGameOver = model.ifGameOver ? 1 : 0;
 	var showCaution = A2(
@@ -27443,7 +27471,7 @@ var $author$project$SpaceshipScene$spaceGameUI = function (model) {
 				model.camera,
 				model,
 				$author$project$Wrapper3D$getPosition(
-					$author$project$SpaceshipScene$spaceStation(model)),
+					$author$project$SpaceshipScene$internalSpaceStation(model)),
 				20,
 				$author$project$SpaceshipScene$colourUI,
 				$author$project$SpaceshipScene$colourUI,
@@ -28178,7 +28206,7 @@ var $author$project$SpaceshipScene$view = function (model) {
 										$author$project$Wrapper3D$renderEntities(
 											_List_fromArray(
 												[
-													$author$project$SpaceshipScene$spaceStation(model)
+													$author$project$SpaceshipScene$internalSpaceStation(model)
 												]))))),
 							exposure: $ianmackenzie$elm_3d_scene$Scene3d$exposureValue(6),
 							lights: lights,
