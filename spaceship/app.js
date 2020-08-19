@@ -26075,7 +26075,7 @@ var $author$project$SpaceshipScene$cameraUI = function (model) {
 								A2(
 								$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 								$author$project$SpaceshipScene$colourUI,
-								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 120, 60, 10)),
+								A3($MacCASOutreach$graphicsvg$GraphicSVG$roundedRect, 140, 60, 10)),
 								A2(
 								$MacCASOutreach$graphicsvg$GraphicSVG$move,
 								_Utils_Tuple2(0, -5),
@@ -26630,17 +26630,17 @@ var $author$project$SpaceshipScene$cautionSign = F2(
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 					A3($MacCASOutreach$graphicsvg$GraphicSVG$rgb, 252, 198, 3),
-					A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 180, 30)),
+					A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 200, 30)),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$makeTransparent,
 					1,
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						A3($MacCASOutreach$graphicsvg$GraphicSVG$rgb, 255, 207, 31),
-						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 170, 20))),
+						A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 190, 20))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(-70, -1),
+					_Utils_Tuple2(-85, -1),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$rotate,
 						$elm$core$Basics$degrees(90),
@@ -26650,7 +26650,7 @@ var $author$project$SpaceshipScene$cautionSign = F2(
 							$MacCASOutreach$graphicsvg$GraphicSVG$triangle(8)))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
-					_Utils_Tuple2(-70, -4),
+					_Utils_Tuple2(-85, -4),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						$MacCASOutreach$graphicsvg$GraphicSVG$yellow,
@@ -26926,6 +26926,9 @@ var $author$project$SpaceshipScene$missionFailSign = function (model) {
 									$MacCASOutreach$graphicsvg$GraphicSVG$text('MISSION FAILED'))))))
 				])));
 };
+var $ianmackenzie$elm_units$Mass$inMetricTons = function (mass) {
+	return 0.001 * $ianmackenzie$elm_units$Mass$inKilograms(mass);
+};
 var $author$project$SpaceshipPart$progressBar = F4(
 	function (color, _v0, total, left) {
 		var width = _v0.a;
@@ -26974,15 +26977,15 @@ var $author$project$SpaceshipPart$overlay = F4(
 					$elm$core$Basics$composeL,
 					A2(
 						$elm$core$Basics$composeL,
-						$ianmackenzie$elm_units$Mass$inKilograms,
+						$ianmackenzie$elm_units$Mass$inMetricTons,
 						function ($) {
 							return $.mass;
 						}),
 					$w0rm$elm_physics$Physics$Body$data),
 				$w0rm$elm_physics$Physics$World$bodies(model.world)));
-		var fuelRemaining = $ianmackenzie$elm_units$Mass$inKilograms(
+		var fuelRemaining = $ianmackenzie$elm_units$Mass$inMetricTons(
 			$author$project$SpaceshipPart$fuelLeft(model.spaceshipState));
-		var fuelOriginalCap = $ianmackenzie$elm_units$Mass$inKilograms(
+		var fuelOriginalCap = $ianmackenzie$elm_units$Mass$inMetricTons(
 			$author$project$SpaceshipPart$fuelCapacity(model.spaceshipState));
 		var fuelPercent = (fuelRemaining / fuelOriginalCap) * 100;
 		var distance = A2(
@@ -27008,40 +27011,40 @@ var $author$project$SpaceshipPart$overlay = F4(
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
-						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 350,
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
 						20),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						colour,
 						A2(
 							$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-							'audiowide',
+							'Audiowide',
 							$MacCASOutreach$graphicsvg$GraphicSVG$text(
-								'Mass : ' + (A2($myrho$elm_round$Round$round, 3, mass) + ' kg'))))),
+								'Mass : ' + (A2($myrho$elm_round$Round$round, 2, mass) + ' tonnes'))))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
-						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 350,
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
 						0),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						colour,
 						A2(
 							$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-							'audiowide',
+							'Audiowide',
 							$MacCASOutreach$graphicsvg$GraphicSVG$text(
 								'Velocity : ' + (A2($myrho$elm_round$Round$round, 3, velocity) + ' m/s'))))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
-						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 350,
+						($ianmackenzie$elm_units$Pixels$toInt(width) / 2) - 250,
 						-20),
 					A2(
 						$MacCASOutreach$graphicsvg$GraphicSVG$filled,
 						colour,
 						A2(
 							$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-							'audiowide',
+							'Audiowide',
 							$MacCASOutreach$graphicsvg$GraphicSVG$text(
 								'Distance from space station : ' + (A2($myrho$elm_round$Round$round, 3, distance) + ' km'))))),
 					A2(
@@ -27054,9 +27057,9 @@ var $author$project$SpaceshipPart$overlay = F4(
 						colour,
 						A2(
 							$MacCASOutreach$graphicsvg$GraphicSVG$customFont,
-							'audiowide',
+							'Audiowide',
 							$MacCASOutreach$graphicsvg$GraphicSVG$text(
-								'Fuel : ' + (A2($myrho$elm_round$Round$round, 3, fuelRemaining) + (' / ' + (A2($myrho$elm_round$Round$round, 3, fuelOriginalCap) + (' kg (' + (A2($myrho$elm_round$Round$round, 3, fuelPercent) + '%)'))))))))),
+								'Fuel : ' + (A2($myrho$elm_round$Round$round, 2, fuelRemaining) + (' / ' + (A2($myrho$elm_round$Round$round, 2, fuelOriginalCap) + (' tonnes (' + (A2($myrho$elm_round$Round$round, 2, fuelPercent) + '%)'))))))))),
 					A2(
 					$MacCASOutreach$graphicsvg$GraphicSVG$move,
 					_Utils_Tuple2(
@@ -27435,9 +27438,12 @@ var $author$project$SpaceshipScene$spaceGameUI = function (model) {
 					3,
 					$author$project$SpaceshipScene$missionFailSign(model))),
 				A2(
-				$MacCASOutreach$graphicsvg$GraphicSVG$map,
-				$author$project$SpaceshipScene$SpaceshipMsg,
-				A4($author$project$SpaceshipPart$overlay, model.width, model.height, $author$project$SpaceshipScene$colourUI, model.spaceshipState)),
+				$MacCASOutreach$graphicsvg$GraphicSVG$move,
+				_Utils_Tuple2(-60, 0),
+				A2(
+					$MacCASOutreach$graphicsvg$GraphicSVG$map,
+					$author$project$SpaceshipScene$SpaceshipMsg,
+					A4($author$project$SpaceshipPart$overlay, model.width, model.height, $author$project$SpaceshipScene$colourUI, model.spaceshipState))),
 				A2(
 				$MacCASOutreach$graphicsvg$GraphicSVG$move,
 				_Utils_Tuple2(
