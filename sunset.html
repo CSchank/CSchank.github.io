@@ -8795,7 +8795,6 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$collage = F3(
 	function (w, h, shapes) {
 		return A3($MacCASOutreach$graphicsvg$GraphicSVG$Collage, w, h, shapes);
 	});
-var $MacCASOutreach$graphicsvg$GraphicSVG$darkBlue = A4($MacCASOutreach$graphicsvg$GraphicSVG$rgba, 32, 74, 135, 1);
 var $elm$core$Basics$degrees = function (angleInDegrees) {
 	return (angleInDegrees * $elm$core$Basics$pi) / 180;
 };
@@ -8826,6 +8825,10 @@ var $MacCASOutreach$graphicsvg$GraphicSVG$radialGradient = F2(
 			A2($MacCASOutreach$graphicsvg$GraphicSVG$RadialGradient, radius, stops));
 	});
 var $MacCASOutreach$graphicsvg$GraphicSVG$red = A4($MacCASOutreach$graphicsvg$GraphicSVG$rgba, 204, 0, 0, 1);
+var $MacCASOutreach$graphicsvg$GraphicSVG$rgb = F3(
+	function (r, g, b) {
+		return A4($MacCASOutreach$graphicsvg$GraphicSVG$rgba, r, g, b, 1);
+	});
 var $MacCASOutreach$graphicsvg$GraphicSVG$rotateGradient = F2(
 	function (r, grad) {
 		if ((grad.$ === 'Gradient') && (grad.a.$ === 'LinearGradient')) {
@@ -8940,7 +8943,10 @@ var $MacCASOutreach$graphicsvg$Tests$Sunset$view = function (model) {
 							128,
 							_List_fromArray(
 								[
-									A2($MacCASOutreach$graphicsvg$GraphicSVG$stop, $MacCASOutreach$graphicsvg$GraphicSVG$darkBlue, 96),
+									A2(
+									$MacCASOutreach$graphicsvg$GraphicSVG$stop,
+									A3($MacCASOutreach$graphicsvg$GraphicSVG$rgb, 30, 144, 255),
+									96),
 									A3($MacCASOutreach$graphicsvg$GraphicSVG$transparentStop, $MacCASOutreach$graphicsvg$GraphicSVG$lightPurple, 128, 1)
 								]))),
 					A2($MacCASOutreach$graphicsvg$GraphicSVG$rect, 192, 128)))
