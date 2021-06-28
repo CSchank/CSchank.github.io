@@ -5243,12 +5243,190 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$document = _Browser_document;
-var $author$project$Main$template = '**<Camp> - Day <Day>: Individual Report**\n\nHello <Parent>,\n\nHere is <Student>\'s progress report for Day <Day>:\n\n**What <Student> learned today:**\n\n<StudentLearned>\n\n**What <Student> did well:**\n\n<StudentDidWell>\n\n**Next steps:**\n\n<Nextsteps>\n\nPlease let us know if you have any questions.\n\nRegards,  \nMcMaster Start Coding';
-var $author$project$Main$initModel = {campName: '<Camp>', day: '<Day>', nextSteps: '<Nextsteps>', parentName: '<Parent>', studentDidWell: '<StudentDidWell>', studentLearned: '<Fill me>', studentName: '<Student>', template: $author$project$Main$template};
+var $author$project$Main$template = '**<Camp> - Day <Day>: Individual Report**\n\nHello <Parent>,\n\nHere is <Student>\'s progress report for Day <Day>:\n\n**What <Student> learned today:**\n\n<StudentLearned>\n\n**What <Student> did well:**\n\n<StudentDidWell>\n\n**Next steps:**\n\n<Nextsteps>\n\nPlease let us know if you have any questions.\n\nRegards,  \n<Mentor>  \nInstructor, McMaster Start Coding  \n<img src="Signature.png" width="400"/>\n';
+var $author$project$Main$initModel = {campName: 'Animation Camp', day: '1', mentorName: '', nextSteps: '', parentName: '', studentDidWell: '', studentLearned: '', studentName: '', template: $author$project$Main$template};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $elm$core$Basics$compare = _Utils_compare;
+var $elm$core$Dict$get = F2(
+	function (targetKey, dict) {
+		get:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
+				switch (_v1.$) {
+					case 'LT':
+						var $temp$targetKey = targetKey,
+							$temp$dict = left;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+					case 'EQ':
+						return $elm$core$Maybe$Just(value);
+					default:
+						var $temp$targetKey = targetKey,
+							$temp$dict = right;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+				}
+			}
+		}
+	});
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
+var $elm$core$Dict$Black = {$: 'Black'};
+var $elm$core$Dict$RBNode_elm_builtin = F5(
+	function (a, b, c, d, e) {
+		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
+	});
+var $elm$core$Dict$Red = {$: 'Red'};
+var $elm$core$Dict$balance = F5(
+	function (color, key, value, left, right) {
+		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
+			var _v1 = right.a;
+			var rK = right.b;
+			var rV = right.c;
+			var rLeft = right.d;
+			var rRight = right.e;
+			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+				var _v3 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var lLeft = left.d;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Red,
+					key,
+					value,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					color,
+					rK,
+					rV,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, left, rLeft),
+					rRight);
+			}
+		} else {
+			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
+				var _v5 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var _v6 = left.d;
+				var _v7 = _v6.a;
+				var llK = _v6.b;
+				var llV = _v6.c;
+				var llLeft = _v6.d;
+				var llRight = _v6.e;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Red,
+					lK,
+					lV,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, lRight, right));
+			} else {
+				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
+			}
+		}
+	});
+var $elm$core$Dict$insertHelp = F3(
+	function (key, value, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+		} else {
+			var nColor = dict.a;
+			var nKey = dict.b;
+			var nValue = dict.c;
+			var nLeft = dict.d;
+			var nRight = dict.e;
+			var _v1 = A2($elm$core$Basics$compare, key, nKey);
+			switch (_v1.$) {
+				case 'LT':
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						A3($elm$core$Dict$insertHelp, key, value, nLeft),
+						nRight);
+				case 'EQ':
+					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
+				default:
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						nLeft,
+						A3($elm$core$Dict$insertHelp, key, value, nRight));
+			}
+		}
+	});
+var $elm$core$Dict$insert = F3(
+	function (key, value, dict) {
+		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
+		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
+			var _v1 = _v0.a;
+			var k = _v0.b;
+			var v = _v0.c;
+			var l = _v0.d;
+			var r = _v0.e;
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+		} else {
+			var x = _v0;
+			return x;
+		}
+	});
+var $elm$core$Dict$fromList = function (assocs) {
+	return A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v0, dict) {
+				var key = _v0.a;
+				var value = _v0.b;
+				return A3($elm$core$Dict$insert, key, value, dict);
+			}),
+		$elm$core$Dict$empty,
+		assocs);
+};
+var $author$project$Main$prePopulations = $elm$core$Dict$fromList(
+	_List_fromArray(
+		[
+			_Utils_Tuple2(
+			_Utils_Tuple2('Animation Camp', '1'),
+			'Hello world!')
+		]));
+var $author$project$Main$populateLearned = function (model) {
+	var newLearned = function () {
+		var _v0 = A2(
+			$elm$core$Dict$get,
+			_Utils_Tuple2(model.campName, model.day),
+			$author$project$Main$prePopulations);
+		if (_v0.$ === 'Just') {
+			var txt = _v0.a;
+			return txt;
+		} else {
+			return model.studentLearned;
+		}
+	}();
+	return _Utils_update(
+		model,
+		{studentLearned: newLearned});
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		var inputChanged = msg.a;
@@ -5256,6 +5434,10 @@ var $author$project$Main$update = F2(
 		return _Utils_Tuple2(
 			function () {
 				switch (inputChanged.$) {
+					case 'UpdateMentorName':
+						return _Utils_update(
+							model,
+							{mentorName: txt});
 					case 'UpdateParentName':
 						return _Utils_update(
 							model,
@@ -5265,13 +5447,15 @@ var $author$project$Main$update = F2(
 							model,
 							{studentName: txt});
 					case 'UpdateCampName':
-						return _Utils_update(
-							model,
-							{campName: txt});
+						return $author$project$Main$populateLearned(
+							_Utils_update(
+								model,
+								{campName: txt}));
 					case 'UpdateDay':
-						return _Utils_update(
-							model,
-							{day: txt});
+						return $author$project$Main$populateLearned(
+							_Utils_update(
+								model,
+								{day: txt}));
 					case 'UpdateStudentLearned':
 						return _Utils_update(
 							model,
@@ -5292,12 +5476,12 @@ var $author$project$Main$update = F2(
 			}(),
 			$elm$core$Platform$Cmd$none);
 	});
-var $author$project$Main$UpdateCampName = {$: 'UpdateCampName'};
 var $author$project$Main$UpdateDay = {$: 'UpdateDay'};
 var $author$project$Main$UpdateInput = F2(
 	function (a, b) {
 		return {$: 'UpdateInput', a: a, b: b};
 	});
+var $author$project$Main$UpdateMentorName = {$: 'UpdateMentorName'};
 var $author$project$Main$UpdateNextSteps = {$: 'UpdateNextSteps'};
 var $author$project$Main$UpdateParentName = {$: 'UpdateParentName'};
 var $author$project$Main$UpdateStudentDidWell = {$: 'UpdateStudentDidWell'};
@@ -5390,6 +5574,16 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$Id = function (a) {
 var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$id = function (id_) {
 	return $rundis$elm_bootstrap$Bootstrap$Form$Textarea$Id(id_);
 };
+var $rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback = F2(
+	function (attributes, children) {
+		return A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$class('invalid-feedback'),
+				attributes),
+			children);
+	});
 var $rundis$elm_bootstrap$Bootstrap$Form$Select$Item = function (a) {
 	return {$: 'Item', a: a};
 };
@@ -5427,6 +5621,13 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$OnInput = function (a) {
 };
 var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput = function (toMsg) {
 	return $rundis$elm_bootstrap$Bootstrap$Form$Textarea$OnInput(toMsg);
+};
+var $elm_explorations$markdown$Markdown$defaultOptions = {
+	defaultHighlighting: $elm$core$Maybe$Nothing,
+	githubFlavored: $elm$core$Maybe$Just(
+		{breaks: false, tables: false}),
+	sanitize: true,
+	smartypants: false
 };
 var $elm$core$Basics$composeR = F3(
 	function (f, g, x) {
@@ -5483,6 +5684,10 @@ var $author$project$Main$fillTemplate = F2(
 				return $elm$core$Basics$identity;
 			}
 		}();
+		var replaceMentorName = A2(
+			$elm$core$Basics$composeR,
+			A2($elm$core$String$replace, '<Mentor>', model.mentorName),
+			A2($elm$core$String$replace, '<mentor>', model.mentorName));
 		var replaceDay = A2(
 			$elm$core$Basics$composeR,
 			A2($elm$core$String$replace, '<Day>', model.day),
@@ -5493,28 +5698,29 @@ var $author$project$Main$fillTemplate = F2(
 			A2($elm$core$String$replace, '<camp>', model.campName));
 		return A2(
 			$elm$core$Basics$composeR,
-			replaceStudentName,
+			replaceMentorName,
 			A2(
 				$elm$core$Basics$composeR,
-				replaceParentName,
+				replaceStudentName,
 				A2(
 					$elm$core$Basics$composeR,
-					replaceCampName,
+					replaceParentName,
 					A2(
 						$elm$core$Basics$composeR,
-						replaceDay,
+						replaceCampName,
 						A2(
 							$elm$core$Basics$composeR,
-							replaceStudentLearned,
-							A2($elm$core$Basics$composeR, replaceStudentDidWell, replaceNextSteps))))));
+							replaceDay,
+							A2(
+								$elm$core$Basics$composeR,
+								replaceStudentLearned,
+								A2($elm$core$Basics$composeR, replaceStudentDidWell, replaceNextSteps)))))));
 	});
-var $elm_explorations$markdown$Markdown$defaultOptions = {
-	defaultHighlighting: $elm$core$Maybe$Nothing,
-	githubFlavored: $elm$core$Maybe$Just(
-		{breaks: false, tables: false}),
-	sanitize: true,
-	smartypants: false
-};
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$core$Maybe$isJust = function (maybe) {
 	if (maybe.$ === 'Just') {
 		return true;
@@ -5523,12 +5729,27 @@ var $elm$core$Maybe$isJust = function (maybe) {
 	}
 };
 var $elm_explorations$markdown$Markdown$toHtmlWith = _Markdown_toHtml;
-var $elm_explorations$markdown$Markdown$toHtml = $elm_explorations$markdown$Markdown$toHtmlWith($elm_explorations$markdown$Markdown$defaultOptions);
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $author$project$Main$validateFields = function (model) {
+	return (model.studentName !== '') && ((model.parentName !== '') && ((model.studentLearned !== '') && ((model.studentDidWell !== '') && ((model.nextSteps !== '') && (model.campName !== '')))));
+};
 var $author$project$Main$renderEmail = function (model) {
-	return A2(
-		$elm_explorations$markdown$Markdown$toHtml,
+	return $author$project$Main$validateFields(model) ? A3(
+		$elm_explorations$markdown$Markdown$toHtmlWith,
+		_Utils_update(
+			$elm_explorations$markdown$Markdown$defaultOptions,
+			{sanitize: false}),
 		_List_Nil,
-		A3($author$project$Main$fillTemplate, true, model, model.template));
+		A3($author$project$Main$fillTemplate, true, model, model.template)) : A2(
+		$elm$html$Html$h1,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'color', 'red')
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Ensure all fields are filled out.')
+			]));
 };
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$Col = {$: 'Col'};
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$Width = F2(
@@ -6783,8 +7004,6 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Input$input = F2(
 			A2($rundis$elm_bootstrap$Bootstrap$Form$Input$create, tipe, options));
 	});
 var $rundis$elm_bootstrap$Bootstrap$Form$Input$text = $rundis$elm_bootstrap$Bootstrap$Form$Input$input($rundis$elm_bootstrap$Bootstrap$Form$Input$Text);
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$core$Basics$composeL = F3(
 	function (g, f, x) {
 		return g(
@@ -6890,6 +7109,12 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$view = function (_v0) {
 		_List_Nil);
 };
 var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea = A2($elm$core$Basics$composeL, $rundis$elm_bootstrap$Bootstrap$Form$Textarea$view, $rundis$elm_bootstrap$Bootstrap$Form$Textarea$create);
+var $rundis$elm_bootstrap$Bootstrap$Form$Input$Value = function (a) {
+	return {$: 'Value', a: a};
+};
+var $rundis$elm_bootstrap$Bootstrap$Form$Input$value = function (value_) {
+	return $rundis$elm_bootstrap$Bootstrap$Form$Input$Value(value_);
+};
 var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$Value = function (a) {
 	return {$: 'Value', a: a};
 };
@@ -6926,231 +7151,436 @@ var $author$project$Main$view = function (model) {
 													[
 														$rundis$elm_bootstrap$Bootstrap$Form$attrs(_List_Nil)
 													]),
+												_Utils_ap(
+													_List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$label,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$for('mentorname')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Mentor Name')
+																])),
+															$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
+															_List_fromArray(
+																[
+																	$rundis$elm_bootstrap$Bootstrap$Form$Input$id('mentorname'),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput(
+																	$author$project$Main$UpdateInput($author$project$Main$UpdateMentorName)),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Input$value(model.mentorName)
+																]))
+														]),
+													(model.mentorName === '') ? _List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Not filled out')
+																]))
+														]) : _List_Nil)),
+												A2(
+												$rundis$elm_bootstrap$Bootstrap$Form$group,
 												_List_fromArray(
 													[
-														A2(
-														$rundis$elm_bootstrap$Bootstrap$Form$label,
-														_List_fromArray(
-															[
-																$elm$html$Html$Attributes$for('parentname')
-															]),
-														_List_fromArray(
-															[
-																$elm$html$Html$text('Parent Name')
-															])),
-														$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-														_List_fromArray(
-															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Input$id('parentname'),
-																$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput(
-																$author$project$Main$UpdateInput($author$project$Main$UpdateParentName))
-															]))
-													])),
+														$rundis$elm_bootstrap$Bootstrap$Form$attrs(_List_Nil)
+													]),
+												_Utils_ap(
+													_List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$label,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$for('parentname')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Parent Name')
+																])),
+															$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
+															_List_fromArray(
+																[
+																	$rundis$elm_bootstrap$Bootstrap$Form$Input$id('parentname'),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput(
+																	$author$project$Main$UpdateInput($author$project$Main$UpdateParentName)),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Input$value(model.parentName)
+																]))
+														]),
+													(model.parentName === '') ? _List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Not filled out')
+																]))
+														]) : _List_Nil)),
 												A2(
 												$rundis$elm_bootstrap$Bootstrap$Form$group,
 												_List_Nil,
-												_List_fromArray(
-													[
-														A2(
-														$rundis$elm_bootstrap$Bootstrap$Form$label,
-														_List_fromArray(
-															[
-																$elm$html$Html$Attributes$for('studentname')
-															]),
-														_List_fromArray(
-															[
-																$elm$html$Html$text('Student Name')
-															])),
-														$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-														_List_fromArray(
-															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Input$id('studentname'),
-																$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput(
-																$author$project$Main$UpdateInput($author$project$Main$UpdateStudentName))
-															]))
-													])),
+												_Utils_ap(
+													_List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$label,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$for('studentname')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Student Name')
+																])),
+															$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
+															_List_fromArray(
+																[
+																	$rundis$elm_bootstrap$Bootstrap$Form$Input$id('studentname'),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput(
+																	$author$project$Main$UpdateInput($author$project$Main$UpdateStudentName)),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Input$value(model.studentName)
+																]))
+														]),
+													(model.studentName === '') ? _List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Not filled out')
+																]))
+														]) : _List_Nil)),
 												A2(
 												$rundis$elm_bootstrap$Bootstrap$Form$group,
 												_List_Nil,
-												_List_fromArray(
-													[
-														A2(
-														$rundis$elm_bootstrap$Bootstrap$Form$label,
-														_List_fromArray(
-															[
-																$elm$html$Html$Attributes$for('campname')
-															]),
-														_List_fromArray(
-															[
-																$elm$html$Html$text('Camp Name')
-															])),
-														$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-														_List_fromArray(
-															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Input$id('campname'),
-																$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput(
-																$author$project$Main$UpdateInput($author$project$Main$UpdateCampName))
-															]))
-													])),
+												_Utils_ap(
+													_List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$label,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$for('campname')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Camp Name')
+																])),
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$Select$select,
+															_List_fromArray(
+																[
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$id('dayselect'),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$onChange(
+																	$author$project$Main$UpdateInput($author$project$Main$UpdateDay))
+																]),
+															_List_fromArray(
+																[
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Animation Camp')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Comics Camp')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Adventure Camp')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Mini-Games Camp')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Journey Into 3D Camp')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Design Thinking')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Code like Picasso')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Code like Escher')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Code like Beethoven')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('Mini-Game Saturdays')
+																		]))
+																]))
+														]),
+													(model.campName === '') ? _List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Not filled out')
+																]))
+														]) : _List_Nil)),
 												A2(
 												$rundis$elm_bootstrap$Bootstrap$Form$group,
 												_List_Nil,
-												_List_fromArray(
-													[
-														A2(
-														$rundis$elm_bootstrap$Bootstrap$Form$label,
-														_List_fromArray(
-															[
-																$elm$html$Html$Attributes$for('dayselect')
-															]),
-														_List_fromArray(
-															[
-																$elm$html$Html$text('Day')
-															])),
-														A2(
-														$rundis$elm_bootstrap$Bootstrap$Form$Select$select,
-														_List_fromArray(
-															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Select$id('dayselect'),
-																$rundis$elm_bootstrap$Bootstrap$Form$Select$onChange(
-																$author$project$Main$UpdateInput($author$project$Main$UpdateDay))
-															]),
-														_List_fromArray(
-															[
-																A2(
-																$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
-																_List_Nil,
-																_List_fromArray(
-																	[
-																		$elm$html$Html$text('1')
-																	])),
-																A2(
-																$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
-																_List_Nil,
-																_List_fromArray(
-																	[
-																		$elm$html$Html$text('2')
-																	])),
-																A2(
-																$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
-																_List_Nil,
-																_List_fromArray(
-																	[
-																		$elm$html$Html$text('3')
-																	])),
-																A2(
-																$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
-																_List_Nil,
-																_List_fromArray(
-																	[
-																		$elm$html$Html$text('4')
-																	])),
-																A2(
-																$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
-																_List_Nil,
-																_List_fromArray(
-																	[
-																		$elm$html$Html$text('5')
-																	]))
-															]))
-													])),
+												_Utils_ap(
+													_List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$label,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$for('dayselect')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Day')
+																])),
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$Select$select,
+															_List_fromArray(
+																[
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$id('dayselect'),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$onChange(
+																	$author$project$Main$UpdateInput($author$project$Main$UpdateDay))
+																]),
+															_List_fromArray(
+																[
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('1')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('2')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('3')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('4')
+																		])),
+																	A2(
+																	$rundis$elm_bootstrap$Bootstrap$Form$Select$item,
+																	_List_Nil,
+																	_List_fromArray(
+																		[
+																			$elm$html$Html$text('5')
+																		]))
+																]))
+														]),
+													(model.day === '') ? _List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Not filled out')
+																]))
+														]) : _List_Nil)),
 												A2(
 												$rundis$elm_bootstrap$Bootstrap$Form$group,
 												_List_Nil,
-												_List_fromArray(
-													[
-														A2(
-														$elm$html$Html$label,
-														_List_fromArray(
-															[
-																$elm$html$Html$Attributes$for('studentlearned')
-															]),
-														_List_fromArray(
-															[
-																$elm$html$Html$text('What Student Learned Today')
-															])),
-														$rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea(
-														_List_fromArray(
-															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$id('studentlearned'),
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
-																$author$project$Main$UpdateInput($author$project$Main$UpdateStudentLearned))
-															]))
-													])),
+												_Utils_ap(
+													_List_fromArray(
+														[
+															A2(
+															$elm$html$Html$label,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$for('studentlearned')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('What Student Learned Today')
+																])),
+															$rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea(
+															_List_fromArray(
+																[
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$id('studentlearned'),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
+																	$author$project$Main$UpdateInput($author$project$Main$UpdateStudentLearned)),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$value(model.studentLearned)
+																]))
+														]),
+													(model.studentLearned === '') ? _List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Not filled out')
+																]))
+														]) : _List_Nil)),
 												A2(
 												$rundis$elm_bootstrap$Bootstrap$Form$group,
 												_List_Nil,
-												_List_fromArray(
-													[
-														A2(
-														$elm$html$Html$label,
-														_List_fromArray(
-															[
-																$elm$html$Html$Attributes$for('studentdidwell')
-															]),
-														_List_fromArray(
-															[
-																$elm$html$Html$text('What Student Did Well Today')
-															])),
-														$rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea(
-														_List_fromArray(
-															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$id('studentdidwell'),
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
-																$author$project$Main$UpdateInput($author$project$Main$UpdateStudentDidWell))
-															]))
-													])),
+												_Utils_ap(
+													_List_fromArray(
+														[
+															A2(
+															$elm$html$Html$label,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$for('studentdidwell')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('What Student Did Well Today')
+																])),
+															$rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea(
+															_List_fromArray(
+																[
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$id('studentdidwell'),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
+																	$author$project$Main$UpdateInput($author$project$Main$UpdateStudentDidWell)),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$value(model.studentDidWell)
+																]))
+														]),
+													(model.studentDidWell === '') ? _List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Not filled out')
+																]))
+														]) : _List_Nil)),
 												A2(
 												$rundis$elm_bootstrap$Bootstrap$Form$group,
 												_List_Nil,
-												_List_fromArray(
-													[
-														A2(
-														$elm$html$Html$label,
-														_List_fromArray(
-															[
-																$elm$html$Html$Attributes$for('nextsteps')
-															]),
-														_List_fromArray(
-															[
-																$elm$html$Html$text('Next Steps')
-															])),
-														$rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea(
-														_List_fromArray(
-															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$id('nextsteps'),
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
-																$author$project$Main$UpdateInput($author$project$Main$UpdateNextSteps))
-															]))
-													])),
+												_Utils_ap(
+													_List_fromArray(
+														[
+															A2(
+															$elm$html$Html$label,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$for('nextsteps')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Next Steps')
+																])),
+															$rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea(
+															_List_fromArray(
+																[
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$id('nextsteps'),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
+																	$author$project$Main$UpdateInput($author$project$Main$UpdateNextSteps)),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$value(model.nextSteps)
+																]))
+														]),
+													(model.nextSteps === '') ? _List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Not filled out')
+																]))
+														]) : _List_Nil)),
 												A2(
 												$rundis$elm_bootstrap$Bootstrap$Form$group,
 												_List_Nil,
-												_List_fromArray(
-													[
-														A2(
-														$elm$html$Html$label,
-														_List_fromArray(
-															[
-																$elm$html$Html$Attributes$for('template')
-															]),
-														_List_fromArray(
-															[
-																$elm$html$Html$text('Template')
-															])),
-														$rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea(
-														_List_fromArray(
-															[
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$id('template'),
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
-																$author$project$Main$UpdateInput($author$project$Main$UpdateTemplate)),
-																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$value(model.template)
-															]))
-													]))
+												_Utils_ap(
+													_List_fromArray(
+														[
+															A2(
+															$elm$html$Html$label,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$for('template')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Template')
+																])),
+															$rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea(
+															_List_fromArray(
+																[
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$id('template'),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
+																	$author$project$Main$UpdateInput($author$project$Main$UpdateTemplate)),
+																	$rundis$elm_bootstrap$Bootstrap$Form$Textarea$value(model.template)
+																]))
+														]),
+													(model.template === '') ? _List_fromArray(
+														[
+															A2(
+															$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('Not filled out')
+																]))
+														]) : _List_Nil))
 											]))
 									]))
 							])),
