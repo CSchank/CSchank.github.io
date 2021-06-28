@@ -5243,7 +5243,8 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$document = _Browser_document;
-var $author$project$Main$initModel = {campName: '<Camp>', day: '<Day>', nextSteps: '<Nextsteps>', parentName: '<Parent>', studentDidWell: '<StudentDidWell>', studentLearned: '<Fill me>', studentName: '<Student>'};
+var $author$project$Main$template = '**<Camp> - Day <Day>: Individual Report**\n\nHello <Parent>,\n\nHere is <Student>\'s progress report for Day <Day>:\n\n**What <Student> learned today:**\n\n<StudentLearned>\n\n**What <Student> did well:**\n\n<StudentDidWell>\n\n**Next steps:**\n\n<Nextsteps>\n\nPlease let us know if you have any questions.\n\nRegards,  \nMcMaster Start Coding';
+var $author$project$Main$initModel = {campName: '<Camp>', day: '<Day>', nextSteps: '<Nextsteps>', parentName: '<Parent>', studentDidWell: '<StudentDidWell>', studentLearned: '<Fill me>', studentName: '<Student>', template: $author$project$Main$template};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -5279,10 +5280,14 @@ var $author$project$Main$update = F2(
 						return _Utils_update(
 							model,
 							{studentDidWell: txt});
-					default:
+					case 'UpdateNextSteps':
 						return _Utils_update(
 							model,
 							{nextSteps: txt});
+					default:
+						return _Utils_update(
+							model,
+							{template: txt});
 				}
 			}(),
 			$elm$core$Platform$Cmd$none);
@@ -5298,6 +5303,7 @@ var $author$project$Main$UpdateParentName = {$: 'UpdateParentName'};
 var $author$project$Main$UpdateStudentDidWell = {$: 'UpdateStudentDidWell'};
 var $author$project$Main$UpdateStudentLearned = {$: 'UpdateStudentLearned'};
 var $author$project$Main$UpdateStudentName = {$: 'UpdateStudentName'};
+var $author$project$Main$UpdateTemplate = {$: 'UpdateTemplate'};
 var $rundis$elm_bootstrap$Bootstrap$Form$Attrs = function (a) {
 	return {$: 'Attrs', a: a};
 };
@@ -5502,7 +5508,6 @@ var $author$project$Main$fillTemplate = F2(
 							replaceStudentLearned,
 							A2($elm$core$Basics$composeR, replaceStudentDidWell, replaceNextSteps))))));
 	});
-var $author$project$Main$template = '**<Camp> - Day <Day>: Individual Report**\n\nHello <Parent>,\n\nHere is <Student>\'s progress report for Day <Day>:\n\n**What <Student> learned today:**\n\n<StudentLearned>\n\n**What <Student> did well:**\n\n<StudentDidWell>\n\n**Next steps:**\n\n<Nextsteps>\n\nPlease let us know if you have any questions.\n\nRegards,  \nMcMaster Start Coding';
 var $elm_explorations$markdown$Markdown$defaultOptions = {
 	defaultHighlighting: $elm$core$Maybe$Nothing,
 	githubFlavored: $elm$core$Maybe$Just(
@@ -5523,7 +5528,7 @@ var $author$project$Main$renderEmail = function (model) {
 	return A2(
 		$elm_explorations$markdown$Markdown$toHtml,
 		_List_Nil,
-		A3($author$project$Main$fillTemplate, true, model, $author$project$Main$template));
+		A3($author$project$Main$fillTemplate, true, model, model.template));
 };
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$Col = {$: 'Col'};
 var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$Width = F2(
@@ -6885,6 +6890,12 @@ var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$view = function (_v0) {
 		_List_Nil);
 };
 var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea = A2($elm$core$Basics$composeL, $rundis$elm_bootstrap$Bootstrap$Form$Textarea$view, $rundis$elm_bootstrap$Bootstrap$Form$Textarea$create);
+var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$Value = function (a) {
+	return {$: 'Value', a: a};
+};
+var $rundis$elm_bootstrap$Bootstrap$Form$Textarea$value = function (value_) {
+	return $rundis$elm_bootstrap$Bootstrap$Form$Textarea$Value(value_);
+};
 var $author$project$Main$view = function (model) {
 	return {
 		body: _List_fromArray(
@@ -7113,6 +7124,31 @@ var $author$project$Main$view = function (model) {
 																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
 																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
 																$author$project$Main$UpdateInput($author$project$Main$UpdateNextSteps))
+															]))
+													])),
+												A2(
+												$rundis$elm_bootstrap$Bootstrap$Form$group,
+												_List_Nil,
+												_List_fromArray(
+													[
+														A2(
+														$elm$html$Html$label,
+														_List_fromArray(
+															[
+																$elm$html$Html$Attributes$for('template')
+															]),
+														_List_fromArray(
+															[
+																$elm$html$Html$text('Template')
+															])),
+														$rundis$elm_bootstrap$Bootstrap$Form$Textarea$textarea(
+														_List_fromArray(
+															[
+																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$id('template'),
+																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$rows(3),
+																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$onInput(
+																$author$project$Main$UpdateInput($author$project$Main$UpdateTemplate)),
+																$rundis$elm_bootstrap$Bootstrap$Form$Textarea$value(model.template)
 															]))
 													]))
 											]))
