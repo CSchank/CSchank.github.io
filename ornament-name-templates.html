@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ornament Name Templates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Bebas+Neue&family=Berkshire+Swash&family=Cinzel:wght@700&family=Dancing+Script:wght@700&family=Fraunces:opsz,wght@9..144,600&family=Lobster&family=Mountains+of+Christmas:wght@700&family=Pacifico&family=Playfair+Display:wght@700&family=Sacramento&family=Work+Sans:wght@400;500;600&display=swap">
+<style id="pagesize">@page { size: 8.5in 11in; margin: 0 }</style>
+<style>
+/* Layout: settings column on the left, true-size printable sheets on a "workbench" to the right */
+:root {
+  --bg: #eef2ef; --panel: #ffffff; --ink: #1c2a23; --muted: #5a6a62;
+  --line: #d3dcd6; --accent: #1f5c45; --accent-ink: #ffffff; --brass: #9a6b22;
+  --desk: #d9e1db;
+  --display: "Fraunces", Georgia, serif;
+  --body: "Work Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111915; --panel: #18231d; --ink: #e4ebe7; --muted: #98a89f;
+  --line: #2b3a32; --accent: #6cbd98; --accent-ink: #0d1612; --brass: #d6a54d;
+  --desk: #0b110e; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #111915; --panel: #18231d; --ink: #e4ebe7; --muted: #98a89f;
+  --line: #2b3a32; --accent: #6cbd98; --accent-ink: #0d1612; --brass: #d6a54d;
+  --desk: #0b110e; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body) }
+header { padding: 20px 20px 4px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px }
+h1 { font: 600 28px/1.15 var(--display); margin: 0; text-wrap: balance }
+header p { margin: 0; color: var(--muted); max-width: 62ch }
+
+.app { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 20px; padding: 16px 20px 40px }
+@media (max-width: 900px) { .app { grid-template-columns: minmax(0, 1fr) } }
+
+.controls { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px;
+  display: flex; flex-direction: column; gap: 16px; align-self: start; position: sticky; top: 16px }
+@media (max-width: 900px) { .controls { position: static } }
+.field { display: flex; flex-direction: column; gap: 6px }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
+label, .lbl { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
+.hint { font-size: 13px; color: var(--muted); margin: 0 }
+.hint code { font-size: 12px; background: var(--bg); padding: 1px 5px; border-radius: 4px }
+textarea, input[type=text], input[type=number], select {
+  font: 15px/1.4 var(--body); color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100% }
+textarea { min-height: 200px; resize: vertical }
+textarea:focus, input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 6px; overflow: hidden }
+.seg input { position: absolute; opacity: 0; pointer-events: none }
+.seg label { text-transform: none; letter-spacing: 0; font-size: 14px; font-weight: 500; color: var(--ink);
+  padding: 7px 8px; text-align: center; cursor: pointer; background: var(--bg) }
+.seg input:checked + label { background: var(--accent); color: var(--accent-ink) }
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: -3px }
+.checks { display: flex; flex-wrap: wrap; gap: 6px 16px }
+.checks label { text-transform: none; letter-spacing: 0; font-size: 14px; font-weight: 400; color: var(--ink);
+  display: flex; align-items: center; gap: 6px; cursor: pointer }
+button.print { font: 600 16px var(--body); background: var(--accent); color: var(--accent-ink); border: 0;
+  border-radius: 8px; padding: 12px; cursor: pointer }
+.tip { border-top: 1px solid var(--line); padding-top: 14px; font-size: 13px; color: var(--muted) }
+.tip strong { color: var(--brass) }
+.tip ol { margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px }
+
+.summary { color: var(--muted); margin: 0 0 12px; font-variant-numeric: tabular-nums }
+.summary b { color: var(--ink) }
+.bench { background: var(--desk); border-radius: 10px; padding: 24px; overflow-x: auto;
+  display: flex; flex-direction: column; align-items: center; gap: 24px }
+
+/* Paper is always paper: these colors are deliberately fixed in both themes */
+.sheet { background: #fff; color: #000; box-shadow: 0 2px 10px rgba(0,0,0,.25); position: relative; flex: none }
+.grid { display: grid; position: absolute }
+.grid svg { display: block; cursor: pointer }
+.foot { position: absolute; left: 0.4in; right: 0.4in; bottom: 0.18in; display: flex; justify-content: space-between;
+  align-items: center; font: 8pt/1 "Work Sans", Arial, sans-serif; color: #555 }
+.cal { display: flex; align-items: center; gap: 6px }
+.cal i { display: block; width: 1in; height: 0.07in; border: 0.5pt solid #000; border-top: 0 }
+
+@media print {
+  body { background: #fff }
+  header, .controls, .summary { display: none !important }
+  .app { display: block; padding: 0 }
+  .bench { display: block; padding: 0; background: none; overflow: visible }
+  .sheet { box-shadow: none; margin: 0; break-after: page; page-break-after: always }
+  .sheet:last-child { break-after: auto; page-break-after: auto }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ornament Name Templates</h1>
+  <p>Type your names, print at actual size, then trace each circle onto the ornament through carbon paper.</p>
+</header>
+
+<div class="app">
+  <form class="controls" id="controls" onsubmit="return false">
+    <div class="field">
+      <label for="names">Names, one per line</label>
+      <textarea id="names" spellcheck="false"></textarea>
+      <p class="hint">Give one ornament its own second line with a bar: <code>Emma | Baby's First Christmas</code></p>
+      <p class="hint">Split text onto more lines with a slash: <code>Emma | Baby's First / Christmas</code>. Click any ornament to edit its line.</p>
+    </div>
+
+    <div class="field">
+      <label for="sub">Second line on every ornament</label>
+      <input type="text" id="sub" placeholder="e.g. 2026 (leave blank for none)">
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="font">Name font</label>
+        <select id="font"></select>
+      </div>
+      <div class="field">
+        <label for="subfont">Second-line font</label>
+        <select id="subfont"></select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="dia">Ornament size (in)</label>
+        <input type="number" id="dia" min="1.5" max="7" step="0.25" value="3">
+      </div>
+      <div class="field">
+        <label for="paper">Paper</label>
+        <select id="paper">
+          <option value="letter">US Letter</option>
+          <option value="a4">A4</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="lbl">Name shape</span>
+      <div class="seg">
+        <input type="radio" name="layout" id="lay-straight" value="straight" checked><label for="lay-straight">Straight</label>
+        <input type="radio" name="layout" id="lay-arc" value="arc"><label for="lay-arc">Arched</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="lbl">Letters</span>
+      <div class="seg">
+        <input type="radio" name="style" id="sty-outline" value="outline" checked><label for="sty-outline">Outline</label>
+        <input type="radio" name="style" id="sty-solid" value="solid"><label for="sty-solid">Solid</label>
+      </div>
+      <p class="hint">Outline gives you a crisp edge to trace. Solid shows how the finished burn will look.</p>
+    </div>
+
+    <div class="field">
+      <span class="lbl">Guides</span>
+      <div class="checks">
+        <label><input type="checkbox" id="g-edge" checked> Ornament edge</label>
+        <label><input type="checkbox" id="g-center" checked> Center mark</label>
+        <label><input type="checkbox" id="g-hole" checked> Hanging hole</label>
+        <label><input type="checkbox" id="g-safe"> Safe zone</label>
+      </div>
+    </div>
+
+    <button type="button" class="print" id="print">Print templates</button>
+
+    <div class="tip">
+      <strong>Before you print</strong>
+      <ol>
+        <li>Set scale to <b>100% / Actual size</b>, not "Fit to page".</li>
+        <li>Measure the 1&nbsp;inch bar at the bottom of a sheet to confirm.</li>
+        <li>Cut out a circle, line its edge up with the ornament, slide carbon paper underneath, tape down and trace.</li>
+      </ol>
+    </div>
+  </form>
+
+  <main>
+    <p class="summary" id="summary"></p>
+    <div class="bench" id="bench"></div>
+  </main>
+</div>
+
+<svg id="measure" width="10" height="10" style="position:absolute;left:-9999px;top:0" aria-hidden="true"><text id="mtext" font-size="100"></text></svg>
+
+<script>
+const FONTS = [
+  { family: "Dancing Script", weight: 700, note: "script", boost: 1 },
+  { family: "Sacramento", weight: 400, note: "thin script", boost: 1.35 },
+  { family: "Pacifico", weight: 400, note: "bold script", boost: 0.9 },
+  { family: "Lobster", weight: 400, note: "bold script", boost: 1 },
+  { family: "Berkshire Swash", weight: 400, note: "swash", boost: 1 },
+  { family: "Mountains of Christmas", weight: 700, note: "festive", boost: 1 },
+  { family: "Amatic SC", weight: 700, note: "hand-lettered caps", boost: 1.15 },
+  { family: "Playfair Display", weight: 700, note: "serif", boost: 0.95 },
+  { family: "Cinzel", weight: 700, note: "classic caps", boost: 0.9 },
+  { family: "Bebas Neue", weight: 400, note: "block caps", boost: 1 },
+];
+const PAPER = { letter: [8.5, 11], a4: [8.27, 11.69] };
+const MARGIN = 0.4, GAP = 0.2, FOOT = 0.3, U = 100; // U = SVG units per inch
+const SAMPLE = "Emma\nLiam\nGrandma Rose\nThe Johnsons | Est. 2019\nOliver\nSophia | Baby's First / Christmas\nNoah\nAva";
+const $ = id => document.getElementById(id);
+
+for (const sel of [$("font"), $("subfont")]) {
+  FONTS.forEach((f, i) => sel.add(new Option(`${f.family} (${f.note})`, i)));
+}
+$("font").value = 0; $("subfont").value = 8;
+
+// Remember the last setup on this computer
+const SAVE_KEY = "ornament-templates-v1";
+const FIELDS = ["names", "sub", "font", "subfont", "dia", "paper"];
+const CHECKS = ["g-edge", "g-center", "g-hole", "g-safe"];
+function load() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (e) {}
+  if (!saved) { $("names").value = SAMPLE; $("sub").value = "2026"; return; }
+  FIELDS.forEach(k => { if (saved[k] != null) $(k).value = saved[k]; });
+  CHECKS.forEach(k => { if (saved[k] != null) $(k).checked = saved[k]; });
+  if (saved.layout) $("lay-" + saved.layout).checked = true;
+  if (saved.style) $("sty-" + saved.style).checked = true;
+}
+function save(s) {
+  const o = {};
+  FIELDS.forEach(k => o[k] = $(k).value);
+  CHECKS.forEach(k => o[k] = $(k).checked);
+  o.layout = s.layout; o.style = s.style;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(o)); } catch (e) {}
+}
+
+function settings() {
+  const dia = Math.min(7, Math.max(1.5, parseFloat($("dia").value) || 3));
+  return {
+    dia, paper: PAPER[$("paper").value],
+    font: FONTS[$("font").value], subfont: FONTS[$("subfont").value],
+    sub: $("sub").value.trim(),
+    layout: document.querySelector("input[name=layout]:checked").value,
+    style: document.querySelector("input[name=style]:checked").value,
+    edge: $("g-edge").checked, center: $("g-center").checked, hole: $("g-hole").checked, safe: $("g-safe").checked,
+  };
+}
+
+// A "/" starts a new line on the ornament: "Baby's First / Christmas"
+const splitLines = s => s.split("/").map(p => p.trim()).filter(Boolean);
+
+function items(defaultSub) {
+  return $("names").value.split(/\n/).map((raw, line) => {
+    const l = raw.trim(), bar = l.indexOf("|");
+    const name = bar < 0 ? l : l.slice(0, bar);
+    const sub = bar < 0 ? defaultSub : l.slice(bar + 1);
+    return { line, name: splitLines(name), sub: splitLines(sub) };
+  }).filter(it => it.name.length);
+}
+
+// Width of the text per 1 unit of font size
+const mtext = $("mtext");
+function widthPerUnit(text, f) {
+  mtext.setAttribute("font-family", `"${f.family}"`);
+  mtext.setAttribute("font-weight", f.weight);
+  mtext.textContent = text;
+  return Math.max(mtext.getComputedTextLength() / 100, 0.01);
+}
+
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function inkAttrs(s) {
+  return s.style === "outline"
+    ? `fill="none" stroke="#000" stroke-width="0.9" stroke-linejoin="round"`
+    : `fill="#000"`;
+}
+function fontAttrs(f) { return `font-family="'${f.family}'" font-weight="${f.weight}"`; }
+
+function ornament(it, s, idx) {
+  const D = s.dia * U, c = D / 2, out = [];
+  if (s.safe) out.push(`<circle cx="${c}" cy="${c}" r="${c * 0.86}" fill="none" stroke="#bbb" stroke-width="0.7" stroke-dasharray="4 4"/>`);
+  if (s.edge) out.push(`<circle cx="${c}" cy="${c}" r="${c - 1}" fill="none" stroke="#000" stroke-width="1"/>`);
+  if (s.center) {
+    const m = 0.12 * U;
+    out.push(`<path d="M${c - m} ${c}H${c + m}M${c} ${c - m}V${c + m}" stroke="#999" stroke-width="0.6" fill="none"/>`);
+  }
+  if (s.hole) {
+    const hy = Math.max(0.2 * U, D * 0.075), hr = 0.07 * U;
+    out.push(`<circle cx="${c}" cy="${hy}" r="${hr}" fill="none" stroke="#999" stroke-width="0.7"/>`);
+    out.push(`<path d="M${c - hr * 0.6} ${hy}H${c + hr * 0.6}M${c} ${hy - hr * 0.6}V${hy + hr * 0.6}" stroke="#999" stroke-width="0.5"/>`);
+  }
+
+  const f = s.font, sf = s.subfont, ink = inkAttrs(s);
+  const line = (txt, x, y, size, font) =>
+    `<text x="${x}" y="${y.toFixed(2)}" text-anchor="middle" font-size="${size.toFixed(2)}" ${fontAttrs(font)} ${ink}>${esc(txt)}</text>`;
+  // Font size that lets the widest of these lines fit the given width
+  const fitAll = (lines, font, width) => Math.min(...lines.map(t => width / widthPerUnit(t, font)));
+  const subs = it.sub;
+  let subFs = subs.length ? Math.min(fitAll(subs, sf, D * 0.58), D * 0.12 * sf.boost) : 0;
+
+  if (s.layout === "arc") {
+    // The arch holds one line, so split name parts are joined back together
+    const r = D * 0.22, name = it.name.join(" ");
+    const fs = Math.min((Math.PI * r * 0.78) / widthPerUnit(name, f), D * 0.19 * f.boost);
+    const id = `arc${idx}`;
+    out.push(`<path id="${id}" d="M${c - r} ${c} A${r} ${r} 0 0 1 ${c + r} ${c}" fill="none"/>`);
+    out.push(`<text font-size="${fs.toFixed(2)}" ${fontAttrs(f)} ${ink}><textPath href="#${id}" startOffset="50%" text-anchor="middle">${esc(name)}</textPath></text>`);
+    if (subs.length) {
+      const room = D * 0.3; // space between the center and the bottom of the safe area
+      subFs = Math.min(subFs, D * 0.1 * sf.boost, room / (0.75 + (subs.length - 1) * 1.05));
+      subs.forEach((t, i) => out.push(line(t, c, c + D * 0.08 + subFs * (0.75 + i * 1.05), subFs, sf)));
+    }
+  } else {
+    const names = it.name;
+    let fs = Math.min(fitAll(names, f, D * 0.72), D * 0.3 * f.boost);
+    if (subs.length) subFs = Math.min(subFs, fs * 0.6);
+    // Stack every line as one block; shrink it all if it's too tall for the ornament
+    const blockH = () => fs * 0.7 + (names.length - 1) * fs * 0.9
+      + (subs.length ? fs * 0.3 + subFs * 0.75 + (subs.length - 1) * subFs * 1.05 : 0);
+    const shrink = Math.min(1, (D * 0.64) / blockH());
+    fs *= shrink; subFs *= shrink;
+    let y = c - blockH() / 2 + fs * 0.7;
+    names.forEach((t, i) => { if (i) y += fs * 0.9; out.push(line(t, c, y, fs, f)); });
+    subs.forEach((t, i) => { y += i ? subFs * 1.05 : fs * 0.3 + subFs * 0.75; out.push(line(t, c, y, subFs, sf)); });
+  }
+  const label = it.name.join(" ");
+  return `<svg width="${s.dia}in" height="${s.dia}in" viewBox="0 0 ${D} ${D}" role="img" aria-label="${esc(label)}" data-line="${it.line}"><title>Click to edit ${esc(label)}</title>${out.join("")}</svg>`;
+}
+
+let renderToken = 0;
+async function render() {
+  const token = ++renderToken;
+  const s = settings();
+  save(s);
+  document.getElementById("pagesize").textContent = `@page { size: ${s.paper[0]}in ${s.paper[1]}in; margin: 0 }`;
+  try {
+    await Promise.all([
+      document.fonts.load(`${s.font.weight} 40px "${s.font.family}"`),
+      document.fonts.load(`${s.subfont.weight} 40px "${s.subfont.family}"`),
+    ]);
+  } catch (e) {}
+  if (token !== renderToken) return;
+
+  const list = items(s.sub);
+  const [pw, ph] = s.paper;
+  const cols = Math.max(1, Math.floor((pw - 2 * MARGIN + GAP) / (s.dia + GAP)));
+  const rows = Math.max(1, Math.floor((ph - 2 * MARGIN - FOOT + GAP) / (s.dia + GAP)));
+  const per = cols * rows;
+  const pages = Math.max(1, Math.ceil(list.length / per));
+  const gridW = cols * s.dia + (cols - 1) * GAP;
+
+  let html = "";
+  for (let p = 0; p < pages; p++) {
+    const chunk = list.slice(p * per, (p + 1) * per);
+    html += `<div class="sheet" style="width:${pw}in;height:${ph}in">
+      <div class="grid" style="top:${MARGIN}in;left:${((pw - gridW) / 2).toFixed(3)}in;grid-template-columns:repeat(${cols},${s.dia}in);gap:${GAP}in">
+        ${chunk.map((it, i) => ornament(it, s, p * per + i)).join("")}
+      </div>
+      <div class="foot"><span class="cal"><i></i>1 inch: print at 100% / Actual size</span><span>Sheet ${p + 1} of ${pages}</span></div>
+    </div>`;
+  }
+  $("bench").innerHTML = html;
+  $("summary").innerHTML = list.length
+    ? `<b>${list.length}</b> ornament${list.length === 1 ? "" : "s"} · <b>${per}</b> per sheet · <b>${pages}</b> sheet${pages === 1 ? "" : "s"} to print`
+    : "Add some names to see your templates.";
+}
+
+load();
+$("controls").addEventListener("input", render);
+$("controls").addEventListener("change", render);
+$("print").addEventListener("click", () => window.print());
+
+// Click an ornament to jump to its line in the names box
+$("bench").addEventListener("click", e => {
+  const svg = e.target.closest("svg[data-line]");
+  if (!svg) return;
+  const box = $("names"), lines = box.value.split("\n"), n = +svg.dataset.line;
+  const start = lines.slice(0, n).reduce((a, l) => a + l.length + 1, 0);
+  box.focus();
+  box.setSelectionRange(start, start + lines[n].length);
+  box.scrollIntoView({ block: "nearest" });
+});
+document.fonts.ready.then(render);
+render();
+</script>
+</body>
+</html>
